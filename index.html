@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -377,7 +377,7 @@
  
 </main>
  
-<footer>مصدر البيانات: Google Sheets — يتم التحديث تلقائيًا عند فتح الصفحة</footer>
+<footer>مصدر البيانات: Google Sheets — يتم التحديث تلقائيًا عند فتح الصفحة<br><span style="opacity:.5; font-size:10px;">نسخة الملف: build-2026-08-14-2</span></footer>
  
 <script>
 /* ============ الإعدادات ============ */
@@ -393,6 +393,11 @@ const gvizUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/
 let ALL_ROWS = [];
 let trendChartInstance = null;
 let categoryChartInstance = null;
+ 
+window.addEventListener("error", (ev) => {
+  console.error("Global error:", ev.error || ev.message);
+  showFullAnalysisError(ev.error || { message: ev.message });
+});
  
 const fmtMoney = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0})) + " ج.م";
 const fmtNum = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0}));
@@ -488,7 +493,25 @@ function render(){
   try{ renderTable(rows); }catch(e){ console.error("renderTable", e); }
   try{ renderTrendChart(rows); }catch(e){ console.error("renderTrendChart", e); }
   try{ renderCategoryChart(rows); }catch(e){ console.error("renderCategoryChart", e); }
-  try{ renderFullAnalysis(rows); }catch(e){ console.error("renderFullAnalysis", e); }
+  try{ renderFullAnalysis(rows); }catch(e){ console.error("renderFullAnalysis", e); showFullAnalysisError(e); }
+}
+ 
+function showFullAnalysisError(e){
+  const card = document.querySelector(".full-analysis");
+  if(!card) return;
+  let el = card.querySelector(".fa-error");
+  if(!el){
+    el = document.createElement("div");
+    el.className = "error fa-error";
+    el.style.marginTop = "10px";
+    card.insertBefore(el, card.querySelector(".section-title"));
+  }
+  el.textContent = "حصل خطأ أثناء حساب التحليل المالي: " + (e && e.message ? e.message : String(e));
+}
+ 
+function clearFullAnalysisError(){
+  const el = document.querySelector(".full-analysis .fa-error");
+  if(el) el.remove();
 }
  
 function chartsReady(){
@@ -663,6 +686,7 @@ function renderCategoryChart(rows){
 }
  
 function renderFullAnalysis(rows){
+  clearFullAnalysisError();
   const incomeRows = rows.filter(r => r.type === "دخل");
   const expenseRows = rows.filter(r => r.type === "مصروف");
   const income = incomeRows.reduce((s,r)=>s+r.amount,0);
