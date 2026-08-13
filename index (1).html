@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>دفتر — لوحة التحكم المالية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0E1A2B;
+    --bg-deep:#0A1522;
+    --surface:#132741;
+    --surface-alt:#1A3252;
+    --line:rgba(244,241,234,0.08);
+    --line-strong:rgba(201,162,39,0.35);
+    --gold:#C9A227;
+    --gold-soft:#E4C458;
+    --green:#2F9E6E;
+    --green-soft:rgba(47,158,110,0.14);
+    --red:#D9544F;
+    --red-soft:rgba(217,84,79,0.14);
+    --text:#F4F1EA;
+    --text-muted:#93A4BC;
+    --text-faint:#5E7089;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(201,162,39,0.06), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace; font-variant-numeric: tabular-nums;}
+
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 32px;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, var(--bg-deep), transparent);
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand .mark{
+    width:38px; height:38px; border-radius:8px;
+    background:linear-gradient(135deg, var(--gold), #8a6d15);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; color:#0E1A2B; font-size:18px;
+  }
+  .brand h1{font-size:17px; margin:0; font-weight:700; letter-spacing:.2px;}
+  .brand p{margin:0; font-size:12px; color:var(--text-faint);}
+  .sync{font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:8px;}
+  .sync .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft);}
+
+  .ledger-band{
+    height:26px;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent, transparent 6px,
+      var(--line) 6px, var(--line) 7px
+    );
+    margin: 0 32px;
+    border-left:1px solid var(--line-strong);
+    border-right:1px solid var(--line-strong);
+  }
+
+  main{padding:28px 32px 60px; max-width:1320px; margin:0 auto;}
+
+  .kpi-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+    margin-top:24px;
+  }
+  .kpi{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .kpi::before{
+    content:'';
+    position:absolute; inset:0 0 auto 0; height:3px;
+    background:var(--kpi-accent, var(--gold));
+  }
+  .kpi .label{font-size:12.5px; color:var(--text-muted); font-weight:500;}
+  .kpi .value{font-size:26px; font-weight:600; margin-top:10px;}
+  .kpi .sub{font-size:11.5px; color:var(--text-faint); margin-top:6px;}
+  .kpi.income{--kpi-accent:var(--green);}
+  .kpi.expense{--kpi-accent:var(--red);}
+  .kpi.net .value.pos{color:var(--green);}
+  .kpi.net .value.neg{color:var(--red);}
+
+  .panels{
+    display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-top:16px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:20px;
+  }
+  .card h2{
+    font-size:14px; margin:0 0 4px; font-weight:700;
+  }
+  .card .hint{font-size:11.5px; color:var(--text-faint); margin:0 0 14px;}
+  .chart-wrap{height:260px; position:relative;}
+
+  .table-card{margin-top:16px;}
+  .table-toolbar{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;
+  }
+  .table-toolbar input, .table-toolbar select{
+    background:var(--surface-alt);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:8px;
+    padding:9px 12px;
+    font-family:'Tajawal',sans-serif;
+    font-size:13px;
+    outline:none;
+  }
+  .table-toolbar input:focus, .table-toolbar select:focus{border-color:var(--line-strong);}
+  .table-toolbar input[type="search"]{flex:1; min-width:180px;}
+  .count-pill{
+    margin-inline-start:auto;
+    font-size:12px; color:var(--text-muted);
+    background:var(--surface-alt); border:1px solid var(--line);
+    padding:6px 12px; border-radius:20px;
+  }
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  thead th{
+    text-align:right; color:var(--text-faint); font-weight:600; font-size:11.5px;
+    text-transform:uppercase; letter-spacing:.4px;
+    padding:10px 12px; border-bottom:1px solid var(--line);
+  }
+  tbody td{padding:12px; border-bottom:1px solid var(--line); vertical-align:middle;}
+  tbody tr:hover{background:rgba(255,255,255,0.02);}
+  .badge{
+    display:inline-block; padding:3px 10px; border-radius:20px; font-size:11.5px; font-weight:600;
+  }
+  .badge.in{background:var(--green-soft); color:var(--green);}
+  .badge.out{background:var(--red-soft); color:var(--red);}
+  .amt{font-weight:600;}
+  .amt.in{color:var(--green);}
+  .amt.out{color:var(--red);}
+  .cat-tag{color:var(--text-muted); font-size:12px;}
+
+  .empty, .loading, .error{
+    text-align:center; padding:60px 20px; color:var(--text-faint); font-size:13.5px;
+  }
+  .error{color:var(--red);}
+  .spinner{
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid var(--line); border-top-color:var(--gold);
+    animation:spin .8s linear infinite; margin:0 auto 12px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  footer{
+    text-align:center; padding:20px; color:var(--text-faint); font-size:11.5px;
+    border-top:1px solid var(--line);
+  }
+
+  @media (max-width: 900px){
+    .kpi-grid{grid-template-columns:1fr 1fr;}
+    .panels{grid-template-columns:1fr;}
+    main{padding:20px 16px;}
+    header.top{padding:16px 18px;}
+    .ledger-band{margin:0 18px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="mark">د</div>
+    <div>
+      <h1>دفتر</h1>
+      <p>لوحة التحكم المالية</p>
+    </div>
+  </div>
+  <div class="sync"><span class="dot"></span><span id="syncTime">جارِ المزامنة…</span></div>
+</header>
+<div class="ledger-band"></div>
+
+<main>
+
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="kpi income">
+      <div class="label">إجمالي الدخل</div>
+      <div class="value mono" id="kpiIncome">—</div>
+      <div class="sub" id="kpiIncomeCount">—</div>
+    </div>
+    <div class="kpi expense">
+      <div class="label">إجمالي المصروف</div>
+      <div class="value mono" id="kpiExpense">—</div>
+      <div class="sub" id="kpiExpenseCount">—</div>
+    </div>
+    <div class="kpi net">
+      <div class="label">صافي الربح / الخسارة</div>
+      <div class="value mono" id="kpiNet">—</div>
+      <div class="sub" id="kpiMargin">—</div>
+    </div>
+    <div class="kpi">
+      <div class="label">عدد المعاملات</div>
+      <div class="value mono" id="kpiCount">—</div>
+      <div class="sub" id="kpiAvg">—</div>
+    </div>
+  </div>
+
+  <div class="panels">
+    <div class="card">
+      <h2>الاتجاه الشهري</h2>
+      <p class="hint">الدخل مقابل المصروف على مدار الأشهر المسجّلة</p>
+      <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>التوزيع حسب الفئة</h2>
+      <p class="hint">أكبر الفئات من حيث الحجم</p>
+      <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card table-card">
+    <div class="table-toolbar">
+      <input type="search" id="searchInput" placeholder="ابحث بالوصف أو الملاحظات…" />
+      <select id="typeFilter">
+        <option value="">كل الأنواع</option>
+        <option value="دخل">دخل</option>
+        <option value="مصروف">مصروف</option>
+      </select>
+      <select id="categoryFilter"><option value="">كل الفئات</option></select>
+      <input type="month" id="monthFilter" />
+      <span class="count-pill" id="countPill">— عملية</span>
+    </div>
+    <div id="tableWrap">
+      <div class="loading"><div class="spinner"></div>جارِ تحميل البيانات من الشيت…</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>مصدر البيانات: Google Sheets — يتم التحديث تلقائيًا عند فتح الصفحة</footer>
+
+<script>
+/* ============ الإعدادات ============ */
+// ✅ تم التصحيح: دول الـ ID والـ GID الصح المأخوذين من workflow الـ n8n (Smart Accountant)
+// الشيت الأصلي اسمه "accounting_workbook" والتاب اسمه "Sheet1"
+const CONFIG = {
+  SHEET_ID: "1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w",
+  DATA_GID: "1216353093"
+};
+
+const gvizUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
+
+let ALL_ROWS = [];
+let trendChartInstance = null;
+let categoryChartInstance = null;
+
+const fmtMoney = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0})) + " ج.م";
+const fmtNum = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0}));
+
+async function loadData(){
+  try{
+    const res = await fetch(gvizUrl);
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    const jsonStr = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
+    const parsed = JSON.parse(jsonStr);
+    const cols = parsed.table.cols.map(c => (c.label || "").trim());
+    const rows = parsed.table.rows || [];
+
+    const idx = {
+      date: cols.findIndex(c => /date/i.test(c)),
+      type: cols.findIndex(c => /type/i.test(c)),
+      category: cols.findIndex(c => /category/i.test(c)),
+      description: cols.findIndex(c => /description/i.test(c)),
+      amount: cols.findIndex(c => /amount/i.test(c)),
+      notes: cols.findIndex(c => /notes/i.test(c)),
+    };
+
+    const cellVal = (cell) => {
+      if(!cell) return "";
+      if(cell.f !== undefined && cell.f !== null) return cell.f; // formatted value
+      if(cell.v !== undefined && cell.v !== null) return cell.v;
+      return "";
+    };
+
+    ALL_ROWS = rows.map(r => {
+      const c = r.c;
+      let rawDate = c[idx.date] ? c[idx.date].v : null;
+      let dateStr = "";
+      if(rawDate){
+        // gviz encodes dates as Date(y,m,d) sometimes -> already string via .f
+        dateStr = cellVal(c[idx.date]) || "";
+      }
+      const amount = idx.amount > -1 && c[idx.amount] && typeof c[idx.amount].v === "number"
+        ? c[idx.amount].v
+        : parseFloat(String(cellVal(c[idx.amount])).replace(/[^\d.-]/g,"")) || 0;
+
+      return {
+        date: dateStr,
+        type: idx.type > -1 ? String(cellVal(c[idx.type])).trim() : "",
+        category: idx.category > -1 ? String(cellVal(c[idx.category])).trim() : "",
+        description: idx.description > -1 ? String(cellVal(c[idx.description])).trim() : "",
+        amount: amount,
+        notes: idx.notes > -1 ? String(cellVal(c[idx.notes])).trim() : "",
+      };
+    }).filter(row => row.date || row.description || row.amount);
+
+    populateCategoryFilter();
+    render();
+    document.getElementById("syncTime").textContent = "آخر مزامنة: " + new Date().toLocaleTimeString("ar-EG");
+  }catch(err){
+    console.error(err);
+    document.getElementById("syncTime").textContent = "تعذّرت المزامنة";
+    document.getElementById("tableWrap").innerHTML =
+      `<div class="error">مش قادر أجيب البيانات من الشيت. تأكد إن مشاركة الشيت مضبوطة على "أي شخص لديه الرابط - قارئ"، أو راجع الـ Sheet ID / GID في الإعدادات.</div>`;
+  }
+}
+
+function populateCategoryFilter(){
+  const sel = document.getElementById("categoryFilter");
+  const cats = [...new Set(ALL_ROWS.map(r => r.category).filter(Boolean))].sort();
+  cats.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+
+function getFiltered(){
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  const type = document.getElementById("typeFilter").value;
+  const cat = document.getElementById("categoryFilter").value;
+  const month = document.getElementById("monthFilter").value; // yyyy-mm
+
+  return ALL_ROWS.filter(r => {
+    if(type && r.type !== type) return false;
+    if(cat && r.category !== cat) return false;
+    if(month && !String(r.date).startsWith(month)) return false;
+    if(q && !(r.description.toLowerCase().includes(q) || r.notes.toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+function render(){
+  const rows = getFiltered();
+  renderKPIs(rows);
+  renderTable(rows);
+  renderTrendChart(rows);
+  renderCategoryChart(rows);
+}
+
+function renderKPIs(rows){
+  const income = rows.filter(r => r.type === "دخل").reduce((s,r)=>s+r.amount,0);
+  const expense = rows.filter(r => r.type === "مصروف").reduce((s,r)=>s+r.amount,0);
+  const net = income - expense;
+  const incomeCount = rows.filter(r => r.type === "دخل").length;
+  const expenseCount = rows.filter(r => r.type === "مصروف").length;
+
+  document.getElementById("kpiIncome").textContent = fmtMoney(income);
+  document.getElementById("kpiIncomeCount").textContent = incomeCount + " عملية دخل";
+  document.getElementById("kpiExpense").textContent = fmtMoney(expense);
+  document.getElementById("kpiExpenseCount").textContent = expenseCount + " عملية مصروف";
+
+  const netEl = document.getElementById("kpiNet");
+  netEl.textContent = fmtMoney(net);
+  netEl.classList.remove("pos","neg");
+  netEl.classList.add(net >= 0 ? "pos" : "neg");
+  document.getElementById("kpiMargin").textContent = income > 0
+    ? "هامش صافي " + ((net/income)*100).toFixed(1) + "%"
+    : "لا يوجد دخل مسجّل";
+
+  document.getElementById("kpiCount").textContent = fmtNum(rows.length);
+  const avg = rows.length ? (income+expense)/rows.length : 0;
+  document.getElementById("kpiAvg").textContent = "متوسط العملية " + fmtMoney(avg);
+
+  document.getElementById("countPill").textContent = fmtNum(rows.length) + " عملية";
+}
+
+function renderTable(rows){
+  const wrap = document.getElementById("tableWrap");
+  if(!rows.length){
+    wrap.innerHTML = `<div class="empty">مفيش عمليات تطابق الفلتر الحالي.</div>`;
+    return;
+  }
+  const sorted = [...rows].sort((a,b) => (b.date||"").localeCompare(a.date||""));
+  const top = sorted.slice(0, 200);
+
+  let html = `<table><thead><tr>
+    <th>التاريخ</th><th>النوع</th><th>الفئة</th><th>الوصف</th><th>المبلغ</th><th>ملاحظات</th>
+  </tr></thead><tbody>`;
+
+  top.forEach(r => {
+    const isIn = r.type === "دخل";
+    html += `<tr>
+      <td class="mono">${r.date || "—"}</td>
+      <td><span class="badge ${isIn?"in":"out"}">${r.type || "—"}</span></td>
+      <td class="cat-tag">${r.category || "—"}</td>
+      <td>${r.description || "—"}</td>
+      <td class="amt mono ${isIn?"in":"out"}">${isIn?"+":"-"}${fmtMoney(r.amount)}</td>
+      <td class="cat-tag">${r.notes || ""}</td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  if(rows.length > 200){
+    html += `<div class="hint" style="padding:12px;">عرض أحدث 200 عملية من إجمالي ${fmtNum(rows.length)} — ضيّق الفلتر لعرض عمليات أقدم.</div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+function renderTrendChart(rows){
+  const byMonth = {};
+  rows.forEach(r => {
+    const m = String(r.date).slice(0,7);
+    if(!m) return;
+    if(!byMonth[m]) byMonth[m] = {income:0, expense:0};
+    if(r.type === "دخل") byMonth[m].income += r.amount;
+    else if(r.type === "مصروف") byMonth[m].expense += r.amount;
+  });
+  const months = Object.keys(byMonth).sort();
+  const incomeData = months.map(m => byMonth[m].income);
+  const expenseData = months.map(m => byMonth[m].expense);
+
+  const ctx = document.getElementById("trendChart");
+  if(trendChartInstance) trendChartInstance.destroy();
+  trendChartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: months,
+      datasets: [
+        { label:"دخل", data:incomeData, borderColor:"#2F9E6E", backgroundColor:"rgba(47,158,110,0.12)", tension:.3, fill:true, pointRadius:3 },
+        { label:"مصروف", data:expenseData, borderColor:"#D9544F", backgroundColor:"rgba(217,84,79,0.10)", tension:.3, fill:true, pointRadius:3 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:"#93A4BC", font:{family:"Tajawal"} } } },
+      scales:{
+        x:{ ticks:{ color:"#5E7089", font:{family:"IBM Plex Mono", size:10} }, grid:{ color:"rgba(244,241,234,0.05)" } },
+        y:{ ticks:{ color:"#5E7089", font:{family:"IBM Plex Mono", size:10} }, grid:{ color:"rgba(244,241,234,0.05)" } }
+      }
+    }
+  });
+}
+
+function renderCategoryChart(rows){
+  const byCat = {};
+  rows.forEach(r => {
+    if(!r.category) return;
+    byCat[r.category] = (byCat[r.category]||0) + r.amount;
+  });
+  const entries = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,7);
+
+  const ctx = document.getElementById("categoryChart");
+  if(categoryChartInstance) categoryChartInstance.destroy();
+  categoryChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: entries.map(e=>e[0]),
+      datasets: [{ data: entries.map(e=>e[1]), backgroundColor:"#C9A227", borderRadius:5 }]
+    },
+    options: {
+      indexAxis:"y",
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ ticks:{ color:"#5E7089", font:{family:"IBM Plex Mono", size:10} }, grid:{ color:"rgba(244,241,234,0.05)" } },
+        y:{ ticks:{ color:"#93A4BC", font:{family:"Tajawal", size:12} }, grid:{ display:false } }
+      }
+    }
+  });
+}
+
+["searchInput","typeFilter","categoryFilter","monthFilter"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", render);
+  document.getElementById(id).addEventListener("change", render);
+});
+
+loadData();
+</script>
+</body>
+</html>
