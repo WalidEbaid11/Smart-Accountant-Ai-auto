@@ -109,22 +109,6 @@
   .card .hint{font-size:11.5px; color:var(--text-faint); margin:0 0 14px;}
   .chart-wrap{height:260px; position:relative;}
 
-
-  .sheet-link{
-    display:inline-flex; align-items:center; gap:6px;
-    padding:8px 12px; border-radius:9px;
-    border:1px solid var(--line-strong);
-    background:rgba(201,162,39,0.08);
-    color:var(--gold-soft); text-decoration:none;
-    font-size:12px; font-weight:700;
-    transition:transform .2s, background .2s, border-color .2s;
-  }
-  .sheet-link:hover{
-    transform:translateY(-1px);
-    background:rgba(201,162,39,0.15);
-    border-color:var(--gold);
-  }
-
   .analysis-section{margin-top:16px;}
   .analysis-grid{
     display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px;
@@ -249,9 +233,6 @@
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:14px;">
-    <a class="sheet-link" href="https://docs.google.com/spreadsheets/d/1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
-      فتح Google Sheets ↗
-    </a>
     <div class="sync"><span class="dot"></span><span id="syncTime">جارِ المزامنة…</span></div>
   </div>
 </header>
@@ -374,7 +355,7 @@
       الجدول الشهري يغطي 24 شهرًا بداية من 2025-01.
     </div>
     <div class="analysis-status" id="analysisStatus">
-      البيانات الحالية معروضة من التحليل المرفق، ويمكن ربطها مباشرةً بتبويب التحليل المالي في Google Sheets إذا كان اسم التبويب مضبوطًا.
+      التحليل يتم حسابه مباشرةً من نفس بيانات Google Sheets المستخدمة في الموقع.
     </div>
   </section>
 
@@ -397,7 +378,7 @@
 
 </main>
 
-<footer>مصدر البيانات: Google Sheets — يتم التحديث تلقائيًا عند فتح الصفحة</footer>
+<footer>يتم تحديث البيانات تلقائيًا عند فتح الصفحة</footer>
 
 <script>
 /* ============ الإعدادات ============ */
@@ -405,19 +386,11 @@
 // الشيت الأصلي اسمه "accounting_workbook" والتاب اسمه "Sheet1"
 const CONFIG = {
   SHEET_ID: "1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w",
-  DATA_GID: "1216353093",
-
-  // اسم تبويب التحليل المالي الكامل داخل نفس Google Sheet.
-  // لو اسم التبويب مختلف، غيّره هنا فقط.
-  ANALYSIS_SHEET_NAME: "التحليل المالي الكامل"
+  DATA_GID: "1216353093"
 };
 
 const gvizUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
-const analysisGvizUrl =
-  `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(CONFIG.ANALYSIS_SHEET_NAME)}`;
 
-const SHEET_LINK =
-  "https://docs.google.com/spreadsheets/d/1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w/edit?usp=sharing";
 
 let ALL_ROWS = [];
 let trendChartInstance = null;
@@ -427,139 +400,108 @@ const fmtMoney = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFrac
 const fmtNum = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0}));
 
 
-const ANALYSIS_FALLBACK = {
-  summary: {
-    income: 554500,
-    expense: 2172920,
-    net: -1618420,
-    expenseRatio: 391.9,
-    count: 21,
-    avgIncome: 69312.50,
-    avgExpense: 167147.69,
-    margin: -291.9
-  },
-  categories: [
-    ["مبيعات", 554500, 0, 554500],
-    ["إيجار", 0, 15000, -15000],
-    ["رواتب", 0, 17000, -17000],
-    ["مصروفات تشغيل", 0, 4720, -4720],
-    ["مشتريات", 0, 2128000, -2128000],
-    ["فواتير", 0, 2200, -2200],
-    ["تسويق", 0, 6000, -6000],
-    ["أخرى", 0, 0, 0],
-    ["الإجمالي", 554500, 2172920, -1618420]
-  ],
-  months: [
-    ["2025-01",0,0,0],["2025-02",0,0,0],["2025-03",0,0,0],
-    ["2025-04",0,0,0],["2025-05",0,0,0],["2025-06",0,0,0],
-    ["2025-07",0,0,0],["2025-08",0,0,0],["2025-09",0,0,0],
-    ["2025-10",0,0,0],["2025-11",0,0,0],["2025-12",0,0,0],
-    ["2026-01",0,0,0],["2026-02",0,0,0],["2026-03",0,0,0],
-    ["2026-04",0,0,0],["2026-05",0,0,0],["2026-06",0,0,0],
-    ["2026-07",0,0,0],["2026-08",554500,2172920,-1618420],
-    ["2026-09",0,0,0],["2026-10",0,0,0],["2026-11",0,0,0],
-    ["2026-12",0,0,0]
-  ]
-};
 
-const analysisMoney = n => (Number(n)||0).toLocaleString("en-US", {
-  minimumFractionDigits: Number.isInteger(Number(n)) ? 0 : 2,
-  maximumFractionDigits: 2
-}) + " ج.م";
-
-function renderFinancialAnalysis(data = ANALYSIS_FALLBACK, live = false){
-  const s = data.summary;
-
-  document.getElementById("analysisIncome").textContent = analysisMoney(s.income);
-  document.getElementById("analysisExpense").textContent = analysisMoney(s.expense);
-  document.getElementById("analysisNet").textContent = analysisMoney(s.net);
-  document.getElementById("analysisExpenseRatio").textContent = (Number(s.expenseRatio)||0).toFixed(1) + "%";
-  document.getElementById("analysisCount").textContent = fmtNum(s.count);
-  document.getElementById("analysisAvgIncome").textContent = analysisMoney(s.avgIncome);
-  document.getElementById("analysisAvgExpense").textContent = analysisMoney(s.avgExpense);
-  document.getElementById("analysisMargin").textContent = (Number(s.margin)||0).toFixed(1) + "%";
-
-  const catBody = document.getElementById("categoryAnalysisBody");
-  catBody.innerHTML = data.categories.map(row => {
-    const net = Number(row[3]) || 0;
-    return `<tr>
-      <td>${row[0] || "—"}</td>
-      <td class="mono positive">${analysisMoney(row[1])}</td>
-      <td class="mono ${Number(row[2]) > 0 ? "negative" : ""}">${analysisMoney(row[2])}</td>
-      <td class="mono ${net < 0 ? "negative" : "positive"}">${analysisMoney(net)}</td>
-    </tr>`;
-  }).join("");
-
-  const monthBody = document.getElementById("monthlyAnalysisBody");
-  monthBody.innerHTML = data.months.map(row => {
-    const net = Number(row[3]) || 0;
-    return `<tr>
-      <td class="mono">${row[0]}</td>
-      <td class="mono positive">${analysisMoney(row[1])}</td>
-      <td class="mono ${Number(row[2]) > 0 ? "negative" : ""}">${analysisMoney(row[2])}</td>
-      <td class="mono ${net < 0 ? "negative" : "positive"}">${analysisMoney(net)}</td>
-    </tr>`;
-  }).join("");
-
-  document.getElementById("analysisStatus").textContent = live
-    ? "✓ تم تحديث التحليل المالي من تبويب Google Sheets."
-    : "عرض التحليل المالي المرفق. لو كان تبويب التحليل اسمه مختلفًا، عدّل ANALYSIS_SHEET_NAME في CONFIG.";
+function analysisMoney(n){
+  return (Number(n)||0).toLocaleString("en-US", {
+    minimumFractionDigits: Number.isInteger(Number(n)) ? 0 : 2,
+    maximumFractionDigits: 2
+  }) + " ج.م";
 }
 
-function parseAnalysisRows(parsed){
-  const rows = parsed?.table?.rows || [];
-  const cols = (parsed?.table?.cols || []).map(c => (c.label || "").trim().toLowerCase());
-  const val = cell => {
-    if(!cell) return "";
-    return cell.v ?? cell.f ?? "";
-  };
+function renderFinancialAnalysisFromSheet(){
+  // ALL_ROWS is populated directly from the Google Sheet by loadData().
+  // Nothing is hard-coded here.
+  const rows = ALL_ROWS || [];
 
-  const result = {summary:{...ANALYSIS_FALLBACK.summary}, categories:[], months:[]};
+  const incomeRows = rows.filter(r => r.type === "دخل");
+  const expenseRows = rows.filter(r => r.type === "مصروف");
 
-  // This parser supports a simple normalized analysis sheet with:
-  // section/category/month + income + expense + net.
+  const income = incomeRows.reduce((s,r)=>s + Number(r.amount || 0), 0);
+  const expense = expenseRows.reduce((s,r)=>s + Number(r.amount || 0), 0);
+  const net = income - expense;
+  const count = rows.length;
+
+  const avgIncome = incomeRows.length ? income / incomeRows.length : 0;
+  const avgExpense = expenseRows.length ? expense / expenseRows.length : 0;
+  const expenseRatio = income ? (expense / income) * 100 : 0;
+  const margin = income ? (net / income) * 100 : 0;
+
+  // Summary
+  document.getElementById("analysisIncome").textContent = analysisMoney(income);
+  document.getElementById("analysisExpense").textContent = analysisMoney(expense);
+  document.getElementById("analysisNet").textContent = analysisMoney(net);
+  document.getElementById("analysisExpenseRatio").textContent = expenseRatio.toFixed(1) + "%";
+  document.getElementById("analysisCount").textContent = fmtNum(count);
+  document.getElementById("analysisAvgIncome").textContent = analysisMoney(avgIncome);
+  document.getElementById("analysisAvgExpense").textContent = analysisMoney(avgExpense);
+  document.getElementById("analysisMargin").textContent = margin.toFixed(1) + "%";
+
+  // Category analysis
+  const categories = {};
   rows.forEach(r => {
-    const c = r.c || [];
-    const values = c.map(val).map(v => String(v).trim());
-    const label = values.join(" ").toLowerCase();
-
-    if(label.includes("إجمالي الدخل") || label.includes("total income")){
-      const n = parseFloat(values.find(v => /[\d]/.test(v))?.replace(/[^\d.-]/g,""));
-      if(!isNaN(n)) result.summary.income = n;
-    }
-    if(label.includes("إجمالي المصروف") || label.includes("total expense")){
-      const n = parseFloat(values.find(v => /[\d]/.test(v))?.replace(/[^\d.-]/g,""));
-      if(!isNaN(n)) result.summary.expense = n;
-    }
+    const cat = r.category || "أخرى";
+    if(!categories[cat]) categories[cat] = {income:0, expense:0};
+    if(r.type === "دخل") categories[cat].income += Number(r.amount || 0);
+    if(r.type === "مصروف") categories[cat].expense += Number(r.amount || 0);
   });
 
-  result.summary.net = result.summary.income - result.summary.expense;
-  result.summary.expenseRatio = result.summary.income
-    ? (result.summary.expense / result.summary.income) * 100 : 0;
-  result.summary.margin = result.summary.income
-    ? (result.summary.net / result.summary.income) * 100 : 0;
+  const categoryEntries = Object.entries(categories)
+    .sort((a,b)=>(b[1].income+b[1].expense)-(a[1].income+a[1].expense));
 
-  // If the live tab format isn't normalized, keep the supplied verified
-  // analysis values rather than guessing at its structure.
-  if(!result.categories.length) result.categories = ANALYSIS_FALLBACK.categories;
-  if(!result.months.length) result.months = ANALYSIS_FALLBACK.months;
+  const categoryBody = document.getElementById("categoryAnalysisBody");
+  categoryBody.innerHTML = categoryEntries.map(([cat,v]) => {
+    const netCat = v.income - v.expense;
+    return `<tr>
+      <td>${cat}</td>
+      <td class="mono positive">${analysisMoney(v.income)}</td>
+      <td class="mono ${v.expense > 0 ? "negative" : ""}">${analysisMoney(v.expense)}</td>
+      <td class="mono ${netCat < 0 ? "negative" : "positive"}">${analysisMoney(netCat)}</td>
+    </tr>`;
+  }).join("");
 
-  return result;
-}
+  categoryBody.innerHTML += `<tr>
+    <td><strong>الإجمالي</strong></td>
+    <td class="mono positive"><strong>${analysisMoney(income)}</strong></td>
+    <td class="mono negative"><strong>${analysisMoney(expense)}</strong></td>
+    <td class="mono negative"><strong>${analysisMoney(net)}</strong></td>
+  </tr>`;
 
-async function loadFinancialAnalysis(){
-  try{
-    const res = await fetch(analysisGvizUrl);
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    const text = await res.text();
-    const jsonStr = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
-    const parsed = JSON.parse(jsonStr);
-    const liveData = parseAnalysisRows(parsed);
-    renderFinancialAnalysis(liveData, true);
-  }catch(err){
-    console.warn("Financial analysis tab unavailable; using supplied analysis fallback.", err);
-    renderFinancialAnalysis(ANALYSIS_FALLBACK, false);
+  // Monthly analysis: always show 24 months from 2025-01 through 2026-12,
+  // while values come entirely from the Sheet transactions.
+  const monthly = {};
+  for(let year=2025; year<=2026; year++){
+    for(let month=1; month<=12; month++){
+      const key = `${year}-${String(month).padStart(2,"0")}`;
+      monthly[key] = {income:0, expense:0};
+    }
   }
+
+  rows.forEach(r => {
+    const date = String(r.date || "");
+    const key = date.slice(0,7);
+    if(!monthly[key]) monthly[key] = {income:0, expense:0};
+
+    if(r.type === "دخل") monthly[key].income += Number(r.amount || 0);
+    if(r.type === "مصروف") monthly[key].expense += Number(r.amount || 0);
+  });
+
+  const monthBody = document.getElementById("monthlyAnalysisBody");
+  const months = Object.keys(monthly).sort();
+
+  monthBody.innerHTML = months.map(month => {
+    const v = monthly[month];
+    const netMonth = v.income - v.expense;
+
+    return `<tr>
+      <td class="mono">${month}</td>
+      <td class="mono positive">${analysisMoney(v.income)}</td>
+      <td class="mono ${v.expense > 0 ? "negative" : ""}">${analysisMoney(v.expense)}</td>
+      <td class="mono ${netMonth < 0 ? "negative" : "positive"}">${analysisMoney(netMonth)}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("analysisStatus").textContent =
+    `✓ تم تحديث التحليل المالي — آخر تحديث: ${new Date().toLocaleTimeString("ar-EG")}`;
 }
 
 async function loadData(){
@@ -612,12 +554,19 @@ async function loadData(){
 
     populateCategoryFilter();
     render();
-    document.getElementById("syncTime").textContent = "آخر مزامنة: " + new Date().toLocaleTimeString("ar-EG");
+
+    // IMPORTANT:
+    // The monthly trend, category distribution, and full financial analysis
+    // are all derived from the same ALL_ROWS data fetched from Google Sheets.
+    renderFinancialAnalysisFromSheet();
+
+    document.getElementById("syncTime").textContent =
+      "آخر مزامنة: " + new Date().toLocaleTimeString("ar-EG");
   }catch(err){
     console.error(err);
     document.getElementById("syncTime").textContent = "تعذّرت المزامنة";
     document.getElementById("tableWrap").innerHTML =
-      `<div class="error">مش قادر أجيب البيانات من الشيت. تأكد إن مشاركة الشيت مضبوطة على "أي شخص لديه الرابط - قارئ"، أو راجع الـ Sheet ID / GID في الإعدادات.</div>`;
+      `<div class="error">تعذّر تحديث البيانات حاليًا. سيتم إعادة المحاولة تلقائيًا.</div>`;
   }
 }
 
@@ -781,7 +730,11 @@ function renderCategoryChart(rows){
 });
 
 loadData();
-loadFinancialAnalysis();
+
+  // تحديث تلقائي للداتا والتحليلات من Google Sheets كل 60 ثانية.
+  setInterval(() => {
+    loadData();
+  }, 60000);
 </script>
 </body>
 </html>
