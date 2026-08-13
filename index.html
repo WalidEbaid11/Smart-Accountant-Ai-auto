@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
 <title>دفتر — لوحة التحكم المالية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
 <style>
   :root{
     --bg:#0E1A2B;
@@ -217,6 +217,10 @@
     text-align:center; padding:60px 20px; color:var(--text-faint); font-size:13.5px;
   }
   .error{color:var(--red);}
+  .chart-wrap .chart-msg{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:20px; color:var(--text-faint); font-size:12.5px; line-height:1.7;
+  }
   .spinner{
     width:22px;height:22px;border-radius:50%;
     border:2px solid var(--line); border-top-color:var(--gold);
@@ -443,6 +447,7 @@ async function loadData(){
  
     populateCategoryFilter();
     render();
+    if(!chartsReady()) waitForChartsThenRetry(ALL_ROWS);
     document.getElementById("syncTime").textContent = "آخر مزامنة: " + new Date().toLocaleTimeString("ar-EG");
   }catch(err){
     console.error(err);
@@ -479,11 +484,45 @@ function getFiltered(){
  
 function render(){
   const rows = getFiltered();
-  renderKPIs(rows);
-  renderTable(rows);
-  renderTrendChart(rows);
-  renderCategoryChart(rows);
-  renderFullAnalysis(rows);
+  try{ renderKPIs(rows); }catch(e){ console.error("renderKPIs", e); }
+  try{ renderTable(rows); }catch(e){ console.error("renderTable", e); }
+  try{ renderTrendChart(rows); }catch(e){ console.error("renderTrendChart", e); }
+  try{ renderCategoryChart(rows); }catch(e){ console.error("renderCategoryChart", e); }
+  try{ renderFullAnalysis(rows); }catch(e){ console.error("renderFullAnalysis", e); }
+}
+ 
+function chartsReady(){
+  return typeof Chart !== "undefined";
+}
+ 
+function waitForChartsThenRetry(rows){
+  let tries = 0;
+  const iv = setInterval(() => {
+    tries++;
+    if(chartsReady()){
+      clearInterval(iv);
+      try{ renderTrendChart(getFiltered()); }catch(e){ console.error(e); }
+      try{ renderCategoryChart(getFiltered()); }catch(e){ console.error(e); }
+    }else if(tries > 40){ // ~10s
+      clearInterval(iv);
+      showChartError("trendChart", "تعذّر تحميل مكتبة الرسم البياني (Chart.js). تأكد من الاتصال بالإنترنت ثم أعد فتح الصفحة.");
+      showChartError("categoryChart", "تعذّر تحميل مكتبة الرسم البياني (Chart.js). تأكد من الاتصال بالإنترنت ثم أعد فتح الصفحة.");
+    }
+  }, 250);
+}
+ 
+function showChartError(canvasId, msg){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const wrap = canvas.closest(".chart-wrap");
+  if(!wrap) return;
+  let el = wrap.querySelector(".chart-msg");
+  if(!el){
+    el = document.createElement("div");
+    el.className = "chart-msg";
+    wrap.appendChild(el);
+  }
+  el.textContent = msg;
 }
  
 function renderKPIs(rows){
@@ -545,6 +584,14 @@ function renderTable(rows){
 }
  
 function renderTrendChart(rows){
+  if(!chartsReady()){
+    showChartError("trendChart", "جارِ تحميل مكتبة الرسم البياني…");
+    return;
+  }
+  const canvas = document.getElementById("trendChart");
+  const oldMsg = canvas.closest(".chart-wrap").querySelector(".chart-msg");
+  if(oldMsg) oldMsg.remove();
+ 
   const byMonth = {};
   rows.forEach(r => {
     const m = String(r.date).slice(0,7);
@@ -580,6 +627,14 @@ function renderTrendChart(rows){
 }
  
 function renderCategoryChart(rows){
+  if(!chartsReady()){
+    showChartError("categoryChart", "جارِ تحميل مكتبة الرسم البياني…");
+    return;
+  }
+  const canvas = document.getElementById("categoryChart");
+  const oldMsg = canvas.closest(".chart-wrap").querySelector(".chart-msg");
+  if(oldMsg) oldMsg.remove();
+ 
   const byCat = {};
   rows.forEach(r => {
     if(!r.category) return;
