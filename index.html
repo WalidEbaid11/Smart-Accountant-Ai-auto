@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -36,7 +36,7 @@
     min-height:100vh;
   }
   .mono{font-family:'IBM Plex Mono',monospace; font-variant-numeric: tabular-nums;}
-
+ 
   header.top{
     display:flex; align-items:center; justify-content:space-between;
     padding:22px 32px;
@@ -54,7 +54,7 @@
   .brand p{margin:0; font-size:12px; color:var(--text-faint);}
   .sync{font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:8px;}
   .sync .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft);}
-
+ 
   .ledger-band{
     height:26px;
     background-image: repeating-linear-gradient(
@@ -66,9 +66,9 @@
     border-left:1px solid var(--line-strong);
     border-right:1px solid var(--line-strong);
   }
-
+ 
   main{padding:28px 32px 60px; max-width:1320px; margin:0 auto;}
-
+ 
   .kpi-grid{
     display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
     margin-top:24px;
@@ -93,7 +93,7 @@
   .kpi.expense{--kpi-accent:var(--red);}
   .kpi.net .value.pos{color:var(--green);}
   .kpi.net .value.neg{color:var(--red);}
-
+ 
   .panels{
     display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-top:16px;
   }
@@ -108,8 +108,71 @@
   }
   .card .hint{font-size:11.5px; color:var(--text-faint); margin:0 0 14px;}
   .chart-wrap{height:260px; position:relative;}
-
+ 
   .table-card{margin-top:16px;}
+ 
+  .section-title{
+    display:flex; align-items:center; gap:10px;
+    margin:28px 0 14px;
+  }
+  .section-title:first-child{margin-top:0;}
+  .section-title .num{
+    width:24px; height:24px; border-radius:6px;
+    background:var(--surface-alt); border:1px solid var(--line-strong);
+    color:var(--gold-soft); font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .section-title h3{font-size:14.5px; margin:0; font-weight:700;}
+  .section-title .rule{flex:1; height:1px; background:var(--line);}
+ 
+  .full-analysis .card-inner{margin-bottom:6px;}
+ 
+  .summary-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+  }
+  .summary-item{
+    background:var(--surface-alt);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .summary-item .label{font-size:11.5px; color:var(--text-muted); font-weight:500;}
+  .summary-item .value{font-size:19px; font-weight:600; margin-top:8px;}
+  .summary-item .value.pos{color:var(--green);}
+  .summary-item .value.neg{color:var(--red);}
+ 
+  .analysis-table-wrap{overflow-x:auto;}
+  table.analysis-table{width:100%; border-collapse:collapse; font-size:13px;}
+  table.analysis-table thead th{
+    text-align:right; color:var(--text-faint); font-weight:600; font-size:11.5px;
+    text-transform:uppercase; letter-spacing:.4px;
+    padding:10px 12px; border-bottom:1px solid var(--line);
+    position:sticky; top:0; background:var(--surface);
+  }
+  table.analysis-table tbody td{padding:11px 12px; border-bottom:1px solid var(--line);}
+  table.analysis-table tbody tr:hover{background:rgba(255,255,255,0.02);}
+  table.analysis-table tbody tr.total-row td{
+    font-weight:700; border-top:1px solid var(--line-strong); border-bottom:none;
+    background:var(--surface-alt);
+  }
+  table.analysis-table td.name-cell{font-weight:600;}
+  .val-in{color:var(--green); font-weight:600;}
+  .val-out{color:var(--red); font-weight:600;}
+  .val-net.pos{color:var(--green); font-weight:700;}
+  .val-net.neg{color:var(--red); font-weight:700;}
+  .max-tag{
+    display:inline-block; margin-inline-start:8px;
+    font-size:10.5px; color:var(--gold-soft);
+    background:rgba(201,162,39,0.12); border:1px solid var(--line-strong);
+    padding:2px 8px; border-radius:20px; vertical-align:middle;
+  }
+ 
+  .avg-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+ 
+  @media (max-width: 700px){
+    .summary-grid{grid-template-columns:1fr 1fr;}
+    .avg-grid{grid-template-columns:1fr;}
+  }
   .table-toolbar{
     display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;
   }
@@ -131,7 +194,7 @@
     background:var(--surface-alt); border:1px solid var(--line);
     padding:6px 12px; border-radius:20px;
   }
-
+ 
   table{width:100%; border-collapse:collapse; font-size:13px;}
   thead th{
     text-align:right; color:var(--text-faint); font-weight:600; font-size:11.5px;
@@ -149,7 +212,7 @@
   .amt.in{color:var(--green);}
   .amt.out{color:var(--red);}
   .cat-tag{color:var(--text-muted); font-size:12px;}
-
+ 
   .empty, .loading, .error{
     text-align:center; padding:60px 20px; color:var(--text-faint); font-size:13.5px;
   }
@@ -160,12 +223,12 @@
     animation:spin .8s linear infinite; margin:0 auto 12px;
   }
   @keyframes spin{to{transform:rotate(360deg);}}
-
+ 
   footer{
     text-align:center; padding:20px; color:var(--text-faint); font-size:11.5px;
     border-top:1px solid var(--line);
   }
-
+ 
   @media (max-width: 900px){
     .kpi-grid{grid-template-columns:1fr 1fr;}
     .panels{grid-template-columns:1fr;}
@@ -179,7 +242,7 @@
 </style>
 </head>
 <body>
-
+ 
 <header class="top">
   <div class="brand">
     <div class="mark">د</div>
@@ -191,9 +254,9 @@
   <div class="sync"><span class="dot"></span><span id="syncTime">جارِ المزامنة…</span></div>
 </header>
 <div class="ledger-band"></div>
-
+ 
 <main>
-
+ 
   <div class="kpi-grid" id="kpiGrid">
     <div class="kpi income">
       <div class="label">إجمالي الدخل</div>
@@ -216,7 +279,7 @@
       <div class="sub" id="kpiAvg">—</div>
     </div>
   </div>
-
+ 
   <div class="panels">
     <div class="card">
       <h2>الاتجاه الشهري</h2>
@@ -229,7 +292,7 @@
       <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
     </div>
   </div>
-
+ 
   <div class="card table-card">
     <div class="table-toolbar">
       <input type="search" id="searchInput" placeholder="ابحث بالوصف أو الملاحظات…" />
@@ -246,11 +309,72 @@
       <div class="loading"><div class="spinner"></div>جارِ تحميل البيانات من الشيت…</div>
     </div>
   </div>
-
+ 
+  <div class="card table-card full-analysis">
+    <h2>التحليل المالي الكامل</h2>
+    <p class="hint">تفصيل شامل للدخل والمصروف حسب الفئة والشهر، مبني على العمليات المعروضة حاليًا</p>
+ 
+    <div class="section-title">
+      <div class="num">١</div><h3>الملخص العام</h3><div class="rule"></div>
+    </div>
+    <div class="summary-grid" id="summaryGrid">
+      <div class="summary-item">
+        <div class="label">إجمالي الدخل</div>
+        <div class="value mono" id="sumIncome">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="label">إجمالي المصروف</div>
+        <div class="value mono" id="sumExpense">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="label">الصافي</div>
+        <div class="value mono" id="sumNet">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="label">عدد العمليات (دخل / مصروف)</div>
+        <div class="value mono" id="sumCounts">—</div>
+      </div>
+    </div>
+ 
+    <div class="section-title">
+      <div class="num">٢</div><h3>التحليل حسب الفئة</h3><div class="rule"></div>
+    </div>
+    <div class="analysis-table-wrap">
+      <table class="analysis-table" id="categoryAnalysisTable">
+        <thead><tr><th>الفئة</th><th>دخل</th><th>مصروف</th><th>الصافي</th></tr></thead>
+        <tbody><tr><td colspan="4" class="empty">—</td></tr></tbody>
+      </table>
+    </div>
+ 
+    <div class="section-title">
+      <div class="num">٣</div><h3>التحليل الشهري</h3><div class="rule"></div>
+    </div>
+    <div class="analysis-table-wrap">
+      <table class="analysis-table" id="monthlyAnalysisTable">
+        <thead><tr><th>الشهر</th><th>دخل</th><th>مصروف</th><th>الصافي</th></tr></thead>
+        <tbody><tr><td colspan="4" class="empty">—</td></tr></tbody>
+      </table>
+    </div>
+ 
+    <div class="section-title">
+      <div class="num">٤</div><h3>متوسطات</h3><div class="rule"></div>
+    </div>
+    <div class="avg-grid">
+      <div class="summary-item">
+        <div class="label">متوسط قيمة معاملة الدخل</div>
+        <div class="value mono" id="avgIncomeTx">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="label">متوسط قيمة معاملة المصروف</div>
+        <div class="value mono" id="avgExpenseTx">—</div>
+      </div>
+    </div>
+  </div>
+ 
 </main>
-
+ 
 <footer>مصدر البيانات: Google Sheets — يتم التحديث تلقائيًا عند فتح الصفحة</footer>
-
+ 
 <script>
 /* ============ الإعدادات ============ */
 // ✅ تم التصحيح: دول الـ ID والـ GID الصح المأخوذين من workflow الـ n8n (Smart Accountant)
@@ -259,16 +383,16 @@ const CONFIG = {
   SHEET_ID: "1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w",
   DATA_GID: "1216353093"
 };
-
+ 
 const gvizUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
-
+ 
 let ALL_ROWS = [];
 let trendChartInstance = null;
 let categoryChartInstance = null;
-
+ 
 const fmtMoney = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0})) + " ج.م";
 const fmtNum = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0}));
-
+ 
 async function loadData(){
   try{
     const res = await fetch(gvizUrl);
@@ -278,7 +402,7 @@ async function loadData(){
     const parsed = JSON.parse(jsonStr);
     const cols = parsed.table.cols.map(c => (c.label || "").trim());
     const rows = parsed.table.rows || [];
-
+ 
     const idx = {
       date: cols.findIndex(c => /date/i.test(c)),
       type: cols.findIndex(c => /type/i.test(c)),
@@ -287,14 +411,14 @@ async function loadData(){
       amount: cols.findIndex(c => /amount/i.test(c)),
       notes: cols.findIndex(c => /notes/i.test(c)),
     };
-
+ 
     const cellVal = (cell) => {
       if(!cell) return "";
       if(cell.f !== undefined && cell.f !== null) return cell.f; // formatted value
       if(cell.v !== undefined && cell.v !== null) return cell.v;
       return "";
     };
-
+ 
     ALL_ROWS = rows.map(r => {
       const c = r.c;
       let rawDate = c[idx.date] ? c[idx.date].v : null;
@@ -306,7 +430,7 @@ async function loadData(){
       const amount = idx.amount > -1 && c[idx.amount] && typeof c[idx.amount].v === "number"
         ? c[idx.amount].v
         : parseFloat(String(cellVal(c[idx.amount])).replace(/[^\d.-]/g,"")) || 0;
-
+ 
       return {
         date: dateStr,
         type: idx.type > -1 ? String(cellVal(c[idx.type])).trim() : "",
@@ -316,7 +440,7 @@ async function loadData(){
         notes: idx.notes > -1 ? String(cellVal(c[idx.notes])).trim() : "",
       };
     }).filter(row => row.date || row.description || row.amount);
-
+ 
     populateCategoryFilter();
     render();
     document.getElementById("syncTime").textContent = "آخر مزامنة: " + new Date().toLocaleTimeString("ar-EG");
@@ -327,7 +451,7 @@ async function loadData(){
       `<div class="error">مش قادر أجيب البيانات من الشيت. تأكد إن مشاركة الشيت مضبوطة على "أي شخص لديه الرابط - قارئ"، أو راجع الـ Sheet ID / GID في الإعدادات.</div>`;
   }
 }
-
+ 
 function populateCategoryFilter(){
   const sel = document.getElementById("categoryFilter");
   const cats = [...new Set(ALL_ROWS.map(r => r.category).filter(Boolean))].sort();
@@ -337,13 +461,13 @@ function populateCategoryFilter(){
     sel.appendChild(opt);
   });
 }
-
+ 
 function getFiltered(){
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   const type = document.getElementById("typeFilter").value;
   const cat = document.getElementById("categoryFilter").value;
   const month = document.getElementById("monthFilter").value; // yyyy-mm
-
+ 
   return ALL_ROWS.filter(r => {
     if(type && r.type !== type) return false;
     if(cat && r.category !== cat) return false;
@@ -352,27 +476,28 @@ function getFiltered(){
     return true;
   });
 }
-
+ 
 function render(){
   const rows = getFiltered();
   renderKPIs(rows);
   renderTable(rows);
   renderTrendChart(rows);
   renderCategoryChart(rows);
+  renderFullAnalysis(rows);
 }
-
+ 
 function renderKPIs(rows){
   const income = rows.filter(r => r.type === "دخل").reduce((s,r)=>s+r.amount,0);
   const expense = rows.filter(r => r.type === "مصروف").reduce((s,r)=>s+r.amount,0);
   const net = income - expense;
   const incomeCount = rows.filter(r => r.type === "دخل").length;
   const expenseCount = rows.filter(r => r.type === "مصروف").length;
-
+ 
   document.getElementById("kpiIncome").textContent = fmtMoney(income);
   document.getElementById("kpiIncomeCount").textContent = incomeCount + " عملية دخل";
   document.getElementById("kpiExpense").textContent = fmtMoney(expense);
   document.getElementById("kpiExpenseCount").textContent = expenseCount + " عملية مصروف";
-
+ 
   const netEl = document.getElementById("kpiNet");
   netEl.textContent = fmtMoney(net);
   netEl.classList.remove("pos","neg");
@@ -380,14 +505,14 @@ function renderKPIs(rows){
   document.getElementById("kpiMargin").textContent = income > 0
     ? "هامش صافي " + ((net/income)*100).toFixed(1) + "%"
     : "لا يوجد دخل مسجّل";
-
+ 
   document.getElementById("kpiCount").textContent = fmtNum(rows.length);
   const avg = rows.length ? (income+expense)/rows.length : 0;
   document.getElementById("kpiAvg").textContent = "متوسط العملية " + fmtMoney(avg);
-
+ 
   document.getElementById("countPill").textContent = fmtNum(rows.length) + " عملية";
 }
-
+ 
 function renderTable(rows){
   const wrap = document.getElementById("tableWrap");
   if(!rows.length){
@@ -396,11 +521,11 @@ function renderTable(rows){
   }
   const sorted = [...rows].sort((a,b) => (b.date||"").localeCompare(a.date||""));
   const top = sorted.slice(0, 200);
-
+ 
   let html = `<table><thead><tr>
     <th>التاريخ</th><th>النوع</th><th>الفئة</th><th>الوصف</th><th>المبلغ</th><th>ملاحظات</th>
   </tr></thead><tbody>`;
-
+ 
   top.forEach(r => {
     const isIn = r.type === "دخل";
     html += `<tr>
@@ -418,7 +543,7 @@ function renderTable(rows){
   }
   wrap.innerHTML = html;
 }
-
+ 
 function renderTrendChart(rows){
   const byMonth = {};
   rows.forEach(r => {
@@ -431,7 +556,7 @@ function renderTrendChart(rows){
   const months = Object.keys(byMonth).sort();
   const incomeData = months.map(m => byMonth[m].income);
   const expenseData = months.map(m => byMonth[m].expense);
-
+ 
   const ctx = document.getElementById("trendChart");
   if(trendChartInstance) trendChartInstance.destroy();
   trendChartInstance = new Chart(ctx, {
@@ -453,7 +578,7 @@ function renderTrendChart(rows){
     }
   });
 }
-
+ 
 function renderCategoryChart(rows){
   const byCat = {};
   rows.forEach(r => {
@@ -461,7 +586,7 @@ function renderCategoryChart(rows){
     byCat[r.category] = (byCat[r.category]||0) + r.amount;
   });
   const entries = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,7);
-
+ 
   const ctx = document.getElementById("categoryChart");
   if(categoryChartInstance) categoryChartInstance.destroy();
   categoryChartInstance = new Chart(ctx, {
@@ -481,13 +606,103 @@ function renderCategoryChart(rows){
     }
   });
 }
-
+ 
+function renderFullAnalysis(rows){
+  const incomeRows = rows.filter(r => r.type === "دخل");
+  const expenseRows = rows.filter(r => r.type === "مصروف");
+  const income = incomeRows.reduce((s,r)=>s+r.amount,0);
+  const expense = expenseRows.reduce((s,r)=>s+r.amount,0);
+  const net = income - expense;
+ 
+  // ---- الملخص العام ----
+  document.getElementById("sumIncome").textContent = fmtMoney(income);
+  document.getElementById("sumExpense").textContent = fmtMoney(expense);
+  const sumNetEl = document.getElementById("sumNet");
+  sumNetEl.textContent = fmtMoney(net);
+  sumNetEl.classList.remove("pos","neg");
+  sumNetEl.classList.add(net >= 0 ? "pos" : "neg");
+  document.getElementById("sumCounts").textContent =
+    fmtNum(incomeRows.length) + " / " + fmtNum(expenseRows.length);
+ 
+  // ---- التحليل حسب الفئة ----
+  const byCat = {};
+  rows.forEach(r => {
+    const key = r.category || "بدون فئة";
+    if(!byCat[key]) byCat[key] = {income:0, expense:0};
+    if(r.type === "دخل") byCat[key].income += r.amount;
+    else if(r.type === "مصروف") byCat[key].expense += r.amount;
+  });
+  const catEntries = Object.entries(byCat)
+    .map(([name, v]) => ({ name, income:v.income, expense:v.expense, net:v.income-v.expense, volume:v.income+v.expense }))
+    .sort((a,b) => b.volume - a.volume);
+ 
+  const catTbody = document.querySelector("#categoryAnalysisTable tbody");
+  if(!catEntries.length){
+    catTbody.innerHTML = `<tr><td colspan="4" class="empty">لا توجد بيانات</td></tr>`;
+  }else{
+    const maxVolume = catEntries[0].volume;
+    catTbody.innerHTML = catEntries.map(c => `
+      <tr>
+        <td class="name-cell">${c.name}${c.volume === maxVolume ? '<span class="max-tag">الأكبر</span>' : ''}</td>
+        <td class="val-in mono">${fmtMoney(c.income)}</td>
+        <td class="val-out mono">${fmtMoney(c.expense)}</td>
+        <td class="val-net mono ${c.net>=0?'pos':'neg'}">${fmtMoney(c.net)}</td>
+      </tr>`).join("") +
+      `<tr class="total-row">
+        <td>الإجمالي</td>
+        <td class="val-in mono">${fmtMoney(income)}</td>
+        <td class="val-out mono">${fmtMoney(expense)}</td>
+        <td class="val-net mono ${net>=0?'pos':'neg'}">${fmtMoney(net)}</td>
+      </tr>`;
+  }
+ 
+  // ---- التحليل الشهري ----
+  const byMonth = {};
+  rows.forEach(r => {
+    const m = String(r.date).slice(0,7);
+    if(!m) return;
+    if(!byMonth[m]) byMonth[m] = {income:0, expense:0};
+    if(r.type === "دخل") byMonth[m].income += r.amount;
+    else if(r.type === "مصروف") byMonth[m].expense += r.amount;
+  });
+  const months = Object.keys(byMonth).sort();
+  const monthTbody = document.querySelector("#monthlyAnalysisTable tbody");
+  if(!months.length){
+    monthTbody.innerHTML = `<tr><td colspan="4" class="empty">لا توجد بيانات</td></tr>`;
+  }else{
+    monthTbody.innerHTML = months.map(m => {
+      const v = byMonth[m];
+      const n = v.income - v.expense;
+      return `
+      <tr>
+        <td class="name-cell mono">${m}</td>
+        <td class="val-in mono">${fmtMoney(v.income)}</td>
+        <td class="val-out mono">${fmtMoney(v.expense)}</td>
+        <td class="val-net mono ${n>=0?'pos':'neg'}">${fmtMoney(n)}</td>
+      </tr>`;
+    }).join("") +
+    `<tr class="total-row">
+      <td>الإجمالي</td>
+      <td class="val-in mono">${fmtMoney(income)}</td>
+      <td class="val-out mono">${fmtMoney(expense)}</td>
+      <td class="val-net mono ${net>=0?'pos':'neg'}">${fmtMoney(net)}</td>
+    </tr>`;
+  }
+ 
+  // ---- متوسطات ----
+  const avgIncomeTx = incomeRows.length ? income / incomeRows.length : 0;
+  const avgExpenseTx = expenseRows.length ? expense / expenseRows.length : 0;
+  document.getElementById("avgIncomeTx").textContent = fmtMoney(avgIncomeTx);
+  document.getElementById("avgExpenseTx").textContent = fmtMoney(avgExpenseTx);
+}
+ 
 ["searchInput","typeFilter","categoryFilter","monthFilter"].forEach(id=>{
   document.getElementById(id).addEventListener("input", render);
   document.getElementById(id).addEventListener("change", render);
 });
-
+ 
 loadData();
 </script>
 </body>
 </html>
+ 
