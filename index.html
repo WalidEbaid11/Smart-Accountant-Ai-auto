@@ -2,54 +2,29 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>دفتر — لوحة التحكم المالية</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
+/>
+
+<title>دفتر — Financial Intelligence Dashboard</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+  rel="stylesheet"
+>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<!-- Chart.js -->
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"
+  crossorigin="anonymous">
+</script>
 
 <style>
-
-/* =========================================================
-   ROOT
-========================================================= */
-
-:root{
-  --bg:#070b12;
-  --bg2:#0b1220;
-
-  --surface:rgba(16,23,36,.82);
-  --surface2:rgba(23,32,49,.72);
-
-  --border:rgba(255,255,255,.075);
-  --border-gold:rgba(201,162,39,.32);
-
-  --text:#f5f7fb;
-  --muted:#91a0b5;
-  --faint:#64748b;
-
-  --gold:#c9a227;
-  --gold2:#f0d477;
-
-  --green:#21d07a;
-  --green-soft:rgba(33,208,122,.12);
-
-  --red:#ff5c6c;
-  --red-soft:rgba(255,92,108,.12);
-
-  --blue:#6ea8ff;
-
-  --radius:20px;
-
-  --shadow:
-    0 25px 70px rgba(0,0,0,.28);
-}
-
 
 /* =========================================================
    RESET
@@ -68,28 +43,42 @@ body{
   min-height:100vh;
   overflow-x:hidden;
 
-  font-family:'Tajawal',sans-serif;
-
-  color:var(--text);
-
   background:
     radial-gradient(
-      circle at 10% 0%,
-      rgba(201,162,39,.09),
-      transparent 30%
+      circle at 8% 5%,
+      rgba(201,162,39,.10),
+      transparent 28%
     ),
     radial-gradient(
-      circle at 90% 10%,
-      rgba(80,130,255,.08),
+      circle at 92% 15%,
+      rgba(70,120,255,.09),
       transparent 30%
     ),
-    linear-gradient(
-      180deg,
-      #070b12,
-      #0a111c
-    );
+    #070a11;
+
+  color:#f5f7fb;
+
+  font-family:"Tajawal",sans-serif;
+
+  animation:pageEnter .8s cubic-bezier(.16,1,.3,1);
 }
 
+button,
+input,
+select{
+  font-family:inherit;
+}
+
+button,
+input,
+select{
+  outline:none;
+}
+
+.mono{
+  font-family:"IBM Plex Mono",monospace;
+  font-variant-numeric:tabular-nums;
+}
 
 /* =========================================================
    BACKGROUND GRID
@@ -105,8 +94,6 @@ body::before{
 
   z-index:-1;
 
-  opacity:.35;
-
   background:
     linear-gradient(
       rgba(255,255,255,.018) 1px,
@@ -118,9 +105,7 @@ body::before{
       transparent 1px
     );
 
-  background-size:
-    clamp(28px,4vw,52px)
-    clamp(28px,4vw,52px);
+  background-size:48px 48px;
 
   mask-image:
     linear-gradient(
@@ -130,105 +115,151 @@ body::before{
     );
 }
 
-
 /* =========================================================
-   UTILITIES
+   VARIABLES
 ========================================================= */
 
-.mono{
-  font-family:'IBM Plex Mono',monospace;
-  font-variant-numeric:tabular-nums;
-}
+:root{
 
-.hidden{
-  display:none!important;
-}
+  --bg:#070a11;
+  --surface:#101725;
+  --surface-2:#151e2f;
 
+  --border:rgba(255,255,255,.075);
+  --border-gold:rgba(201,162,39,.28);
+
+  --text:#f5f7fb;
+  --muted:#8d98aa;
+  --faint:#5e6c80;
+
+  --gold:#c9a227;
+  --gold-light:#e4c458;
+
+  --green:#21d07a;
+  --green-soft:rgba(33,208,122,.12);
+
+  --red:#ff5c6c;
+  --red-soft:rgba(255,92,108,.12);
+
+  --blue:#6ea8ff;
+
+  --radius:18px;
+
+  --shadow:
+    0 24px 70px rgba(0,0,0,.28);
+}
 
 /* =========================================================
    HEADER
 ========================================================= */
 
-.topbar{
-  position:sticky;
-  top:0;
+.top{
 
-  z-index:100;
+  position:relative;
 
-  width:100%;
+  min-height:76px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:20px;
+
+  padding:
+    16px
+    clamp(16px,4vw,42px);
 
   border-bottom:1px solid var(--border);
 
   background:
-    rgba(7,11,18,.78);
+    linear-gradient(
+      180deg,
+      rgba(7,10,17,.98),
+      rgba(7,10,17,.70)
+    );
 
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
+  overflow:hidden;
 }
 
-.topbar-inner{
-  width:min(1500px,100%);
-  margin:auto;
+.top::after{
 
-  padding:
-    clamp(12px,2vw,20px)
-    clamp(14px,3vw,36px);
+  content:"";
 
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  position:absolute;
 
-  gap:20px;
+  inset:-100%;
+
+  pointer-events:none;
+
+  background:
+    linear-gradient(
+      110deg,
+      transparent 40%,
+      rgba(255,255,255,.025) 48%,
+      rgba(201,162,39,.08) 52%,
+      transparent 60%
+    );
+
+  animation:headerSweep 8s ease-in-out infinite;
 }
 
 .brand{
+
   display:flex;
+
   align-items:center;
 
-  gap:11px;
+  gap:12px;
 
   min-width:0;
 }
 
 .brand-mark{
-  flex:0 0 auto;
 
   width:42px;
   height:42px;
 
+  flex:0 0 42px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
   border-radius:12px;
 
-  display:grid;
-  place-items:center;
+  color:#07101b;
 
-  font-size:19px;
   font-weight:900;
 
-  color:#07101c;
+  font-size:20px;
 
   background:
     linear-gradient(
       135deg,
-      var(--gold2),
+      var(--gold-light),
       var(--gold)
     );
 
   box-shadow:
-    0 8px 25px rgba(201,162,39,.18);
-}
+    0 8px 30px rgba(201,162,39,.22);
 
-.brand-info{
-  min-width:0;
+  animation:logoFloat 4s ease-in-out infinite;
 }
 
 .brand-title{
+
   margin:0;
 
-  font-size:16px;
-  font-weight:800;
+  font-size:18px;
+
+  font-weight:900;
 }
 
-.brand-sub{
+.brand-subtitle{
+
   margin:2px 0 0;
 
   color:var(--faint);
@@ -237,8 +268,11 @@ body::before{
 }
 
 .sync{
+
   display:flex;
+
   align-items:center;
+
   gap:8px;
 
   color:var(--muted);
@@ -249,146 +283,148 @@ body::before{
 }
 
 .sync-dot{
-  width:7px;
-  height:7px;
+
+  width:8px;
+  height:8px;
 
   border-radius:50%;
 
   background:var(--green);
 
   box-shadow:
-    0 0 0 0 rgba(33,208,122,.5);
+    0 0 0 4px rgba(33,208,122,.08),
+    0 0 18px rgba(33,208,122,.7);
 
-  animation:
-    pulse 1.7s infinite;
+  animation:syncPulse 1.6s ease-in-out infinite;
 }
-
-@keyframes pulse{
-
-  0%{
-    box-shadow:
-      0 0 0 0 rgba(33,208,122,.5);
-  }
-
-  70%{
-    box-shadow:
-      0 0 0 9px rgba(33,208,122,0);
-  }
-
-  100%{
-    box-shadow:
-      0 0 0 0 rgba(33,208,122,0);
-  }
-
-}
-
 
 /* =========================================================
-   CONTAINER
+   LEDGER BAND
 ========================================================= */
 
-.container{
-  width:min(1500px,100%);
+.ledger-band{
 
-  margin:auto;
+  height:24px;
 
-  padding:
-    clamp(18px,3vw,38px)
-    clamp(14px,3vw,38px)
-    60px;
+  margin:
+    0
+    clamp(14px,4vw,42px);
+
+  border-left:1px solid var(--border-gold);
+  border-right:1px solid var(--border-gold);
+
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 6px,
+      rgba(255,255,255,.035) 6px,
+      rgba(255,255,255,.035) 7px
+    );
 }
-
 
 /* =========================================================
    HERO
 ========================================================= */
 
 .hero{
+
+  width:100%;
+
+  max-width:1500px;
+
+  margin:0 auto;
+
+  padding:
+    clamp(22px,4vw,42px)
+    clamp(16px,4vw,42px)
+    14px;
+
   display:flex;
 
   align-items:flex-end;
+
   justify-content:space-between;
 
   gap:25px;
 
-  margin-bottom:25px;
-
   animation:
-    heroIn .9s cubic-bezier(.16,1,.3,1);
-}
-
-@keyframes heroIn{
-
-  from{
-    opacity:0;
-    transform:translateY(20px);
-  }
-
-  to{
-    opacity:1;
-    transform:none;
-  }
-
+    heroEnter
+    .9s
+    cubic-bezier(.16,1,.3,1);
 }
 
 .hero-eyebrow{
-  margin-bottom:7px;
 
-  color:var(--gold2);
+  color:var(--gold-light);
 
   font-size:10px;
+
   font-weight:900;
 
   letter-spacing:.18em;
+
+  margin-bottom:9px;
 }
 
 .hero h1{
+
   margin:0;
 
   font-size:
-    clamp(27px,4vw,48px);
+    clamp(28px,5vw,54px);
 
-  line-height:1.05;
+  line-height:1;
 
-  letter-spacing:-.04em;
+  letter-spacing:-.045em;
+
+  font-weight:900;
 }
 
 .hero p{
-  max-width:720px;
 
-  margin:11px 0 0;
+  margin:12px 0 0;
 
   color:var(--muted);
 
   font-size:
-    clamp(11px,1.3vw,14px);
+    clamp(11px,1.5vw,14px);
 
   line-height:1.8;
 }
 
 .live{
+
   flex:0 0 auto;
 
   display:flex;
+
   align-items:center;
 
   gap:8px;
 
   padding:9px 13px;
 
-  border:1px solid rgba(33,208,122,.2);
-
   border-radius:999px;
-
-  background:rgba(33,208,122,.07);
 
   color:#a8e9c8;
 
   font-size:10px;
-  font-weight:800;
+
+  font-weight:900;
+
+  letter-spacing:.08em;
+
+  border:
+    1px solid
+    rgba(33,208,122,.25);
+
+  background:
+    rgba(33,208,122,.07);
 }
 
 .live span{
+
   width:7px;
   height:7px;
 
@@ -397,12 +433,82 @@ body::before{
   background:var(--green);
 
   box-shadow:
-    0 0 15px var(--green);
+    0 0 14px var(--green);
+
+  animation:livePulse 1.5s ease-in-out infinite;
 }
 
+/* =========================================================
+   MAIN
+========================================================= */
+
+main{
+
+  width:100%;
+
+  max-width:1500px;
+
+  margin:0 auto;
+
+  padding:
+    10px
+    clamp(14px,4vw,42px)
+    70px;
+}
 
 /* =========================================================
-   KPI GRID
+   CARDS
+========================================================= */
+
+.card{
+
+  position:relative;
+
+  min-width:0;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(18,25,39,.94),
+      rgba(8,12,20,.88)
+    );
+
+  border:1px solid var(--border);
+
+  border-radius:var(--radius);
+
+  box-shadow:var(--shadow);
+
+  overflow:hidden;
+
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+
+  transition:
+    transform .45s cubic-bezier(.16,1,.3,1),
+    border-color .4s,
+    box-shadow .4s;
+}
+
+.card:hover{
+
+  transform:translateY(-5px);
+
+  border-color:
+    rgba(201,162,39,.20);
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.38);
+}
+
+.card-inner{
+
+  padding:
+    clamp(16px,2vw,22px);
+}
+
+/* =========================================================
+   KPI
 ========================================================= */
 
 .kpi-grid{
@@ -412,9 +518,9 @@ body::before{
   grid-template-columns:
     repeat(4,minmax(0,1fr));
 
-  gap:14px;
+  gap:15px;
 
-  margin-bottom:16px;
+  margin-top:15px;
 }
 
 .kpi{
@@ -423,64 +529,56 @@ body::before{
 
   min-width:0;
 
-  padding:
-    clamp(17px,2vw,22px);
+  padding:20px;
 
-  overflow:hidden;
+  border-radius:16px;
 
-  border:
-    1px solid var(--border);
-
-  border-radius:
-    var(--radius);
+  border:1px solid var(--border);
 
   background:
     linear-gradient(
       145deg,
-      rgba(20,28,44,.9),
-      rgba(9,14,23,.82)
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.012)
     );
 
-  box-shadow:var(--shadow);
-
-  transition:
-    transform .45s cubic-bezier(.16,1,.3,1),
-    border-color .4s,
-    box-shadow .4s;
+  overflow:hidden;
 
   animation:
-    cardIn .8s cubic-bezier(.16,1,.3,1) both;
+    cardEnter
+    .8s
+    cubic-bezier(.16,1,.3,1)
+    both;
+
+  transition:
+    transform .4s,
+    border-color .4s,
+    box-shadow .4s;
 }
 
-.kpi:nth-child(1){animation-delay:.05s}
-.kpi:nth-child(2){animation-delay:.12s}
-.kpi:nth-child(3){animation-delay:.19s}
-.kpi:nth-child(4){animation-delay:.26s}
+.kpi:nth-child(2){
+  animation-delay:.08s;
+}
 
-@keyframes cardIn{
+.kpi:nth-child(3){
+  animation-delay:.16s;
+}
 
-  from{
-    opacity:0;
-    transform:
-      translateY(25px)
-      scale(.97);
-  }
-
-  to{
-    opacity:1;
-    transform:none;
-  }
-
+.kpi:nth-child(4){
+  animation-delay:.24s;
 }
 
 .kpi:hover{
-  transform:translateY(-7px);
+
+  transform:
+    translateY(-8px)
+    scale(1.015);
 
   border-color:
-    rgba(201,162,39,.25);
+    rgba(201,162,39,.35);
 
   box-shadow:
-    0 30px 80px rgba(0,0,0,.35);
+    0 20px 50px rgba(0,0,0,.3);
 }
 
 .kpi::before{
@@ -490,10 +588,10 @@ body::before{
   position:absolute;
 
   top:0;
-  right:0;
   left:0;
+  right:0;
 
-  height:2px;
+  height:3px;
 
   background:var(--gold);
 }
@@ -514,19 +612,21 @@ body::before{
 
   color:var(--muted);
 
-  font-size:12px;
+  font-size:11px;
+
+  font-weight:700;
 }
 
 .kpi-value{
 
-  margin-top:10px;
+  margin-top:9px;
 
   font-size:
-    clamp(21px,2.5vw,30px);
-
-  font-weight:800;
+    clamp(20px,2.2vw,29px);
 
   line-height:1.15;
+
+  font-weight:800;
 
   word-break:break-word;
 }
@@ -537,76 +637,19 @@ body::before{
 
   color:var(--faint);
 
-  font-size:11px;
+  font-size:10.5px;
 }
 
-.positive{
-  color:var(--green)!important;
+.value-positive{
+  color:var(--green);
 }
 
-.negative{
-  color:var(--red)!important;
+.value-negative{
+  color:var(--red);
 }
-
 
 /* =========================================================
-   CARD
-========================================================= */
-
-.card{
-
-  min-width:0;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:
-    var(--radius);
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(18,26,41,.88),
-      rgba(9,14,23,.78)
-    );
-
-  box-shadow:
-    var(--shadow);
-
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-
-  overflow:hidden;
-}
-
-.card-header{
-
-  padding:
-    clamp(17px,2vw,22px);
-
-  padding-bottom:8px;
-}
-
-.card-title{
-
-  margin:0;
-
-  font-size:15px;
-  font-weight:800;
-}
-
-.card-hint{
-
-  margin:5px 0 0;
-
-  color:var(--faint);
-
-  font-size:11px;
-}
-
-
-/* =========================================================
-   CHARTS
+   CHART PANELS
 ========================================================= */
 
 .charts-grid{
@@ -619,85 +662,121 @@ body::before{
 
   gap:16px;
 
-  margin-bottom:16px;
+  margin-top:16px;
 }
 
 .chart-card{
+
   min-width:0;
+
+  padding:
+    clamp(16px,2vw,22px);
 }
 
-.chart-box{
+.section-title{
+
+  margin:0;
+
+  font-size:15px;
+
+  font-weight:800;
+}
+
+.section-hint{
+
+  margin:5px 0 16px;
+
+  color:var(--faint);
+
+  font-size:11px;
+
+  line-height:1.7;
+}
+
+/*
+  IMPORTANT:
+  Chart.js needs a parent with a REAL height.
+*/
+
+.chart-wrap{
 
   position:relative;
 
   width:100%;
 
-  height:
-    clamp(260px,32vw,390px);
+  height:330px;
 
-  padding:
-    10px
-    clamp(12px,2vw,20px)
-    20px;
+  min-height:280px;
+
+  max-width:100%;
+
+  overflow:hidden;
 }
 
-.chart-box canvas{
+.chart-wrap canvas{
 
-  width:100%!important;
-  height:100%!important;
+  display:block !important;
+
+  position:relative !important;
+
+  width:100% !important;
+
+  height:100% !important;
+
+  max-width:100% !important;
+
+  max-height:100% !important;
 }
-
 
 /* =========================================================
    PROFIT STORY
 ========================================================= */
 
-.profit{
+.profit-story{
 
   position:relative;
 
-  overflow:hidden;
-
-  margin-bottom:16px;
+  margin-top:16px;
 
   padding:
     clamp(25px,5vw,48px)
-    clamp(16px,4vw,35px);
+    clamp(15px,4vw,35px);
 
-  text-align:center;
+  border-radius:22px;
 
-  border:
-    1px solid var(--border);
-
-  border-radius:
-    24px;
+  border:1px solid var(--border);
 
   background:
     radial-gradient(
-      circle at center,
-      rgba(201,162,39,.10),
-      transparent 45%
+      circle at 50% 100%,
+      rgba(201,162,39,.11),
+      transparent 43%
     ),
     linear-gradient(
       145deg,
-      rgba(20,27,42,.96),
-      rgba(6,10,16,.96)
+      rgba(18,25,39,.96),
+      rgba(7,10,17,.96)
     );
 
+  overflow:hidden;
+
+  text-align:center;
+
   box-shadow:
-    0 30px 90px rgba(0,0,0,.35);
+    0 30px 90px rgba(0,0,0,.38);
 }
 
-.profit::before{
+.profit-story::before{
 
   content:"";
 
   position:absolute;
 
   width:
-    clamp(180px,30vw,350px);
+    clamp(190px,35vw,330px);
 
-  aspect-ratio:1;
+  height:
+    clamp(190px,35vw,330px);
 
   left:50%;
   top:50%;
@@ -707,64 +786,60 @@ body::before{
 
   border-radius:50%;
 
-  border:
-    1px solid rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.04);
+
+  box-shadow:
+    0 0 100px
+    rgba(201,162,39,.07);
 
   animation:
-    aura 4s ease-in-out infinite;
-}
-
-@keyframes aura{
-
-  0%,100%{
-    transform:
-      translate(-50%,-50%)
-      scale(.9);
-  }
-
-  50%{
-    transform:
-      translate(-50%,-50%)
-      scale(1.1);
-  }
-
+    profitAura
+    4s
+    ease-in-out
+    infinite;
 }
 
 .profit-content{
+
   position:relative;
+
   z-index:2;
 }
 
-.profit-label{
+.profit-kicker{
 
-  color:var(--faint);
+  color:var(--muted);
 
   font-size:10px;
+
   font-weight:900;
 
-  letter-spacing:.2em;
+  letter-spacing:.18em;
 }
 
-.profit-title{
+.profit-headline{
 
-  margin:9px 0;
+  margin:9px 0 6px;
 
   font-size:
-    clamp(26px,6vw,58px);
+    clamp(28px,6vw,58px);
 
   line-height:1;
 
   font-weight:900;
 
-  letter-spacing:-.05em;
+  letter-spacing:-.045em;
 }
 
-.profit-percent{
+.profit-number{
+
   display:inline-block;
 
   font-family:
-    'IBM Plex Mono',
+    "IBM Plex Mono",
     monospace;
+
+  font-variant-numeric:tabular-nums;
 
   text-shadow:
     0 0 35px currentColor;
@@ -778,30 +853,34 @@ body::before{
     clamp(11px,1.5vw,14px);
 }
 
-.profit-bar{
+.profit-meter{
 
-  width:min(600px,100%);
+  width:min(560px,100%);
 
   height:9px;
 
-  margin:25px auto 13px;
+  margin:
+    24px
+    auto
+    13px;
 
-  overflow:hidden;
+  background:
+    rgba(255,255,255,.07);
 
   border-radius:999px;
 
-  background:rgba(255,255,255,.07);
+  overflow:hidden;
 }
 
-.profit-fill{
+.profit-meter-fill{
 
   width:0;
+
   height:100%;
 
   border-radius:inherit;
 
-  transition:
-    width 1.8s cubic-bezier(.16,1,.3,1);
+  transform-origin:right center;
 }
 
 .profit-status{
@@ -814,177 +893,171 @@ body::before{
 
   padding:8px 13px;
 
-  border:
-    1px solid var(--border);
-
   border-radius:999px;
 
-  background:rgba(255,255,255,.035);
-
   font-size:11px;
+
   font-weight:800;
+
+  background:
+    rgba(255,255,255,.035);
+
+  border:
+    1px solid rgba(255,255,255,.08);
 }
 
-.status-dot{
+.profit-status-dot{
 
   width:7px;
   height:7px;
 
   border-radius:50%;
+
+  animation:
+    statusPulse
+    1.3s
+    ease-in-out
+    infinite;
 }
 
-.profit.profit-mode .profit-title{
+.profit-story.is-profit .profit-headline,
+.profit-story.is-profit .profit-status{
+
   color:var(--green);
 }
 
-.profit.profit-mode .profit-fill{
+.profit-story.is-profit
+.profit-meter-fill{
 
   background:
     linear-gradient(
       90deg,
       #21d07a,
-      #8bffc0
+      #7dffb9
     );
-
-  box-shadow:
-    0 0 20px rgba(33,208,122,.5);
 }
 
-.profit.profit-mode .status-dot{
+.profit-story.is-profit
+.profit-status-dot{
 
   background:var(--green);
 
   box-shadow:
-    0 0 15px var(--green);
+    0 0 16px var(--green);
 }
 
-.profit.loss-mode .profit-title{
+.profit-story.is-loss .profit-headline,
+.profit-story.is-loss .profit-status{
+
   color:var(--red);
 }
 
-.profit.loss-mode .profit-fill{
+.profit-story.is-loss
+.profit-meter-fill{
 
   background:
     linear-gradient(
       90deg,
       #ff5c6c,
-      #ff9c88
+      #ff9a7a
     );
-
-  box-shadow:
-    0 0 20px rgba(255,92,108,.5);
 }
 
-.profit.loss-mode .status-dot{
+.profit-story.is-loss
+.profit-status-dot{
 
   background:var(--red);
 
   box-shadow:
-    0 0 15px var(--red);
+    0 0 16px var(--red);
 }
-
 
 /* =========================================================
    FULL ANALYSIS
 ========================================================= */
 
-.analysis{
-  padding:
-    clamp(17px,2vw,24px);
+.analysis-section{
 
-  margin-bottom:16px;
+  margin-top:16px;
+
+  padding:
+    clamp(16px,2vw,24px);
 }
 
-.section-title{
+.analysis-title-row{
 
   display:flex;
 
   align-items:center;
 
-  gap:8px;
-
-  margin:0;
-
-  font-size:16px;
+  gap:9px;
 }
 
-.section-title-dot{
+.analysis-title-dot{
 
-  width:7px;
-  height:7px;
+  width:8px;
+  height:8px;
 
   border-radius:50%;
 
   background:var(--gold);
 
   box-shadow:
-    0 0 12px rgba(201,162,39,.7);
+    0 0 15px rgba(201,162,39,.7);
+
+  animation:
+    syncPulse
+    2s
+    infinite;
 }
 
-.section-subtitle{
-
-  margin:5px 0 18px;
-
-  color:var(--faint);
-
-  font-size:11px;
-}
-
-
-/* =========================================================
-   ANALYSIS METRICS
-========================================================= */
-
-.metrics{
+.analysis-grid{
 
   display:grid;
 
   grid-template-columns:
     repeat(4,minmax(0,1fr));
 
-  gap:12px;
+  gap:13px;
 
-  margin-bottom:16px;
+  margin-top:15px;
 }
 
 .metric{
 
-  position:relative;
-
   min-width:0;
+
+  min-height:115px;
 
   padding:16px;
 
-  border:
-    1px solid var(--border);
+  border-radius:15px;
 
-  border-radius:16px;
+  border:1px solid var(--border);
 
   background:
     linear-gradient(
       145deg,
-      rgba(255,255,255,.04),
-      rgba(255,255,255,.01)
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.012)
     );
 
   transition:
-    transform .4s,
-    border-color .4s,
-    box-shadow .4s;
-
-  overflow:hidden;
+    transform .35s,
+    border-color .35s,
+    box-shadow .35s;
 }
 
 .metric:hover{
 
   transform:
-    translateY(-6px);
+    translateY(-7px);
 
   border-color:
-    rgba(201,162,39,.25);
+    rgba(201,162,39,.32);
 
   box-shadow:
-    0 20px 45px rgba(0,0,0,.2);
+    0 15px 40px rgba(0,0,0,.25);
 }
 
 .metric-label{
@@ -993,7 +1066,7 @@ body::before{
 
   font-size:10px;
 
-  letter-spacing:.05em;
+  font-weight:700;
 }
 
 .metric-value{
@@ -1001,15 +1074,14 @@ body::before{
   margin-top:8px;
 
   font-size:
-    clamp(18px,2vw,27px);
+    clamp(20px,2.4vw,31px);
 
   font-weight:800;
 
-  line-height:1.2;
+  line-height:1.15;
 
   word-break:break-word;
 }
-
 
 /* =========================================================
    ANALYSIS TABLES
@@ -1020,51 +1092,217 @@ body::before{
   display:grid;
 
   grid-template-columns:
-    minmax(0,1.2fr)
+    minmax(0,1.25fr)
     minmax(0,1fr);
 
   gap:16px;
+
+  margin-top:16px;
 }
 
-.table-panel{
-
-  min-width:0;
+.table-card-inner{
 
   padding:16px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:16px;
-
-  background:
-    rgba(255,255,255,.018);
 }
 
-.table-panel-title{
-
-  margin:0;
-
-  font-size:13px;
-  font-weight:800;
-}
-
-.table-panel-hint{
-
-  margin:4px 0 12px;
-
-  color:var(--faint);
-
-  font-size:10.5px;
-}
-
-.scroll-table{
+.table-scroll{
 
   width:100%;
 
   overflow-x:auto;
 
+  overflow-y:hidden;
+
+  -webkit-overflow-scrolling:touch;
+
   scrollbar-width:thin;
+
+  scrollbar-color:
+    rgba(201,162,39,.35)
+    transparent;
+}
+
+.analysis-table{
+
+  width:100%;
+
+  min-width:520px;
+
+  border-collapse:separate;
+
+  border-spacing:0 5px;
+}
+
+.analysis-table th{
+
+  padding:10px;
+
+  color:var(--faint);
+
+  font-size:10px;
+
+  text-align:right;
+
+  background:
+    rgba(255,255,255,.025);
+}
+
+.analysis-table td{
+
+  padding:10px;
+
+  font-size:11px;
+
+  background:
+    rgba(255,255,255,.018);
+
+  border:0;
+}
+
+.analysis-table tr td:first-child{
+
+  border-radius:8px 0 0 8px;
+}
+
+.analysis-table tr td:last-child{
+
+  border-radius:0 8px 8px 0;
+}
+
+.positive{
+  color:var(--green);
+}
+
+.negative{
+  color:var(--red);
+}
+
+.analysis-note{
+
+  margin-top:14px;
+
+  padding:12px 14px;
+
+  color:var(--faint);
+
+  font-size:10.5px;
+
+  line-height:1.8;
+
+  border-radius:10px;
+
+  background:
+    rgba(201,162,39,.05);
+
+  border:
+    1px solid var(--border);
+}
+
+.analysis-status{
+
+  margin-top:8px;
+
+  color:var(--faint);
+
+  font-size:10px;
+}
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+.transactions{
+
+  margin-top:16px;
+
+  padding:
+    clamp(16px,2vw,22px);
+}
+
+.toolbar{
+
+  display:flex;
+
+  gap:9px;
+
+  flex-wrap:wrap;
+
+  margin-bottom:15px;
+}
+
+.toolbar input,
+.toolbar select{
+
+  min-height:42px;
+
+  border-radius:10px;
+
+  border:1px solid var(--border);
+
+  background:
+    rgba(255,255,255,.035);
+
+  color:var(--text);
+
+  padding:
+    9px
+    12px;
+
+  font-size:12px;
+
+  transition:
+    border-color .25s,
+    box-shadow .25s;
+}
+
+.toolbar input:focus,
+.toolbar select:focus{
+
+  border-color:
+    rgba(201,162,39,.45);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(201,162,39,.06);
+}
+
+.search{
+
+  flex:1;
+
+  min-width:190px;
+}
+
+.count-pill{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  min-height:42px;
+
+  padding:0 13px;
+
+  border-radius:999px;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  border:
+    1px solid var(--border);
+
+  background:
+    rgba(255,255,255,.035);
+}
+
+.data-table-wrap{
+
+  width:100%;
+
+  overflow-x:auto;
 
   -webkit-overflow-scrolling:touch;
 }
@@ -1073,23 +1311,20 @@ body::before{
 
   width:100%;
 
-  min-width:470px;
+  min-width:720px;
 
   border-collapse:collapse;
 }
 
 .data-table th{
 
-  padding:
-    10px 8px;
-
-  text-align:right;
-
   color:var(--faint);
 
   font-size:10px;
 
-  font-weight:700;
+  text-align:right;
+
+  padding:11px;
 
   border-bottom:
     1px solid var(--border);
@@ -1097,15 +1332,12 @@ body::before{
 
 .data-table td{
 
-  padding:
-    10px 8px;
+  padding:12px 11px;
+
+  font-size:11.5px;
 
   border-bottom:
     1px solid var(--border);
-
-  font-size:11px;
-
-  white-space:nowrap;
 }
 
 .data-table tbody tr{
@@ -1119,150 +1351,9 @@ body::before{
 
   background:
     rgba(201,162,39,.045);
-}
 
-
-/* =========================================================
-   TRANSACTIONS
-========================================================= */
-
-.transactions{
-
-  padding:
-    clamp(16px,2vw,22px);
-
-  margin-bottom:16px;
-}
-
-.toolbar{
-
-  display:grid;
-
-  grid-template-columns:
-    minmax(180px,1fr)
-    repeat(3,minmax(130px,180px));
-
-  gap:9px;
-
-  margin-bottom:15px;
-}
-
-.control{
-
-  width:100%;
-
-  min-width:0;
-
-  height:42px;
-
-  padding:
-    0 12px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:10px;
-
-  outline:none;
-
-  background:
-    var(--surface2);
-
-  color:var(--text);
-
-  font-family:'Tajawal',sans-serif;
-
-  font-size:12px;
-}
-
-.control:focus{
-
-  border-color:
-    var(--border-gold);
-
-  box-shadow:
-    0 0 0 3px
-    rgba(201,162,39,.06);
-}
-
-.count{
-
-  display:flex;
-
-  align-items:center;
-  justify-content:center;
-
-  min-width:100px;
-
-  padding:0 12px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius:999px;
-
-  color:var(--muted);
-
-  background:
-    rgba(255,255,255,.025);
-
-  font-size:11px;
-}
-
-.transactions-table-wrap{
-
-  width:100%;
-
-  overflow-x:auto;
-
-  -webkit-overflow-scrolling:touch;
-}
-
-.transactions-table{
-
-  width:100%;
-
-  min-width:700px;
-
-  border-collapse:collapse;
-}
-
-.transactions-table th{
-
-  padding:
-    10px 9px;
-
-  text-align:right;
-
-  color:var(--faint);
-
-  font-size:10px;
-
-  border-bottom:
-    1px solid var(--border);
-}
-
-.transactions-table td{
-
-  padding:
-    12px 9px;
-
-  font-size:11.5px;
-
-  border-bottom:
-    1px solid var(--border);
-}
-
-.transactions-table tr{
-
-  transition:
-    background .25s;
-}
-
-.transactions-table tbody tr:hover{
-
-  background:
-    rgba(201,162,39,.045);
+  transform:
+    translateX(-3px);
 }
 
 .badge{
@@ -1271,11 +1362,16 @@ body::before{
 
   align-items:center;
 
+  justify-content:center;
+
+  min-width:54px;
+
   padding:4px 9px;
 
   border-radius:999px;
 
   font-size:10px;
+
   font-weight:800;
 }
 
@@ -1283,34 +1379,51 @@ body::before{
 
   color:var(--green);
 
-  background:
-    var(--green-soft);
+  background:var(--green-soft);
 }
 
 .badge.out{
 
   color:var(--red);
 
-  background:
-    var(--red-soft);
+  background:var(--red-soft);
 }
 
+.amount-income{
 
-/* =========================================================
-   LOADING
-========================================================= */
+  color:var(--green);
 
-.loading{
+  font-weight:700;
+}
 
-  min-height:180px;
+.amount-expense{
 
-  display:grid;
+  color:var(--red);
 
-  place-items:center;
+  font-weight:700;
+}
+
+.category{
 
   color:var(--muted);
+}
+
+.empty,
+.error,
+.loading{
+
+  text-align:center;
+
+  padding:55px 20px;
+
+  color:var(--faint);
 
   font-size:12px;
+}
+
+.error{
+
+  color:var(--red);
 }
 
 .spinner{
@@ -1318,49 +1431,26 @@ body::before{
   width:25px;
   height:25px;
 
-  margin:auto;
+  margin:
+    0
+    auto
+    12px;
+
+  border-radius:50%;
 
   border:
-    2px solid rgba(255,255,255,.08);
+    2px solid
+    rgba(255,255,255,.08);
 
   border-top-color:
     var(--gold);
 
-  border-radius:50%;
-
   animation:
-    spin .8s linear infinite;
+    spin
+    .8s
+    linear
+    infinite;
 }
-
-@keyframes spin{
-
-  to{
-    transform:rotate(360deg);
-  }
-
-}
-
-
-/* =========================================================
-   EMPTY / ERROR
-========================================================= */
-
-.empty,
-.error{
-
-  padding:45px 20px;
-
-  text-align:center;
-
-  color:var(--muted);
-
-  font-size:12px;
-}
-
-.error{
-  color:var(--red);
-}
-
 
 /* =========================================================
    FOOTER
@@ -1368,8 +1458,7 @@ body::before{
 
 footer{
 
-  padding:
-    20px;
+  padding:22px;
 
   text-align:center;
 
@@ -1381,20 +1470,25 @@ footer{
     1px solid var(--border);
 }
 
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width:1200px){
+
+  .chart-wrap{
+    height:360px;
+  }
+
+}
 
 /* =========================================================
    TABLET
 ========================================================= */
 
-@media(max-width:1100px){
+@media (max-width:1050px){
 
   .kpi-grid{
-
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
-  }
-
-  .metrics{
 
     grid-template-columns:
       repeat(2,minmax(0,1fr));
@@ -1403,7 +1497,13 @@ footer{
   .charts-grid{
 
     grid-template-columns:
-      1fr;
+      minmax(0,1fr);
+  }
+
+  .analysis-grid{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
   }
 
   .analysis-tables{
@@ -1412,26 +1512,27 @@ footer{
       1fr;
   }
 
-  .toolbar{
-
-    grid-template-columns:
-      1fr
-      1fr
-      1fr;
-  }
-
 }
-
 
 /* =========================================================
    MOBILE
 ========================================================= */
 
-@media(max-width:700px){
+@media (max-width:700px){
 
-  .topbar-inner{
+  body{
 
-    align-items:flex-start;
+    width:100%;
+
+    overflow-x:hidden;
+  }
+
+  .top{
+
+    min-height:66px;
+
+    padding:
+      12px 14px;
   }
 
   .brand-mark{
@@ -1439,12 +1540,19 @@ footer{
     width:38px;
     height:38px;
 
-    border-radius:10px;
+    flex-basis:38px;
+
+    font-size:17px;
   }
 
   .brand-title{
 
-    font-size:14px;
+    font-size:15px;
+  }
+
+  .brand-subtitle{
+
+    font-size:9px;
   }
 
   .sync{
@@ -1452,50 +1560,68 @@ footer{
     font-size:9px;
   }
 
+  .ledger-band{
+
+    margin:
+      0 14px;
+
+    height:18px;
+  }
+
   .hero{
+
+    padding:
+      22px
+      14px
+      10px;
 
     flex-direction:column;
 
     align-items:flex-start;
 
-    gap:13px;
+    gap:14px;
   }
 
   .hero h1{
 
     font-size:
-      clamp(27px,9vw,38px);
+      clamp(27px,9vw,40px);
+
+    line-height:1.05;
   }
 
-  .live{
+  .hero p{
 
-    align-self:flex-start;
+    font-size:11px;
+  }
+
+  main{
+
+    padding:
+      8px
+      12px
+      40px;
   }
 
   .kpi-grid{
 
     grid-template-columns:
-      1fr 1fr;
+      repeat(2,minmax(0,1fr));
 
-    gap:9px;
+    gap:10px;
   }
 
   .kpi{
 
-    border-radius:15px;
+    padding:15px;
 
-    padding:14px;
+    border-radius:14px;
   }
 
   .kpi-value{
 
     font-size:
-      clamp(17px,5vw,23px);
-  }
-
-  .kpi-label{
-
-    font-size:10px;
+      clamp(17px,5vw,24px);
   }
 
   .kpi-sub{
@@ -1503,83 +1629,157 @@ footer{
     font-size:9px;
   }
 
-  .chart-box{
+  .charts-grid{
 
-    height:280px;
-
-    padding:
-      5px 8px 15px;
-  }
-
-  .metrics{
+    display:grid;
 
     grid-template-columns:
-      1fr 1fr;
+      minmax(0,1fr);
+
+    gap:12px;
+
+    width:100%;
+  }
+
+  .chart-card{
+
+    width:100%;
+
+    min-width:0;
+
+    padding:14px;
+
+    border-radius:15px;
+  }
+
+  .chart-wrap{
+
+    width:100%;
+
+    height:300px;
+
+    min-height:300px;
+
+    max-height:none;
+  }
+
+  .chart-wrap canvas{
+
+    width:100% !important;
+
+    height:100% !important;
+
+    display:block !important;
+  }
+
+  .profit-story{
+
+    margin-top:12px;
+
+    border-radius:18px;
+
+    padding:
+      27px
+      12px;
+  }
+
+  .profit-headline{
+
+    font-size:
+      clamp(27px,9vw,42px);
+  }
+
+  .analysis-section{
+
+    padding:14px;
+
+    border-radius:16px;
+  }
+
+  .analysis-grid{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
 
     gap:9px;
   }
 
   .metric{
 
+    min-height:105px;
+
     padding:13px;
 
-    border-radius:14px;
+    border-radius:13px;
   }
 
   .metric-value{
 
     font-size:
-      clamp(16px,4.5vw,22px);
+      clamp(17px,5vw,24px);
   }
 
-  .analysis{
+  .analysis-tables{
+
+    grid-template-columns:
+      minmax(0,1fr);
+
+    gap:12px;
+  }
+
+  .table-card-inner{
+
+    padding:13px;
+  }
+
+  .transactions{
 
     padding:14px;
+
+    border-radius:16px;
   }
 
   .toolbar{
 
+    display:grid;
+
     grid-template-columns:
       1fr 1fr;
+
+    gap:8px;
   }
 
-  .count{
+  .toolbar .search{
+
+    grid-column:
+      1 / -1;
+
+    width:100%;
+  }
+
+  .toolbar input,
+  .toolbar select{
+
+    width:100%;
+
+    min-width:0;
 
     min-height:42px;
   }
 
+  .count-pill{
+
+    grid-column:
+      1 / -1;
+  }
+
 }
 
-
 /* =========================================================
-   SMALL MOBILE
+   SMALL PHONES
 ========================================================= */
 
-@media(max-width:430px){
-
-  .container{
-
-    padding:
-      14px
-      10px
-      35px;
-  }
-
-  .topbar-inner{
-
-    padding:
-      11px 12px;
-  }
-
-  .brand-sub{
-
-    display:none;
-  }
-
-  .sync span:last-child{
-
-    display:none;
-  }
+@media (max-width:420px){
 
   .kpi-grid{
 
@@ -1589,32 +1789,30 @@ footer{
 
   .kpi{
 
-    min-height:110px;
+    padding:12px;
   }
 
-  .profit{
+  .kpi-value{
 
-    border-radius:18px;
-
-    padding:
-      28px 12px;
+    font-size:16px;
   }
 
-  .profit-title{
+  .chart-wrap{
 
-    font-size:
-      clamp(25px,9vw,38px);
+    height:270px;
+
+    min-height:270px;
   }
 
-  .profit-caption{
-
-    line-height:1.8;
-  }
-
-  .metrics{
+  .analysis-grid{
 
     grid-template-columns:
       1fr;
+  }
+
+  .metric{
+
+    min-height:95px;
   }
 
   .toolbar{
@@ -1623,19 +1821,25 @@ footer{
       1fr;
   }
 
-  .chart-box{
+  .toolbar .search,
+  .count-pill{
 
-    height:250px;
+    grid-column:
+      auto;
   }
 
 }
 
-
 /* =========================================================
-   VERY SMALL
+   VERY SMALL PHONES
 ========================================================= */
 
-@media(max-width:340px){
+@media (max-width:340px){
+
+  .hero h1{
+
+    font-size:27px;
+  }
 
   .kpi-grid{
 
@@ -1643,33 +1847,196 @@ footer{
       1fr;
   }
 
-  .hero h1{
+  .chart-wrap{
 
-    font-size:25px;
+    height:250px;
+
+    min-height:250px;
   }
 
 }
-
 
 /* =========================================================
    REDUCED MOTION
 ========================================================= */
 
-@media(prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce){
 
   *,
   *::before,
   *::after{
 
-    animation-duration:.01ms!important;
+    animation-duration:.01ms !important;
 
-    animation-iteration-count:1!important;
+    animation-iteration-count:1 !important;
 
-    transition-duration:.01ms!important;
+    transition-duration:.01ms !important;
 
-    scroll-behavior:auto!important;
+    scroll-behavior:auto !important;
+  }
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes pageEnter{
+
+  from{
+
+    opacity:0;
+
+    transform:
+      translateY(15px);
   }
 
+  to{
+
+    opacity:1;
+
+    transform:none;
+  }
+}
+
+@keyframes heroEnter{
+
+  from{
+
+    opacity:0;
+
+    transform:
+      translateY(25px);
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:none;
+  }
+}
+
+@keyframes cardEnter{
+
+  from{
+
+    opacity:0;
+
+    transform:
+      translateY(20px)
+      scale(.98);
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:none;
+  }
+}
+
+@keyframes headerSweep{
+
+  0%,
+  55%{
+
+    transform:
+      translateX(-50%)
+      rotate(8deg);
+  }
+
+  75%,
+  100%{
+
+    transform:
+      translateX(50%)
+      rotate(8deg);
+  }
+}
+
+@keyframes logoFloat{
+
+  0%,
+  100%{
+
+    transform:
+      translateY(0);
+  }
+
+  50%{
+
+    transform:
+      translateY(-3px);
+  }
+}
+
+@keyframes syncPulse{
+
+  0%,
+  100%{
+
+    transform:scale(.9);
+
+    opacity:.55;
+  }
+
+  50%{
+
+    transform:scale(1.15);
+
+    opacity:1;
+  }
+}
+
+@keyframes livePulse{
+
+  50%{
+
+    transform:scale(1.5);
+
+    opacity:.5;
+  }
+}
+
+@keyframes profitAura{
+
+  0%,
+  100%{
+
+    transform:
+      translate(-50%,-50%)
+      scale(.92);
+
+    opacity:.5;
+  }
+
+  50%{
+
+    transform:
+      translate(-50%,-50%)
+      scale(1.08);
+
+    opacity:1;
+  }
+}
+
+@keyframes statusPulse{
+
+  50%{
+
+    transform:scale(1.5);
+
+    opacity:.5;
+  }
+}
+
+@keyframes spin{
+
+  to{
+
+    transform:
+      rotate(360deg);
+  }
 }
 
 </style>
@@ -1678,60 +2045,52 @@ footer{
 
 <body>
 
-
-<!-- ========================================================
+<!-- =======================================================
      HEADER
-======================================================== -->
+======================================================= -->
 
-<header class="topbar">
+<header class="top">
 
-  <div class="topbar-inner">
+  <div class="brand">
 
-    <div class="brand">
+    <div class="brand-mark">
+      د
+    </div>
 
-      <div class="brand-mark">
-        د
-      </div>
+    <div>
 
-      <div class="brand-info">
+      <h1 class="brand-title">
+        دفتر
+      </h1>
 
-        <h1 class="brand-title">
-          دفتر
-        </h1>
-
-        <p class="brand-sub">
-          لوحة التحكم المالية
-        </p>
-
-      </div>
+      <p class="brand-subtitle">
+        لوحة التحكم المالية
+      </p>
 
     </div>
 
+  </div>
 
-    <div class="sync">
 
-      <span class="sync-dot"></span>
+  <div class="sync">
 
-      <span id="syncTime">
-        جارِ المزامنة…
-      </span>
+    <span class="sync-dot"></span>
 
-    </div>
+    <span id="syncTime">
+      جارِ المزامنة…
+    </span>
 
   </div>
 
 </header>
 
 
-
-<!-- ========================================================
-     MAIN
-======================================================== -->
-
-<main class="container">
+<div class="ledger-band"></div>
 
 
-<!-- HERO -->
+<!-- =======================================================
+     HERO
+======================================================= -->
 
 <section class="hero">
 
@@ -1746,28 +2105,32 @@ footer{
     </h1>
 
     <p>
-      لوحة مالية احترافية تعرض الأداء الحقيقي للدخل والمصروفات
-      والربحية والفئات والمعاملات مباشرة من بيانات Google Sheets.
+      قراءة لحظية للدخل والمصروفات والربحية والفئات
+      مبنية مباشرة على بيانات المعاملات.
     </p>
 
   </div>
 
 
   <div class="live">
+
     <span></span>
+
     LIVE DATA
+
   </div>
 
 </section>
 
 
+<main>
 
-<!-- ========================================================
+
+<!-- =======================================================
      KPI
-======================================================== -->
+======================================================= -->
 
 <section class="kpi-grid">
-
 
   <div class="kpi income">
 
@@ -1788,7 +2151,6 @@ footer{
     </div>
 
   </div>
-
 
 
   <div class="kpi expense">
@@ -1812,7 +2174,6 @@ footer{
   </div>
 
 
-
   <div class="kpi net">
 
     <div class="kpi-label">
@@ -1832,7 +2193,6 @@ footer{
     </div>
 
   </div>
-
 
 
   <div class="kpi">
@@ -1855,33 +2215,29 @@ footer{
 
   </div>
 
-
 </section>
 
 
-
-<!-- ========================================================
+<!-- =======================================================
      CHARTS
-======================================================== -->
+======================================================= -->
 
 <section class="charts-grid">
 
 
+  <!-- MONTHLY -->
+
   <div class="card chart-card">
 
-    <div class="card-header">
+    <h2 class="section-title">
+      الاتجاه الشهري
+    </h2>
 
-      <h2 class="card-title">
-        الاتجاه الشهري
-      </h2>
+    <p class="section-hint">
+      الدخل مقابل المصروف على مدار الأشهر المسجلة
+    </p>
 
-      <p class="card-hint">
-        الدخل مقابل المصروف على مدار الأشهر المسجلة
-      </p>
-
-    </div>
-
-    <div class="chart-box">
+    <div class="chart-wrap">
 
       <canvas id="trendChart"></canvas>
 
@@ -1890,22 +2246,19 @@ footer{
   </div>
 
 
+  <!-- CATEGORY -->
 
   <div class="card chart-card">
 
-    <div class="card-header">
+    <h2 class="section-title">
+      التوزيع حسب الفئة
+    </h2>
 
-      <h2 class="card-title">
-        التوزيع حسب الفئة
-      </h2>
+    <p class="section-hint">
+      أكبر الفئات من حيث إجمالي الحركة المالية
+    </p>
 
-      <p class="card-hint">
-        أكبر الفئات من حيث حجم المعاملات
-      </p>
-
-    </div>
-
-    <div class="chart-box">
+    <div class="chart-wrap">
 
       <canvas id="categoryChart"></canvas>
 
@@ -1917,31 +2270,31 @@ footer{
 </section>
 
 
-
-<!-- ========================================================
-     PROFIT STORY
-======================================================== -->
+<!-- =======================================================
+     PROFIT PERFORMANCE
+======================================================= -->
 
 <section
-  class="profit loss-mode"
-  id="profitStory">
+  class="profit-story is-loss"
+  id="profitStory"
+>
 
   <div class="profit-content">
 
-    <div class="profit-label">
+    <div class="profit-kicker">
       FINANCIAL PERFORMANCE
     </div>
 
-    <div class="profit-title">
+    <div class="profit-headline">
 
       <span id="profitVerb">
         جاري التحليل
       </span>
 
       <span
-        class="profit-percent"
+        class="profit-number"
         id="profitPercent">
-        0.0%
+        0%
       </span>
 
     </div>
@@ -1950,16 +2303,16 @@ footer{
       class="profit-caption"
       id="profitCaption">
 
-      جاري قراءة البيانات…
+      جاري تحليل الدخل والمصروف...
 
     </div>
 
 
-    <div class="profit-bar">
+    <div class="profit-meter">
 
       <div
-        class="profit-fill"
-        id="profitFill">
+        class="profit-meter-fill"
+        id="profitMeter">
       </div>
 
     </div>
@@ -1967,7 +2320,7 @@ footer{
 
     <div class="profit-status">
 
-      <span class="status-dot"></span>
+      <span class="profit-status-dot"></span>
 
       <span id="profitStatus">
         تحليل الأداء المالي
@@ -1980,32 +2333,33 @@ footer{
 </section>
 
 
-
-<!-- ========================================================
+<!-- =======================================================
      FULL FINANCIAL ANALYSIS
-======================================================== -->
+======================================================= -->
 
-<section class="card analysis">
+<section
+  class="card analysis-section"
+  id="financialAnalysis"
+>
 
-  <h2 class="section-title">
+  <div class="analysis-title-row">
 
-    <span class="section-title-dot"></span>
+    <span class="analysis-title-dot"></span>
 
-    التحليل المالي الكامل
+    <h2 class="section-title">
+      التحليل المالي الكامل
+    </h2>
 
-  </h2>
+  </div>
 
-  <p class="section-subtitle">
-
+  <p class="section-hint">
     ملخص مالي شامل + تحليل الفئات + التحليل الشهري + المتوسطات
-
   </p>
 
 
+  <!-- SUMMARY -->
 
-  <!-- METRICS -->
-
-  <div class="metrics">
+  <div class="analysis-grid">
 
 
     <div class="metric">
@@ -2066,6 +2420,14 @@ footer{
       </div>
 
     </div>
+
+
+  </div>
+
+
+  <!-- AVERAGES -->
+
+  <div class="analysis-grid">
 
 
     <div class="metric">
@@ -2131,156 +2493,163 @@ footer{
   </div>
 
 
-
   <!-- TABLES -->
 
   <div class="analysis-tables">
 
 
-    <!-- CATEGORY -->
+    <!-- CATEGORY TABLE -->
 
-    <div class="table-panel">
+    <div class="card">
 
-      <h3 class="table-panel-title">
-        التحليل حسب الفئة
-      </h3>
+      <div class="table-card-inner">
 
-      <p class="table-panel-hint">
-        الدخل والمصروف والصافي لكل فئة
-      </p>
+        <h2 class="section-title">
+          التحليل حسب الفئة
+        </h2>
 
-      <div class="scroll-table">
+        <p class="section-hint">
+          الدخل والمصروف والصافي لكل فئة
+        </p>
 
-        <table class="data-table">
 
-          <thead>
+        <div class="table-scroll">
 
-            <tr>
+          <table class="analysis-table">
 
-              <th>
-                الفئة
-              </th>
+            <thead>
 
-              <th>
-                دخل
-              </th>
+              <tr>
 
-              <th>
-                مصروف
-              </th>
+                <th>
+                  الفئة
+                </th>
 
-              <th>
-                الصافي
-              </th>
+                <th>
+                  دخل
+                </th>
 
-            </tr>
+                <th>
+                  مصروف
+                </th>
 
-          </thead>
+                <th>
+                  الصافي
+                </th>
 
-          <tbody id="categoryAnalysisBody">
+              </tr>
 
-          </tbody>
+            </thead>
 
-        </table>
+            <tbody id="categoryAnalysisBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MONTHLY TABLE -->
+
+    <div class="card">
+
+      <div class="table-card-inner">
+
+        <h2 class="section-title">
+          التحليل الشهري
+        </h2>
+
+        <p class="section-hint">
+          الأشهر التي تحتوي على بيانات فعلية
+        </p>
+
+
+        <div class="table-scroll">
+
+          <table class="analysis-table">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  الشهر
+                </th>
+
+                <th>
+                  دخل
+                </th>
+
+                <th>
+                  مصروف
+                </th>
+
+                <th>
+                  الصافي
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="monthlyAnalysisBody"></tbody>
+
+          </table>
+
+        </div>
 
       </div>
 
     </div>
 
 
+  </div>
 
-    <!-- MONTHLY -->
 
-    <div class="table-panel">
+  <div class="analysis-note">
 
-      <h3 class="table-panel-title">
-        التحليل الشهري
-      </h3>
+    <strong>
+      ملاحظة:
+    </strong>
 
-      <p class="table-panel-hint">
-        الدخل والمصروف والصافي لكل شهر
-      </p>
+    جميع الأرقام والتحليلات في هذه الصفحة يتم حسابها
+    مباشرة من معاملات Google Sheets.
 
-      <div class="scroll-table">
+  </div>
 
-        <table class="data-table">
 
-          <thead>
+  <div
+    class="analysis-status"
+    id="analysisStatus">
 
-            <tr>
-
-              <th>
-                الشهر
-              </th>
-
-              <th>
-                دخل
-              </th>
-
-              <th>
-                مصروف
-              </th>
-
-              <th>
-                الصافي
-              </th>
-
-            </tr>
-
-          </thead>
-
-          <tbody id="monthlyAnalysisBody">
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </div>
-
+    جاري التحليل...
 
   </div>
 
 </section>
 
 
-
-<!-- ========================================================
+<!-- =======================================================
      TRANSACTIONS
-======================================================== -->
+======================================================= -->
 
 <section class="card transactions">
 
 
-  <div class="card-header">
-
-    <h2 class="card-title">
-      المعاملات المالية
-    </h2>
-
-    <p class="card-hint">
-      جميع المعاملات القادمة من Google Sheets
-    </p>
-
-  </div>
-
-
-
   <div class="toolbar">
 
-
     <input
-      class="control"
+      class="search"
       type="search"
       id="searchInput"
-      placeholder="ابحث بالوصف أو الملاحظات…"
+      placeholder="ابحث بالوصف أو الملاحظات..."
     >
 
 
-    <select
-      class="control"
-      id="typeFilter">
+    <select id="typeFilter">
 
       <option value="">
         كل الأنواع
@@ -2297,9 +2666,7 @@ footer{
     </select>
 
 
-    <select
-      class="control"
-      id="categoryFilter">
+    <select id="categoryFilter">
 
       <option value="">
         كل الفئات
@@ -2309,39 +2676,29 @@ footer{
 
 
     <input
-      class="control"
       type="month"
       id="monthFilter"
     >
 
 
+    <span
+      class="count-pill"
+      id="countPill">
+
+      —
+
+    </span>
+
   </div>
 
 
-  <div
-    class="count"
-    id="countPill">
-
-    — عملية
-
-  </div>
-
-
-  <div
-    id="tableWrap"
-    class="transactions-table-wrap">
+  <div id="tableWrap">
 
     <div class="loading">
 
-      <div>
+      <div class="spinner"></div>
 
-        <div class="spinner"></div>
-
-        <div>
-          جارِ تحميل البيانات من Google Sheets…
-        </div>
-
-      </div>
+      جارِ تحميل البيانات من Google Sheets...
 
     </div>
 
@@ -2354,7 +2711,6 @@ footer{
 </main>
 
 
-
 <footer>
 
   يتم تحديث البيانات تلقائيًا من Google Sheets
@@ -2362,11 +2718,10 @@ footer{
 </footer>
 
 
-
 <script>
 
 /* =========================================================
-   GOOGLE SHEETS CONFIG
+   CONFIG
 ========================================================= */
 
 const CONFIG = {
@@ -2380,58 +2735,62 @@ const CONFIG = {
 };
 
 
+/*
+  Google Visualization endpoint
+
+  لا نحتاج Google Sheet API key
+  طالما الـSheet متاح للقراءة.
+*/
+
 const GVIZ_URL =
   `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
 
 
-
 /* =========================================================
-   STATE
+   GLOBAL STATE
 ========================================================= */
 
 let ALL_ROWS = [];
 
-let trendChart = null;
+let trendChartInstance = null;
 
-let categoryChart = null;
-
+let categoryChartInstance = null;
 
 
 /* =========================================================
    FORMATTERS
 ========================================================= */
 
-function number(value){
+function formatMoney(value){
 
-  const n = Number(value);
+  const number = Number(value) || 0;
 
-  return Number.isFinite(n) ? n : 0;
+  return (
+    number.toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits:
+          Number.isInteger(number) ? 0 : 2,
 
-}
-
-
-function money(value){
-
-  return number(value).toLocaleString(
-    "en-US",
-    {
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
-    }
-  ) + " ج.م";
-
-}
-
-
-function integer(value){
-
-  return number(value).toLocaleString(
-    "en-US",
-    {
-      maximumFractionDigits:0
-    }
+        maximumFractionDigits:2
+      }
+    )
+    + " ج.م"
   );
+}
 
+
+function formatNumber(value){
+
+  return (
+    Number(value || 0)
+    .toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:2
+      }
+    )
+  );
 }
 
 
@@ -2441,177 +2800,338 @@ function integer(value){
 
 function normalizeType(value){
 
-  const v =
+  const text =
     String(value || "")
-      .trim()
-      .toLowerCase();
+    .trim()
+    .toLowerCase();
 
   if(
-    v === "دخل" ||
-    v === "income" ||
-    v === "in"
+    text === "دخل" ||
+    text === "income" ||
+    text === "in"
   ){
-
     return "دخل";
-
   }
 
   if(
-    v === "مصروف" ||
-    v === "expense" ||
-    v === "out"
+    text === "مصروف" ||
+    text === "expense" ||
+    text === "out" ||
+    text === "مصاريف"
   ){
-
     return "مصروف";
-
   }
 
-  return "";
-
+  return String(value || "").trim();
 }
 
 
 /* =========================================================
-   PARSE AMOUNT
+   PARSE NUMBER
 ========================================================= */
 
 function parseAmount(value){
 
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+    return 0;
+  }
+
+
   if(typeof value === "number"){
 
-    return value;
-
-  }
-
-  let s =
-    String(value || "")
-      .trim();
-
-  if(!s){
-
-    return 0;
-
+    return Number.isFinite(value)
+      ? value
+      : 0;
   }
 
 
-  /* Arabic numerals */
-
-  const arabicDigits =
-    "٠١٢٣٤٥٦٧٨٩";
-
-  s = s.replace(
-    /[٠-٩]/g,
-    d => arabicDigits.indexOf(d)
-  );
+  let text =
+    String(value)
+    .trim();
 
 
-  /* Remove currency */
+  /*
+    Arabic separators:
 
-  s =
-    s.replace(
-      /EGP|ج\.?م|جنيه|£/gi,
-      ""
-    );
+    ٬ = Arabic thousands separator
+    ٫ = Arabic decimal separator
+  */
 
-
-  /* Remove commas/spaces */
-
-  s =
-    s.replace(
-      /[,\s٬]/g,
-      ""
-    );
+  text =
+    text
+    .replace(/٬/g,",")
+    .replace(/٫/g,".");
 
 
-  const n =
-    parseFloat(s);
+  /*
+    Remove currencies / letters.
+  */
 
-  return Number.isFinite(n)
-    ? n
+  text =
+    text
+    .replace(/[^\d,.\-]/g,"");
+
+
+  /*
+    Handle:
+
+    554,500.00
+    554500.00
+    554٬500٫00
+  */
+
+  if(
+    text.includes(",") &&
+    text.includes(".")
+  ){
+
+    text =
+      text.replace(/,/g,"");
+
+  }else if(
+    text.includes(",") &&
+    !text.includes(".")
+  ){
+
+    /*
+      Assume comma is thousands separator
+      when there are 3 digits after it.
+    */
+
+    const parts =
+      text.split(",");
+
+    if(
+      parts.length === 2 &&
+      parts[1].length !== 3
+    ){
+
+      text =
+        parts[0] +
+        "." +
+        parts[1];
+
+    }else{
+
+      text =
+        text.replace(/,/g,"");
+    }
+  }
+
+
+  const result =
+    parseFloat(text);
+
+
+  return Number.isFinite(result)
+    ? result
     : 0;
-
 }
 
 
 /* =========================================================
-   DATE PARSER
+   DATE NORMALIZER
 ========================================================= */
 
-function normalizeDate(cell){
+function normalizeDate(value){
+
+  if(!value){
+    return "";
+  }
+
+
+  let text =
+    String(value).trim();
+
+
+  /*
+    Google Visualization sometimes gives:
+
+    Date(2026,7,13)
+
+    Month is ZERO BASED.
+  */
+
+  const gvizMatch =
+    text.match(
+      /^Date\((\d+),\s*(\d+),\s*(\d+).*\)$/
+    );
+
+
+  if(gvizMatch){
+
+    const year =
+      Number(gvizMatch[1]);
+
+    const month =
+      Number(gvizMatch[2]) + 1;
+
+    const day =
+      Number(gvizMatch[3]);
+
+
+    return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+  }
+
+
+  /*
+    Already YYYY-MM-DD
+  */
+
+  const iso =
+    text.match(
+      /^(\d{4})-(\d{1,2})-(\d{1,2})/
+    );
+
+
+  if(iso){
+
+    return `${iso[1]}-${String(iso[2]).padStart(2,"0")}-${String(iso[3]).padStart(2,"0")}`;
+  }
+
+
+  /*
+    DD/MM/YYYY
+  */
+
+  const dmy =
+    text.match(
+      /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/
+    );
+
+
+  if(dmy){
+
+    return `${dmy[3]}-${String(dmy[2]).padStart(2,"0")}-${String(dmy[1]).padStart(2,"0")}`;
+  }
+
+
+  /*
+    Try native Date.
+  */
+
+  const date =
+    new Date(text);
+
+
+  if(!Number.isNaN(date.getTime())){
+
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+  }
+
+
+  return text;
+}
+
+
+/* =========================================================
+   CELL VALUE
+========================================================= */
+
+function getCellValue(cell){
 
   if(!cell){
 
     return "";
-
   }
 
 
-  if(cell.f){
+  /*
+    Prefer formatted value.
+  */
 
-    const formatted =
-      String(cell.f).trim();
+  if(
+    cell.f !== undefined &&
+    cell.f !== null &&
+    cell.f !== ""
+  ){
 
-    /*
-      Google Sheets often returns:
-      8/14/2026
-      2026-08-14
-    */
-
-    const match =
-      formatted.match(
-        /(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/
-      );
-
-    if(match){
-
-      return `${match[1]}-${String(match[2]).padStart(2,"0")}-${String(match[3]).padStart(2,"0")}`;
-
-    }
-
+    return cell.f;
   }
 
 
-  if(cell.v){
+  if(
+    cell.v !== undefined &&
+    cell.v !== null
+  ){
 
-    const raw =
-      String(cell.v);
-
-    /*
-      Date(2026,7,14)
-    */
-
-    const match =
-      raw.match(
-        /Date\((\d+),(\d+),(\d+)\)/
-      );
-
-    if(match){
-
-      return `${match[1]}-${String(Number(match[2])+1).padStart(2,"0")}-${String(match[3]).padStart(2,"0")}`;
-
-    }
-
-    if(/^\d{4}-\d{2}-\d{2}/.test(raw)){
-
-      return raw.slice(0,10);
-
-    }
-
+    return cell.v;
   }
 
 
-  return String(cell.f || cell.v || "");
-
+  return "";
 }
 
 
 /* =========================================================
-   LOAD GOOGLE SHEETS
+   PARSE GVIZ RESPONSE
+========================================================= */
+
+function parseGviz(text){
+
+  const start =
+    text.indexOf("{");
+
+  const end =
+    text.lastIndexOf("}");
+
+
+  if(start === -1 || end === -1){
+
+    throw new Error(
+      "Invalid Google Sheets response"
+    );
+  }
+
+
+  return JSON.parse(
+    text.substring(
+      start,
+      end + 1
+    )
+  );
+}
+
+
+/* =========================================================
+   FIND COLUMN
+========================================================= */
+
+function findColumn(headers, patterns){
+
+  return headers.findIndex(
+    header => {
+
+      const value =
+        String(header || "")
+        .trim()
+        .toLowerCase();
+
+      return patterns.some(
+        pattern =>
+          value.includes(pattern)
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   LOAD DATA
 ========================================================= */
 
 async function loadData(){
 
   try{
+
+    setSyncStatus(
+      "جاري المزامنة..."
+    );
+
 
     const response =
       await fetch(
@@ -2627,7 +3147,6 @@ async function loadData(){
       throw new Error(
         `HTTP ${response.status}`
       );
-
     }
 
 
@@ -2635,189 +3154,187 @@ async function loadData(){
       await response.text();
 
 
-    const start =
-      text.indexOf("{");
-
-    const end =
-      text.lastIndexOf("}");
+    const data =
+      parseGviz(text);
 
 
-    if(start === -1 || end === -1){
+    if(
+      !data.table ||
+      !Array.isArray(data.table.cols)
+    ){
 
       throw new Error(
-        "Invalid Google Sheets response"
+        "Google Sheets data is unavailable"
       );
-
     }
 
 
-    const json =
-      JSON.parse(
-        text.slice(start,end+1)
+    const headers =
+      data.table.cols.map(
+        column =>
+          String(
+            column.label || ""
+          ).trim()
       );
-
-
-    const cols =
-      json.table.cols || [];
-
-    const rows =
-      json.table.rows || [];
-
-
-    const labels =
-      cols.map(
-        c =>
-          String(c.label || "")
-            .trim()
-            .toLowerCase()
-      );
-
-
-    /*
-      Find columns using header names.
-    */
-
-    const findColumn =
-      patterns =>
-        labels.findIndex(
-          label =>
-            patterns.some(
-              pattern =>
-                label.includes(pattern)
-            )
-        );
 
 
     const dateIndex =
-      findColumn([
-        "date",
-        "التاريخ"
-      ]);
+      findColumn(
+        headers,
+        ["date","التاريخ"]
+      );
 
 
     const typeIndex =
-      findColumn([
-        "type",
-        "النوع"
-      ]);
+      findColumn(
+        headers,
+        ["type","النوع"]
+      );
 
 
     const categoryIndex =
-      findColumn([
-        "category",
-        "الفئة"
-      ]);
+      findColumn(
+        headers,
+        ["category","الفئة"]
+      );
 
 
     const descriptionIndex =
-      findColumn([
-        "description",
-        "الوصف"
-      ]);
+      findColumn(
+        headers,
+        ["description","الوصف"]
+      );
 
 
     const amountIndex =
-      findColumn([
-        "amount",
-        "المبلغ",
-        "value",
-        "القيمة"
-      ]);
+      findColumn(
+        headers,
+        ["amount","المبلغ"]
+      );
 
 
     const notesIndex =
-      findColumn([
-        "notes",
-        "note",
-        "ملاحظات"
-      ]);
+      findColumn(
+        headers,
+        ["notes","note","الملاحظات","ملاحظات"]
+      );
 
 
-    console.log(
-      "Google Sheets columns:",
-      labels
-    );
+    if(
+      typeIndex === -1 ||
+      amountIndex === -1
+    ){
+
+      console.warn(
+        "Detected headers:",
+        headers
+      );
+
+      throw new Error(
+        "لم يتم العثور على أعمدة Type أو Amount في Google Sheets."
+      );
+    }
 
 
-    console.log(
-      "Detected indexes:",
-      {
-        dateIndex,
-        typeIndex,
-        categoryIndex,
-        descriptionIndex,
-        amountIndex,
-        notesIndex
-      }
-    );
+    const sheetRows =
+      data.table.rows || [];
 
 
     ALL_ROWS =
-      rows
-        .map(row => {
+      sheetRows
+      .map(row => {
 
-          const cells =
-            row.c || [];
-
-
-          const cell =
-            index =>
-              index >= 0
-                ? cells[index]
-                : null;
+        const cells =
+          row.c || [];
 
 
-          return {
+        const rawDate =
+          dateIndex >= 0
+            ? getCellValue(
+                cells[dateIndex]
+              )
+            : "";
 
-            date:
-              normalizeDate(
-                cell(dateIndex)
-              ),
 
-            type:
-              normalizeType(
-                cell(typeIndex)?.f ??
-                cell(typeIndex)?.v
-              ),
+        const rawType =
+          getCellValue(
+            cells[typeIndex]
+          );
 
-            category:
-              String(
-                cell(categoryIndex)?.f ??
-                cell(categoryIndex)?.v ??
-                ""
-              ).trim(),
 
-            description:
-              String(
-                cell(descriptionIndex)?.f ??
-                cell(descriptionIndex)?.v ??
-                ""
-              ).trim(),
+        const rawCategory =
+          categoryIndex >= 0
+            ? getCellValue(
+                cells[categoryIndex]
+              )
+            : "";
 
-            amount:
-              parseAmount(
-                cell(amountIndex)?.v ??
-                cell(amountIndex)?.f
-              ),
 
-            notes:
-              String(
-                cell(notesIndex)?.f ??
-                cell(notesIndex)?.v ??
-                ""
-              ).trim()
+        const rawDescription =
+          descriptionIndex >= 0
+            ? getCellValue(
+                cells[descriptionIndex]
+              )
+            : "";
 
-          };
 
-        })
+        const rawAmount =
+          getCellValue(
+            cells[amountIndex]
+          );
 
-        .filter(
-          row =>
-            row.type ||
-            row.amount ||
-            row.description ||
-            row.date
+
+        const rawNotes =
+          notesIndex >= 0
+            ? getCellValue(
+                cells[notesIndex]
+              )
+            : "";
+
+
+        return {
+
+          date:
+            normalizeDate(
+              rawDate
+            ),
+
+          type:
+            normalizeType(
+              rawType
+            ),
+
+          category:
+            String(
+              rawCategory || "أخرى"
+            ).trim(),
+
+          description:
+            String(
+              rawDescription || ""
+            ).trim(),
+
+          amount:
+            parseAmount(
+              rawAmount
+            ),
+
+          notes:
+            String(
+              rawNotes || ""
+            ).trim()
+        };
+
+      })
+      .filter(row => {
+
+        return (
+          row.date ||
+          row.description ||
+          row.amount !== 0
         );
+
+      });
 
 
     console.log(
@@ -2831,27 +3348,26 @@ async function loadData(){
     render();
 
 
-    document.getElementById(
-      "syncTime"
-    ).textContent =
+    setSyncStatus(
       "آخر مزامنة: " +
-      new Date().toLocaleTimeString(
+      new Date()
+      .toLocaleTimeString(
         "ar-EG"
-      );
+      )
+    );
 
 
   }catch(error){
 
     console.error(
-      "Google Sheets Error:",
+      "Google Sheets error:",
       error
     );
 
 
-    document.getElementById(
-      "syncTime"
-    ).textContent =
-      "تعذرت المزامنة";
+    setSyncStatus(
+      "تعذّرت المزامنة"
+    );
 
 
     document.getElementById(
@@ -2860,12 +3376,12 @@ async function loadData(){
 
       <div class="error">
 
-        تعذر تحميل البيانات من Google Sheets.
+        تعذّر تحميل البيانات من Google Sheets.
 
         <br><br>
 
-        تأكد أن الشيت متاح للعرض
-        وأن الـ GID صحيح.
+        تأكد أن الملف متاح للقراءة وأن
+        Sheet ID و GID صحيحان.
 
       </div>
 
@@ -2877,7 +3393,28 @@ async function loadData(){
 
 
 /* =========================================================
-   FILTER
+   SYNC STATUS
+========================================================= */
+
+function setSyncStatus(text){
+
+  const element =
+    document.getElementById(
+      "syncTime"
+    );
+
+
+  if(element){
+
+    element.textContent =
+      text;
+  }
+
+}
+
+
+/* =========================================================
+   CATEGORY FILTER
 ========================================================= */
 
 function populateCategoryFilter(){
@@ -2892,21 +3429,14 @@ function populateCategoryFilter(){
     select.value;
 
 
-  select.innerHTML = `
-
-    <option value="">
-      كل الفئات
-    </option>
-
-  `;
-
-
   const categories =
-    [...new Set(
-      ALL_ROWS
+    [
+      ...new Set(
+        ALL_ROWS
         .map(row => row.category)
         .filter(Boolean)
-    )]
+      )
+    ]
     .sort(
       (a,b) =>
         a.localeCompare(
@@ -2916,6 +3446,15 @@ function populateCategoryFilter(){
     );
 
 
+  select.innerHTML = `
+
+    <option value="">
+      كل الفئات
+    </option>
+
+  `;
+
+
   categories.forEach(category => {
 
     const option =
@@ -2923,11 +3462,13 @@ function populateCategoryFilter(){
         "option"
       );
 
+
     option.value =
       category;
 
     option.textContent =
       category;
+
 
     select.appendChild(
       option
@@ -2942,38 +3483,49 @@ function populateCategoryFilter(){
 
     select.value =
       current;
-
   }
 
 }
 
 
+/* =========================================================
+   FILTER
+========================================================= */
+
 function getFilteredRows(){
 
   const search =
-    document.getElementById(
-      "searchInput"
-    ).value
-    .trim()
-    .toLowerCase();
+    document
+      .getElementById(
+        "searchInput"
+      )
+      .value
+      .trim()
+      .toLowerCase();
 
 
   const type =
-    document.getElementById(
-      "typeFilter"
-    ).value;
+    document
+      .getElementById(
+        "typeFilter"
+      )
+      .value;
 
 
   const category =
-    document.getElementById(
-      "categoryFilter"
-    ).value;
+    document
+      .getElementById(
+        "categoryFilter"
+      )
+      .value;
 
 
   const month =
-    document.getElementById(
-      "monthFilter"
-    ).value;
+    document
+      .getElementById(
+        "monthFilter"
+      )
+      .value;
 
 
   return ALL_ROWS.filter(row => {
@@ -2984,7 +3536,6 @@ function getFilteredRows(){
     ){
 
       return false;
-
     }
 
 
@@ -2994,7 +3545,6 @@ function getFilteredRows(){
     ){
 
       return false;
-
     }
 
 
@@ -3004,31 +3554,30 @@ function getFilteredRows(){
     ){
 
       return false;
-
     }
 
 
     if(search){
 
-      const haystack =
-        [
-          row.description,
-          row.notes,
-          row.category,
-          row.type
-        ]
-        .join(" ")
+      const searchable =
+        (
+          row.description +
+          " " +
+          row.notes +
+          " " +
+          row.category
+        )
         .toLowerCase();
 
 
       if(
-        !haystack.includes(search)
+        !searchable.includes(
+          search
+        )
       ){
 
         return false;
-
       }
-
     }
 
 
@@ -3040,29 +3589,115 @@ function getFilteredRows(){
 
 
 /* =========================================================
-   MAIN RENDER
+   CALCULATE TOTALS
+========================================================= */
+
+function calculateTotals(rows){
+
+  const incomeRows =
+    rows.filter(
+      row =>
+        row.type === "دخل"
+    );
+
+
+  const expenseRows =
+    rows.filter(
+      row =>
+        row.type === "مصروف"
+    );
+
+
+  const income =
+    incomeRows.reduce(
+      (sum,row) =>
+        sum + row.amount,
+      0
+    );
+
+
+  const expense =
+    expenseRows.reduce(
+      (sum,row) =>
+        sum + row.amount,
+      0
+    );
+
+
+  const net =
+    income - expense;
+
+
+  const margin =
+    income !== 0
+      ? (net / income) * 100
+      : 0;
+
+
+  const expenseRatio =
+    income !== 0
+      ? (expense / income) * 100
+      : 0;
+
+
+  return {
+
+    income,
+    expense,
+    net,
+
+    count:rows.length,
+
+    incomeCount:
+      incomeRows.length,
+
+    expenseCount:
+      expenseRows.length,
+
+    avgIncome:
+      incomeRows.length
+        ? income / incomeRows.length
+        : 0,
+
+    avgExpense:
+      expenseRows.length
+        ? expense / expenseRows.length
+        : 0,
+
+    margin,
+    expenseRatio
+  };
+
+}
+
+
+/* =========================================================
+   RENDER EVERYTHING
 ========================================================= */
 
 function render(){
 
-  const filtered =
+  const filteredRows =
     getFilteredRows();
 
 
+  /*
+    KPI and transaction table
+    respond to filters.
+  */
+
   renderKPIs(
-    filtered
+    filteredRows
   );
 
-
   renderTransactions(
-    filtered
+    filteredRows
   );
 
 
   /*
-    IMPORTANT:
-    Full financial analysis uses ALL data,
-    not filtered data.
+    Financial analysis always represents
+    the full dataset, not the filtered table.
   */
 
   renderFinancialAnalysis(
@@ -3070,13 +3705,16 @@ function render(){
   );
 
 
+  /*
+    Charts also represent full financial data.
+  */
+
   renderTrendChart(
-    filtered
+    ALL_ROWS
   );
 
-
   renderCategoryChart(
-    filtered
+    ALL_ROWS
   );
 
 }
@@ -3086,89 +3724,40 @@ function render(){
    KPI
 ========================================================= */
 
-function calculateTotals(rows){
-
-  let income = 0;
-  let expense = 0;
-
-  let incomeCount = 0;
-  let expenseCount = 0;
-
-
-  rows.forEach(row => {
-
-    if(row.type === "دخل"){
-
-      income += row.amount;
-
-      incomeCount++;
-
-    }
-
-
-    if(row.type === "مصروف"){
-
-      expense += row.amount;
-
-      expenseCount++;
-
-    }
-
-  });
-
-
-  return {
-
-    income,
-    expense,
-
-    net:
-      income - expense,
-
-    incomeCount,
-    expenseCount,
-
-    count:
-      rows.length,
-
-    margin:
-      income
-        ? ((income-expense)/income)*100
-        : 0
-
-  };
-
-}
-
-
 function renderKPIs(rows){
 
-  const data =
-    calculateTotals(rows);
+  const totals =
+    calculateTotals(
+      rows
+    );
 
 
   document.getElementById(
     "kpiIncome"
   ).textContent =
-    money(data.income);
+    formatMoney(
+      totals.income
+    );
 
 
   document.getElementById(
     "kpiIncomeCount"
   ).textContent =
-    `${integer(data.incomeCount)} عملية دخل`;
+    `${formatNumber(totals.incomeCount)} عملية دخل`;
 
 
   document.getElementById(
     "kpiExpense"
   ).textContent =
-    money(data.expense);
+    formatMoney(
+      totals.expense
+    );
 
 
   document.getElementById(
     "kpiExpenseCount"
   ).textContent =
-    `${integer(data.expenseCount)} عملية مصروف`;
+    `${formatNumber(totals.expenseCount)} عملية مصروف`;
 
 
   const netElement =
@@ -3178,7 +3767,358 @@ function renderKPIs(rows){
 
 
   netElement.textContent =
-    money(data.net);
+    formatMoney(
+      totals.net
+    );
+
+
+  netElement.classList.remove(
+    "value-positive",
+    "value-negative"
+  );
+
+
+  netElement.classList.add(
+    totals.net >= 0
+      ? "value-positive"
+      : "value-negative"
+  );
+
+
+  document.getElementById(
+    "kpiMargin"
+  ).textContent =
+    totals.income
+      ? `هامش صافي ${totals.margin.toFixed(1)}%`
+      : "لا يوجد دخل مسجل";
+
+
+  document.getElementById(
+    "kpiCount"
+  ).textContent =
+    formatNumber(
+      rows.length
+    );
+
+
+  const avg =
+    rows.length
+      ? (totals.income + totals.expense) / rows.length
+      : 0;
+
+
+  document.getElementById(
+    "kpiAvg"
+  ).textContent =
+    `متوسط العملية ${formatMoney(avg)}`;
+
+
+  document.getElementById(
+    "countPill"
+  ).textContent =
+    `${formatNumber(rows.length)} عملية`;
+
+}
+
+
+/* =========================================================
+   PROFIT PERFORMANCE
+========================================================= */
+
+function animateProfitStory(
+  income,
+  expense
+){
+
+  const story =
+    document.getElementById(
+      "profitStory"
+    );
+
+
+  const percentElement =
+    document.getElementById(
+      "profitPercent"
+    );
+
+
+  const verbElement =
+    document.getElementById(
+      "profitVerb"
+    );
+
+
+  const captionElement =
+    document.getElementById(
+      "profitCaption"
+    );
+
+
+  const statusElement =
+    document.getElementById(
+      "profitStatus"
+    );
+
+
+  const meterElement =
+    document.getElementById(
+      "profitMeter"
+    );
+
+
+  const net =
+    income - expense;
+
+
+  /*
+    Important:
+
+    Profit percentage is calculated
+    relative to total income.
+
+    Example:
+
+    Income = 554,500
+    Expense = 2,172,920
+
+    Net = -1,618,420
+
+    Margin =
+    -1,618,420 / 554,500 * 100
+
+    ≈ -291.9%
+  */
+
+  const percentage =
+    income !== 0
+      ? (net / income) * 100
+      : 0;
+
+
+  const absolutePercentage =
+    Math.abs(
+      percentage
+    );
+
+
+  story.classList.remove(
+    "is-profit",
+    "is-loss"
+  );
+
+
+  if(net >= 0){
+
+    story.classList.add(
+      "is-profit"
+    );
+
+
+    verbElement.textContent =
+      "أنت كسبان";
+
+
+    statusElement.textContent =
+      "أداء مربح";
+
+
+    captionElement.textContent =
+      `صافي ربحك ${formatMoney(net)} من إجمالي الدخل`;
+
+  }else{
+
+    story.classList.add(
+      "is-loss"
+    );
+
+
+    verbElement.textContent =
+      "أنت خسران";
+
+
+    statusElement.textContent =
+      "أداء يحتاج انتباه";
+
+
+    captionElement.textContent =
+      `مصروفاتك أعلى من دخلك بـ ${formatMoney(Math.abs(net))}`;
+
+  }
+
+
+  /*
+    Reset animation.
+  */
+
+  percentElement.textContent =
+    "0.0%";
+
+
+  const start =
+    performance.now();
+
+
+  const duration =
+    1600;
+
+
+  function animationFrame(now){
+
+    const progress =
+      Math.min(
+        (now - start) / duration,
+        1
+      );
+
+
+    const eased =
+      1 -
+      Math.pow(
+        1 - progress,
+        3
+      );
+
+
+    const current =
+      absolutePercentage *
+      eased;
+
+
+    percentElement.textContent =
+      `${current.toFixed(1)}%`;
+
+
+    if(progress < 1){
+
+      requestAnimationFrame(
+        animationFrame
+      );
+
+    }
+
+  }
+
+
+  requestAnimationFrame(
+    animationFrame
+  );
+
+
+  /*
+    Cap visual meter at 100%.
+  */
+
+  const meterWidth =
+    Math.min(
+      Math.max(
+        absolutePercentage,
+        4
+      ),
+      100
+    );
+
+
+  meterElement.style.width =
+    "0%";
+
+
+  requestAnimationFrame(
+    () => {
+
+      meterElement.style.transition =
+        "width 1.8s cubic-bezier(.16,1,.3,1)";
+
+      meterElement.style.width =
+        meterWidth + "%";
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FULL FINANCIAL ANALYSIS
+========================================================= */
+
+function renderFinancialAnalysis(
+  rows
+){
+
+  const totals =
+    calculateTotals(
+      rows
+    );
+
+
+  document.getElementById(
+    "analysisIncome"
+  ).textContent =
+    formatMoney(
+      totals.income
+    );
+
+
+  document.getElementById(
+    "analysisExpense"
+  ).textContent =
+    formatMoney(
+      totals.expense
+    );
+
+
+  document.getElementById(
+    "analysisNet"
+  ).textContent =
+    formatMoney(
+      totals.net
+    );
+
+
+  document.getElementById(
+    "analysisExpenseRatio"
+  ).textContent =
+    `${totals.expenseRatio.toFixed(1)}%`;
+
+
+  document.getElementById(
+    "analysisCount"
+  ).textContent =
+    formatNumber(
+      totals.count
+    );
+
+
+  document.getElementById(
+    "analysisAvgIncome"
+  ).textContent =
+    formatMoney(
+      totals.avgIncome
+    );
+
+
+  document.getElementById(
+    "analysisAvgExpense"
+  ).textContent =
+    formatMoney(
+      totals.avgExpense
+    );
+
+
+  document.getElementById(
+    "analysisMargin"
+  ).textContent =
+    `${totals.margin.toFixed(1)}%`;
+
+
+  /*
+    Dynamic colors
+  */
+
+  const netElement =
+    document.getElementById(
+      "analysisNet"
+    );
 
 
   netElement.classList.remove(
@@ -3188,158 +4128,35 @@ function renderKPIs(rows){
 
 
   netElement.classList.add(
-    data.net >= 0
+    totals.net >= 0
       ? "positive"
       : "negative"
   );
 
 
-  document.getElementById(
-    "kpiMargin"
-  ).textContent =
-    data.income
-      ? `هامش صافي ${data.margin.toFixed(1)}%`
-      : "لا يوجد دخل مسجل";
-
-
-  document.getElementById(
-    "kpiCount"
-  ).textContent =
-    integer(data.count);
-
-
-  const average =
-    data.count
-      ? (data.income+data.expense)/data.count
-      : 0;
-
-
-  document.getElementById(
-    "kpiAvg"
-  ).textContent =
-    `متوسط العملية ${money(average)}`;
-
-
-  document.getElementById(
-    "countPill"
-  ).textContent =
-    `${integer(rows.length)} عملية`;
-
-}
-
-
-/* =========================================================
-   FINANCIAL ANALYSIS
-========================================================= */
-
-function renderFinancialAnalysis(rows){
-
-  const data =
-    calculateTotals(rows);
-
-
-  const incomeRows =
-    rows.filter(
-      r => r.type === "دخل"
-    );
-
-
-  const expenseRows =
-    rows.filter(
-      r => r.type === "مصروف"
-    );
-
-
-  const avgIncome =
-    incomeRows.length
-      ? data.income/incomeRows.length
-      : 0;
-
-
-  const avgExpense =
-    expenseRows.length
-      ? data.expense/expenseRows.length
-      : 0;
-
-
-  const expenseRatio =
-    data.income
-      ? (data.expense/data.income)*100
-      : 0;
-
-
-  document.getElementById(
-    "analysisIncome"
-  ).textContent =
-    money(data.income);
-
-
-  document.getElementById(
-    "analysisExpense"
-  ).textContent =
-    money(data.expense);
-
-
-  const netEl =
-    document.getElementById(
-      "analysisNet"
-    );
-
-
-  netEl.textContent =
-    money(data.net);
-
-
-  netEl.className =
-    "metric-value mono " +
-    (
-      data.net >= 0
-        ? "positive"
-        : "negative"
-    );
-
-
-  document.getElementById(
-    "analysisExpenseRatio"
-  ).textContent =
-    expenseRatio.toFixed(1) + "%";
-
-
-  document.getElementById(
-    "analysisCount"
-  ).textContent =
-    integer(data.count);
-
-
-  document.getElementById(
-    "analysisAvgIncome"
-  ).textContent =
-    money(avgIncome);
-
-
-  document.getElementById(
-    "analysisAvgExpense"
-  ).textContent =
-    money(avgExpense);
-
-
-  const marginEl =
+  const marginElement =
     document.getElementById(
       "analysisMargin"
     );
 
 
-  marginEl.textContent =
-    data.margin.toFixed(1) + "%";
+  marginElement.classList.remove(
+    "positive",
+    "negative"
+  );
 
 
-  marginEl.className =
-    "metric-value mono " +
-    (
-      data.margin >= 0
-        ? "positive"
-        : "negative"
-    );
+  marginElement.classList.add(
+    totals.margin >= 0
+      ? "positive"
+      : "negative"
+  );
+
+
+  animateProfitStory(
+    totals.income,
+    totals.expense
+  );
 
 
   renderCategoryAnalysis(
@@ -3352,10 +4169,10 @@ function renderFinancialAnalysis(rows){
   );
 
 
-  animateProfit(
-    data.income,
-    data.expense
-  );
+  document.getElementById(
+    "analysisStatus"
+  ).textContent =
+    `✓ تم الحساب من ${formatNumber(rows.length)} معاملة — آخر تحديث: ${new Date().toLocaleTimeString("ar-EG")}`;
 
 }
 
@@ -3364,7 +4181,9 @@ function renderFinancialAnalysis(rows){
    CATEGORY ANALYSIS
 ========================================================= */
 
-function renderCategoryAnalysis(rows){
+function renderCategoryAnalysis(
+  rows
+){
 
   const categories = {};
 
@@ -3376,24 +4195,19 @@ function renderCategoryAnalysis(rows){
       "أخرى";
 
 
-    if(
-      !categories[category]
-    ){
+    if(!categories[category]){
 
       categories[category] = {
 
         income:0,
 
         expense:0
-
       };
 
     }
 
 
-    if(
-      row.type === "دخل"
-    ){
+    if(row.type === "دخل"){
 
       categories[category].income +=
         row.amount;
@@ -3401,9 +4215,7 @@ function renderCategoryAnalysis(rows){
     }
 
 
-    if(
-      row.type === "مصروف"
-    ){
+    if(row.type === "مصروف"){
 
       categories[category].expense +=
         row.amount;
@@ -3418,19 +4230,16 @@ function renderCategoryAnalysis(rows){
       categories
     )
     .sort(
-      (a,b) => {
-
-        const aTotal =
-          a[1].income +
-          a[1].expense;
-
-        const bTotal =
+      (a,b) =>
+        (
           b[1].income +
-          b[1].expense;
-
-        return bTotal-aTotal;
-
-      }
+          b[1].expense
+        )
+        -
+        (
+          a[1].income +
+          a[1].expense
+        )
     );
 
 
@@ -3440,13 +4249,31 @@ function renderCategoryAnalysis(rows){
     );
 
 
+  if(!entries.length){
+
+    body.innerHTML = `
+
+      <tr>
+
+        <td colspan="4">
+          لا توجد بيانات.
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+  }
+
+
   body.innerHTML =
     entries.map(
-      ([category,data]) => {
+      ([category,value]) => {
 
         const net =
-          data.income -
-          data.expense;
+          value.income -
+          value.expense;
 
 
         return `
@@ -3454,19 +4281,19 @@ function renderCategoryAnalysis(rows){
           <tr>
 
             <td>
-              ${escapeHTML(category)}
+              ${escapeHtml(category)}
             </td>
 
             <td class="mono positive">
-              ${money(data.income)}
+              ${formatMoney(value.income)}
             </td>
 
-            <td class="mono ${data.expense > 0 ? "negative":""}">
-              ${money(data.expense)}
+            <td class="mono negative">
+              ${formatMoney(value.expense)}
             </td>
 
-            <td class="mono ${net < 0 ? "negative":"positive"}">
-              ${money(net)}
+            <td class="mono ${net >= 0 ? "positive" : "negative"}">
+              ${formatMoney(net)}
             </td>
 
           </tr>
@@ -3474,12 +4301,13 @@ function renderCategoryAnalysis(rows){
         `;
 
       }
-    )
-    .join("");
+    ).join("");
 
 
   const totals =
-    calculateTotals(rows);
+    calculateTotals(
+      rows
+    );
 
 
   body.innerHTML += `
@@ -3487,26 +4315,24 @@ function renderCategoryAnalysis(rows){
     <tr>
 
       <td>
-        <strong>
-          الإجمالي
-        </strong>
+        <strong>الإجمالي</strong>
       </td>
 
       <td class="mono positive">
         <strong>
-          ${money(totals.income)}
+          ${formatMoney(totals.income)}
         </strong>
       </td>
 
       <td class="mono negative">
         <strong>
-          ${money(totals.expense)}
+          ${formatMoney(totals.expense)}
         </strong>
       </td>
 
-      <td class="mono ${totals.net < 0 ? "negative":"positive"}">
+      <td class="mono ${totals.net >= 0 ? "positive" : "negative"}">
         <strong>
-          ${money(totals.net)}
+          ${formatMoney(totals.net)}
         </strong>
       </td>
 
@@ -3521,7 +4347,9 @@ function renderCategoryAnalysis(rows){
    MONTHLY ANALYSIS
 ========================================================= */
 
-function renderMonthlyAnalysis(rows){
+function renderMonthlyAnalysis(
+  rows
+){
 
   const monthly = {};
 
@@ -3529,7 +4357,9 @@ function renderMonthlyAnalysis(rows){
   rows.forEach(row => {
 
     const month =
-      row.date.slice(0,7);
+      String(
+        row.date || ""
+      ).slice(0,7);
 
 
     if(
@@ -3537,28 +4367,22 @@ function renderMonthlyAnalysis(rows){
     ){
 
       return;
-
     }
 
 
-    if(
-      !monthly[month]
-    ){
+    if(!monthly[month]){
 
       monthly[month] = {
 
         income:0,
 
         expense:0
-
       };
 
     }
 
 
-    if(
-      row.type === "دخل"
-    ){
+    if(row.type === "دخل"){
 
       monthly[month].income +=
         row.amount;
@@ -3566,9 +4390,7 @@ function renderMonthlyAnalysis(rows){
     }
 
 
-    if(
-      row.type === "مصروف"
-    ){
+    if(row.type === "مصروف"){
 
       monthly[month].expense +=
         row.amount;
@@ -3579,8 +4401,10 @@ function renderMonthlyAnalysis(rows){
 
 
   const months =
-    Object.keys(monthly)
-      .sort();
+    Object.keys(
+      monthly
+    )
+    .sort();
 
 
   const body =
@@ -3596,7 +4420,7 @@ function renderMonthlyAnalysis(rows){
       <tr>
 
         <td colspan="4">
-          لا توجد بيانات شهرية
+          لا توجد بيانات شهرية.
         </td>
 
       </tr>
@@ -3604,230 +4428,48 @@ function renderMonthlyAnalysis(rows){
     `;
 
     return;
-
   }
 
 
   body.innerHTML =
-    months.map(month => {
+    months.map(
+      month => {
 
-      const data =
-        monthly[month];
+        const value =
+          monthly[month];
 
 
-      const net =
-        data.income -
-        data.expense;
+        const net =
+          value.income -
+          value.expense;
 
 
-      return `
+        return `
 
-        <tr>
+          <tr>
 
-          <td class="mono">
-            ${month}
-          </td>
+            <td class="mono">
+              ${month}
+            </td>
 
-          <td class="mono positive">
-            ${money(data.income)}
-          </td>
+            <td class="mono positive">
+              ${formatMoney(value.income)}
+            </td>
 
-          <td class="mono ${data.expense > 0 ? "negative":""}">
-            ${money(data.expense)}
-          </td>
+            <td class="mono negative">
+              ${formatMoney(value.expense)}
+            </td>
 
-          <td class="mono ${net < 0 ? "negative":"positive"}">
-            ${money(net)}
-          </td>
+            <td class="mono ${net >= 0 ? "positive" : "negative"}">
+              ${formatMoney(net)}
+            </td>
 
-        </tr>
+          </tr>
 
-      `;
+        `;
 
-    })
-    .join("");
-
-}
-
-
-/* =========================================================
-   PROFIT ANIMATION
-========================================================= */
-
-function animateProfit(
-  income,
-  expense
-){
-
-  const story =
-    document.getElementById(
-      "profitStory"
-    );
-
-
-  const verb =
-    document.getElementById(
-      "profitVerb"
-    );
-
-
-  const percent =
-    document.getElementById(
-      "profitPercent"
-    );
-
-
-  const caption =
-    document.getElementById(
-      "profitCaption"
-    );
-
-
-  const status =
-    document.getElementById(
-      "profitStatus"
-    );
-
-
-  const fill =
-    document.getElementById(
-      "profitFill"
-    );
-
-
-  const net =
-    income -
-    expense;
-
-
-  const percentage =
-    income
-      ? (net/income)*100
-      : 0;
-
-
-  const absolute =
-    Math.abs(
-      percentage
-    );
-
-
-  story.classList.remove(
-    "profit-mode",
-    "loss-mode"
-  );
-
-
-  if(net >= 0){
-
-    story.classList.add(
-      "profit-mode"
-    );
-
-
-    verb.textContent =
-      "أنت كسبان";
-
-
-    status.textContent =
-      "أداء مربح";
-
-
-    caption.textContent =
-      `صافي ربحك ${money(net)} من إجمالي الدخل`;
-
-  }else{
-
-    story.classList.add(
-      "loss-mode"
-    );
-
-
-    verb.textContent =
-      "أنت خسران";
-
-
-    status.textContent =
-      "أداء يحتاج انتباه";
-
-
-    caption.textContent =
-      `مصروفاتك أعلى من دخلك بـ ${money(Math.abs(net))}`;
-
-  }
-
-
-  percent.textContent =
-    "0.0%";
-
-
-  const start =
-    performance.now();
-
-
-  const duration =
-    1600;
-
-
-  function animate(now){
-
-    const progress =
-      Math.min(
-        (now-start)/duration,
-        1
-      );
-
-
-    const eased =
-      1 -
-      Math.pow(
-        1-progress,
-        3
-      );
-
-
-    percent.textContent =
-      `${(absolute*eased).toFixed(1)}%`;
-
-
-    if(progress < 1){
-
-      requestAnimationFrame(
-        animate
-      );
-
-    }
-
-  }
-
-
-  requestAnimationFrame(
-    animate
-  );
-
-
-  const width =
-    Math.min(
-      Math.max(
-        absolute,
-        4
-      ),
-      100
-    );
-
-
-  fill.style.width =
-    "0%";
-
-
-  requestAnimationFrame(
-    () => {
-
-      fill.style.width =
-        width + "%";
-
-    }
-  );
+      }
+    ).join("");
 
 }
 
@@ -3836,14 +4478,19 @@ function animateProfit(
    TREND CHART
 ========================================================= */
 
-function renderTrendChart(rows){
+function renderTrendChart(
+  rows
+){
 
   if(
     typeof Chart === "undefined"
   ){
 
-    return;
+    console.error(
+      "Chart.js is not loaded."
+    );
 
+    return;
   }
 
 
@@ -3853,7 +4500,9 @@ function renderTrendChart(rows){
   rows.forEach(row => {
 
     const month =
-      row.date.slice(0,7);
+      String(
+        row.date || ""
+      ).slice(0,7);
 
 
     if(
@@ -3861,28 +4510,22 @@ function renderTrendChart(rows){
     ){
 
       return;
-
     }
 
 
-    if(
-      !monthly[month]
-    ){
+    if(!monthly[month]){
 
       monthly[month] = {
 
         income:0,
 
         expense:0
-
       };
 
     }
 
 
-    if(
-      row.type === "دخل"
-    ){
+    if(row.type === "دخل"){
 
       monthly[month].income +=
         row.amount;
@@ -3890,9 +4533,7 @@ function renderTrendChart(rows){
     }
 
 
-    if(
-      row.type === "مصروف"
-    ){
+    if(row.type === "مصروف"){
 
       monthly[month].expense +=
         row.amount;
@@ -3903,22 +4544,10 @@ function renderTrendChart(rows){
 
 
   const months =
-    Object.keys(monthly)
-      .sort();
-
-
-  const income =
-    months.map(
-      month =>
-        monthly[month].income
-    );
-
-
-  const expense =
-    months.map(
-      month =>
-        monthly[month].expense
-    );
+    Object.keys(
+      monthly
+    )
+    .sort();
 
 
   const canvas =
@@ -3927,16 +4556,23 @@ function renderTrendChart(rows){
     );
 
 
-  if(trendChart){
+  if(!canvas){
 
-    trendChart.destroy();
-
+    return;
   }
 
 
-  trendChart =
+  if(trendChartInstance){
+
+    trendChartInstance.destroy();
+
+    trendChartInstance = null;
+  }
+
+
+  trendChartInstance =
     new Chart(
-      canvas,
+      canvas.getContext("2d"),
       {
 
         type:"line",
@@ -3951,53 +4587,73 @@ function renderTrendChart(rows){
 
               label:"الدخل",
 
-              data:income,
+              data:
+                months.map(
+                  month =>
+                    monthly[month].income
+                ),
 
               borderColor:
                 "#21d07a",
 
               backgroundColor:
-                "rgba(33,208,122,.12)",
+                "rgba(33,208,122,.10)",
 
-              borderWidth:2.5,
+              borderWidth:3,
 
-              fill:true,
+              pointRadius:
+                window.innerWidth < 600
+                  ? 2
+                  : 4,
+
+              pointHoverRadius:7,
+
+              pointBackgroundColor:
+                "#21d07a",
 
               tension:.42,
 
-              pointRadius:3,
-
-              pointHoverRadius:7
-
+              fill:true
             },
+
 
             {
 
               label:"المصروف",
 
-              data:expense,
+              data:
+                months.map(
+                  month =>
+                    monthly[month].expense
+                ),
 
               borderColor:
                 "#ff5c6c",
 
               backgroundColor:
-                "rgba(255,92,108,.10)",
+                "rgba(255,92,108,.09)",
 
-              borderWidth:2.5,
+              borderWidth:3,
 
-              fill:true,
+              pointRadius:
+                window.innerWidth < 600
+                  ? 2
+                  : 4,
+
+              pointHoverRadius:7,
+
+              pointBackgroundColor:
+                "#ff5c6c",
 
               tension:.42,
 
-              pointRadius:3,
-
-              pointHoverRadius:7
-
+              fill:true
             }
 
           ]
 
         },
+
 
         options:{
 
@@ -4005,59 +4661,66 @@ function renderTrendChart(rows){
 
           maintainAspectRatio:false,
 
-          interaction:{
-
-            intersect:false,
-
-            mode:"index"
-
-          },
+          resizeDelay:100,
 
           animation:{
 
             duration:1400,
 
-            easing:"easeOutQuart"
-
+            easing:
+              "easeOutQuart"
           },
+
+
+          interaction:{
+
+            intersect:false,
+
+            mode:"index"
+          },
+
 
           plugins:{
 
             legend:{
 
-              position:"top",
+              display:true,
 
-              align:"start",
+              position:"top",
 
               labels:{
 
-                color:"#91a0b5",
+                color:"#f5f7fb",
 
                 font:{
 
                   family:"Tajawal",
 
-                  size:11
-
+                  size:
+                    window.innerWidth < 600
+                      ? 10
+                      : 12
                 },
 
                 usePointStyle:true,
 
-                padding:15
+                boxWidth:8,
 
+                padding:15
               }
 
             },
+
 
             tooltip:{
 
               rtl:true,
 
               backgroundColor:
-                "rgba(8,12,20,.96)",
+                "rgba(7,10,17,.96)",
 
               borderColor:
-                "rgba(255,255,255,.08)",
+                "rgba(201,162,39,.35)",
 
               borderWidth:1,
 
@@ -4067,11 +4730,22 @@ function renderTrendChart(rows){
 
               padding:12,
 
+              displayColors:true,
+
               callbacks:{
 
                 label:
-                  context =>
-                    `${context.dataset.label}: ${money(context.raw)}`
+                  context => {
+
+                    return (
+                      context.dataset.label +
+                      ": " +
+                      formatMoney(
+                        context.raw
+                      )
+                    );
+
+                  }
 
               }
 
@@ -4079,38 +4753,43 @@ function renderTrendChart(rows){
 
           },
 
+
           scales:{
 
             x:{
 
               ticks:{
 
-                color:"#64748b",
+                color:"#8d98aa",
 
                 font:{
 
-                  family:"IBM Plex Mono",
+                  family:
+                    "IBM Plex Mono",
 
                   size:9
-
                 },
 
                 maxRotation:0,
 
+                minRotation:0,
+
                 autoSkip:true,
 
-                maxTicksLimit:8
-
+                maxTicksLimit:
+                  window.innerWidth < 600
+                    ? 5
+                    : 9
               },
 
               grid:{
 
                 color:
-                  "rgba(255,255,255,.035)"
-
+                  "rgba(255,255,255,.045)"
               }
 
             },
+
 
             y:{
 
@@ -4118,27 +4797,27 @@ function renderTrendChart(rows){
 
               ticks:{
 
-                color:"#64748b",
+                color:"#8d98aa",
 
                 font:{
 
-                  family:"IBM Plex Mono",
+                  family:
+                    "IBM Plex Mono",
 
                   size:9
-
                 },
 
                 callback:
                   value =>
-                    Number(value).toLocaleString("en-US")
-
+                    formatNumber(
+                      value
+                    )
               },
 
               grid:{
 
                 color:
-                  "rgba(255,255,255,.035)"
-
+                  "rgba(255,255,255,.045)"
               }
 
             }
@@ -4148,7 +4827,6 @@ function renderTrendChart(rows){
         }
 
       }
-
     );
 
 }
@@ -4158,14 +4836,15 @@ function renderTrendChart(rows){
    CATEGORY CHART
 ========================================================= */
 
-function renderCategoryChart(rows){
+function renderCategoryChart(
+  rows
+){
 
   if(
     typeof Chart === "undefined"
   ){
 
     return;
-
   }
 
 
@@ -4179,13 +4858,10 @@ function renderCategoryChart(rows){
       "أخرى";
 
 
-    if(
-      !categories[category]
-    ){
+    if(!categories[category]){
 
       categories[category] =
         0;
-
     }
 
 
@@ -4201,7 +4877,7 @@ function renderCategoryChart(rows){
     )
     .sort(
       (a,b) =>
-        b[1]-a[1]
+        b[1] - a[1]
     )
     .slice(0,8);
 
@@ -4212,16 +4888,44 @@ function renderCategoryChart(rows){
     );
 
 
-  if(categoryChart){
+  if(!canvas){
 
-    categoryChart.destroy();
-
+    return;
   }
 
 
-  categoryChart =
+  if(categoryChartInstance){
+
+    categoryChartInstance.destroy();
+
+    categoryChartInstance = null;
+  }
+
+
+  const colors = [
+
+    "#c9a227",
+
+    "#21d07a",
+
+    "#6ea8ff",
+
+    "#ff5c6c",
+
+    "#b78cff",
+
+    "#4fd1c5",
+
+    "#f59e0b",
+
+    "#94a3b8"
+
+  ];
+
+
+  categoryChartInstance =
     new Chart(
-      canvas,
+      canvas.getContext("2d"),
       {
 
         type:"bar",
@@ -4230,35 +4934,42 @@ function renderCategoryChart(rows){
 
           labels:
             entries.map(
-              item => item[0]
+              entry =>
+                entry[0]
             ),
 
           datasets:[
 
             {
 
+              label:
+                "إجمالي الحركة",
+
               data:
                 entries.map(
-                  item => item[1]
+                  entry =>
+                    entry[1]
                 ),
 
               backgroundColor:
-                "rgba(201,162,39,.82)",
-
-              borderColor:
-                "#e4c458",
-
-              borderWidth:1,
+                entries.map(
+                  (_,index) =>
+                    colors[index % colors.length]
+                ),
 
               borderRadius:8,
 
-              borderSkipped:false
+              borderSkipped:false,
+
+              maxBarThickness:
+                30
 
             }
 
           ]
 
         },
+
 
         options:{
 
@@ -4268,29 +4979,34 @@ function renderCategoryChart(rows){
 
           maintainAspectRatio:false,
 
+          resizeDelay:100,
+
           animation:{
 
-            duration:1300,
+            duration:1500,
 
-            easing:"easeOutQuart"
-
+            easing:
+              "easeOutQuart"
           },
+
 
           plugins:{
 
             legend:{
+
               display:false
             },
+
 
             tooltip:{
 
               rtl:true,
 
               backgroundColor:
-                "rgba(8,12,20,.96)",
+                "rgba(7,10,17,.96)",
 
               borderColor:
-                "rgba(201,162,39,.3)",
+                "rgba(201,162,39,.35)",
 
               borderWidth:1,
 
@@ -4299,14 +5015,22 @@ function renderCategoryChart(rows){
               callbacks:{
 
                 label:
-                  context =>
-                    ` ${money(context.raw)}`
+                  context => {
+
+                    return (
+                      formatMoney(
+                        context.raw
+                      )
+                    );
+
+                  }
 
               }
 
             }
 
           },
+
 
           scales:{
 
@@ -4316,44 +5040,53 @@ function renderCategoryChart(rows){
 
               ticks:{
 
-                color:"#64748b",
+                color:"#8d98aa",
 
                 font:{
 
-                  family:"IBM Plex Mono",
+                  family:
+                    "IBM Plex Mono",
 
                   size:9
+                },
 
-                }
-
+                callback:
+                  value =>
+                    formatNumber(
+                      value
+                    )
               },
 
               grid:{
 
                 color:
-                  "rgba(255,255,255,.035)"
-
+                  "rgba(255,255,255,.045)"
               }
 
             },
+
 
             y:{
 
               ticks:{
 
-                color:"#cbd5e1",
+                color:"#f5f7fb",
 
                 font:{
 
-                  family:"Tajawal",
+                  family:
+                    "Tajawal",
 
-                  size:10
-
+                  size:
+                    window.innerWidth < 600
+                      ? 9
+                      : 11
                 }
 
               },
 
               grid:{
+
                 display:false
               }
 
@@ -4364,17 +5097,18 @@ function renderCategoryChart(rows){
         }
 
       }
-
     );
 
 }
 
 
 /* =========================================================
-   TRANSACTIONS TABLE
+   TRANSACTIONS
 ========================================================= */
 
-function renderTransactions(rows){
+function renderTransactions(
+  rows
+){
 
   const wrapper =
     document.getElementById(
@@ -4388,66 +5122,87 @@ function renderTransactions(rows){
 
       <div class="empty">
 
-        لا توجد معاملات مطابقة للفلاتر الحالية.
+        مفيش عمليات تطابق الفلتر الحالي.
 
       </div>
 
     `;
 
     return;
-
   }
 
 
+  /*
+    Latest transactions first.
+  */
+
   const sorted =
-    [...rows]
-      .sort(
-        (a,b) =>
-          b.date.localeCompare(
-            a.date
-          )
-      );
+    [...rows].sort(
+      (a,b) =>
+        String(b.date || "")
+        .localeCompare(
+          String(a.date || "")
+        )
+    );
 
 
-  const visible =
+  /*
+    Limit rendering for performance.
+  */
+
+  const displayed =
     sorted.slice(
       0,
-      250
+      300
     );
 
 
   let html = `
 
-    <table class="transactions-table">
+    <div class="data-table-wrap">
 
-      <thead>
+      <table class="data-table">
 
-        <tr>
+        <thead>
 
-          <th>التاريخ</th>
+          <tr>
 
-          <th>النوع</th>
+            <th>
+              التاريخ
+            </th>
 
-          <th>الفئة</th>
+            <th>
+              النوع
+            </th>
 
-          <th>الوصف</th>
+            <th>
+              الفئة
+            </th>
 
-          <th>المبلغ</th>
+            <th>
+              الوصف
+            </th>
 
-          <th>ملاحظات</th>
+            <th>
+              المبلغ
+            </th>
 
-        </tr>
+            <th>
+              ملاحظات
+            </th>
 
-      </thead>
+          </tr>
 
-      <tbody>
+        </thead>
+
+        <tbody>
 
   `;
 
 
-  visible.forEach(row => {
+  displayed.forEach(row => {
 
-    const income =
+    const isIncome =
       row.type === "دخل";
 
 
@@ -4456,38 +5211,66 @@ function renderTransactions(rows){
       <tr>
 
         <td class="mono">
-          ${escapeHTML(row.date || "—")}
+          ${escapeHtml(
+            row.date || "—"
+          )}
         </td>
+
 
         <td>
 
           <span
-            class="badge ${income ? "in":"out"}">
+            class="badge ${isIncome ? "in" : "out"}">
 
-            ${escapeHTML(row.type || "—")}
+            ${escapeHtml(
+              row.type || "—"
+            )}
 
           </span>
 
         </td>
 
-        <td>
-          ${escapeHTML(row.category || "—")}
+
+        <td class="category">
+
+          ${escapeHtml(
+            row.category || "—"
+          )}
+
         </td>
 
+
         <td>
-          ${escapeHTML(row.description || "—")}
+
+          ${escapeHtml(
+            row.description || "—"
+          )}
+
         </td>
+
 
         <td
-          class="mono ${income ? "positive":"negative"}">
+          class="mono ${
+            isIncome
+              ? "amount-income"
+              : "amount-expense"
+          }">
 
-          ${income ? "+" : "-"}
-          ${money(row.amount)}
+          ${isIncome ? "+" : "-"}
+
+          ${formatMoney(
+            row.amount
+          )}
 
         </td>
 
-        <td>
-          ${escapeHTML(row.notes || "")}
+
+        <td class="category">
+
+          ${escapeHtml(
+            row.notes || ""
+          )}
+
         </td>
 
       </tr>
@@ -4499,26 +5282,27 @@ function renderTransactions(rows){
 
   html += `
 
-      </tbody>
+        </tbody>
 
-    </table>
+      </table>
+
+    </div>
 
   `;
 
 
   if(
-    rows.length > 250
+    rows.length > 300
   ){
 
     html += `
 
-      <div class="card-hint"
-           style="padding:14px">
+      <div class="section-hint"
+           style="margin:14px 0 0;">
 
-        عرض أحدث 250 معاملة من
-        ${integer(rows.length)}
-
-        معاملة.
+        عرض أحدث 300 عملية من إجمالي
+        ${formatNumber(rows.length)}
+        عملية.
 
       </div>
 
@@ -4537,9 +5321,11 @@ function renderTransactions(rows){
    ESCAPE HTML
 ========================================================= */
 
-function escapeHTML(value){
+function escapeHtml(
+  value
+){
 
-  return String(value ?? "")
+  return String(value || "")
     .replace(
       /&/g,
       "&amp;"
@@ -4597,6 +5383,51 @@ function escapeHTML(value){
 
 
 /* =========================================================
+   RESPONSIVE CHART RESIZE
+========================================================= */
+
+let resizeTimer;
+
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    clearTimeout(
+      resizeTimer
+    );
+
+
+    resizeTimer =
+      setTimeout(
+        () => {
+
+          if(
+            trendChartInstance
+          ){
+
+            trendChartInstance.resize();
+
+          }
+
+
+          if(
+            categoryChartInstance
+          ){
+
+            categoryChartInstance.resize();
+
+          }
+
+        },
+        150
+      );
+
+  }
+);
+
+
+/* =========================================================
    INITIAL LOAD
 ========================================================= */
 
@@ -4608,32 +5439,12 @@ loadData();
 ========================================================= */
 
 setInterval(
-  loadData,
-  60000
-);
-
-
-/* =========================================================
-   RESIZE CHARTS
-========================================================= */
-
-window.addEventListener(
-  "resize",
   () => {
 
-    if(trendChart){
+    loadData();
 
-      trendChart.resize();
-
-    }
-
-    if(categoryChart){
-
-      categoryChart.resize();
-
-    }
-
-  }
+  },
+  60000
 );
 
 </script>
