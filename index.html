@@ -2,4067 +2,5535 @@
 <html lang="ar" dir="rtl">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <title>دفتر — لوحة التحكم المالية</title>
+<meta charset="UTF-8">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  >
+<title>دفتر — لوحة التحكم المالية</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <style>
+<link
+  href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+  rel="stylesheet"
+>
 
-    /* =====================================================
-       ROOT
-    ===================================================== */
+<!-- =========================================================
+     CHART.JS
+     ========================================================= -->
 
-    :root {
-      --bg: #070b12;
-      --bg2: #0b1220;
+<script
+  src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js">
+</script>
 
-      --surface: rgba(16, 23, 36, .82);
-      --surface2: rgba(23, 32, 49, .72);
 
-      --border: rgba(255, 255, 255, .075);
-      --border-gold: rgba(201, 162, 39, .32);
+<style>
 
-      --text: #f5f7fb;
-      --muted: #91a0b5;
-      --faint: #64748b;
+/* =========================================================
+   ROOT
+========================================================= */
 
-      --gold: #c9a227;
-      --gold2: #f0d477;
+:root{
 
-      --green: #21d07a;
-      --green-soft: rgba(33, 208, 122, .12);
+  --bg:#070b12;
+  --bg2:#0b1220;
 
-      --red: #ff5c6c;
-      --red-soft: rgba(255, 92, 108, .12);
+  --surface:rgba(16,23,36,.82);
+  --surface2:rgba(23,32,49,.72);
 
-      --blue: #6ea8ff;
+  --border:rgba(255,255,255,.075);
+  --border-gold:rgba(201,162,39,.32);
 
-      --radius: 20px;
+  --text:#f5f7fb;
+  --muted:#91a0b5;
+  --faint:#64748b;
 
-      --shadow:
-        0 25px 70px rgba(0, 0, 0, .28);
-    }
+  --gold:#c9a227;
+  --gold2:#f0d477;
 
+  --green:#21d07a;
+  --green-soft:rgba(33,208,122,.12);
 
-    /* =====================================================
-       RESET
-    ===================================================== */
+  --red:#ff5c6c;
+  --red-soft:rgba(255,92,108,.12);
 
-    * {
-      box-sizing: border-box;
-    }
+  --blue:#6ea8ff;
 
-    html {
-      scroll-behavior: smooth;
-    }
+  --radius:20px;
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      overflow-x: hidden;
+  --shadow:
+    0 25px 70px rgba(0,0,0,.28);
 
-      font-family: "Tajawal", sans-serif;
+}
 
-      color: var(--text);
 
-      background:
-        radial-gradient(
-          circle at 10% 0%,
-          rgba(201, 162, 39, .09),
-          transparent 30%
-        ),
-        radial-gradient(
-          circle at 90% 10%,
-          rgba(80, 130, 255, .08),
-          transparent 30%
-        ),
-        linear-gradient(
-          180deg,
-          #070b12,
-          #0a111c
-        );
-    }
+/* =========================================================
+   RESET
+========================================================= */
 
-    body::before {
-      content: "";
+*{
+  box-sizing:border-box;
+}
 
-      position: fixed;
-      inset: 0;
+html{
+  scroll-behavior:smooth;
+}
 
-      pointer-events: none;
+body{
 
-      z-index: -1;
+  margin:0;
 
-      opacity: .35;
+  min-height:100vh;
 
-      background:
-        linear-gradient(
-          rgba(255, 255, 255, .018) 1px,
-          transparent 1px
-        ),
-        linear-gradient(
-          90deg,
-          rgba(255, 255, 255, .018) 1px,
-          transparent 1px
-        );
+  overflow-x:hidden;
 
-      background-size:
-        clamp(28px, 4vw, 52px)
-        clamp(28px, 4vw, 52px);
+  font-family:'Tajawal',sans-serif;
 
-      mask-image:
-        linear-gradient(
-          to bottom,
-          black,
-          transparent 90%
-        );
-    }
+  color:var(--text);
 
+  background:
 
-    /* =====================================================
-       UTILITIES
-    ===================================================== */
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(201,162,39,.09),
+      transparent 30%
+    ),
 
-    .mono {
-      font-family: "IBM Plex Mono", monospace;
-      font-variant-numeric: tabular-nums;
-    }
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(80,130,255,.08),
+      transparent 30%
+    ),
 
-    .hidden {
-      display: none !important;
-    }
+    linear-gradient(
+      180deg,
+      #070b12,
+      #0a111c
+    );
 
-    .positive {
-      color: var(--green) !important;
-    }
+}
 
-    .negative {
-      color: var(--red) !important;
-    }
 
+/* =========================================================
+   BACKGROUND GRID
+========================================================= */
 
-    /* =====================================================
-       HEADER
-    ===================================================== */
+body::before{
 
-    .topbar {
-      position: sticky;
-      top: 0;
+  content:"";
 
-      z-index: 100;
+  position:fixed;
 
-      width: 100%;
+  inset:0;
 
-      border-bottom: 1px solid var(--border);
+  pointer-events:none;
 
-      background:
-        rgba(7, 11, 18, .78);
+  z-index:-1;
 
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-    }
+  opacity:.35;
 
-    .topbar-inner {
-      width: min(1500px, 100%);
-      margin: auto;
+  background:
 
-      padding:
-        clamp(12px, 2vw, 20px)
-        clamp(14px, 3vw, 36px);
+    linear-gradient(
+      rgba(255,255,255,.018) 1px,
+      transparent 1px
+    ),
 
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.018) 1px,
+      transparent 1px
+    );
 
-      gap: 20px;
-    }
+  background-size:
+    clamp(28px,4vw,52px)
+    clamp(28px,4vw,52px);
 
-    .brand {
-      display: flex;
-      align-items: center;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      black,
+      transparent 90%
+    );
 
-      gap: 11px;
+}
 
-      min-width: 0;
-    }
 
-    .brand-mark {
-      flex: 0 0 auto;
+/* =========================================================
+   UTILITIES
+========================================================= */
 
-      width: 42px;
-      height: 42px;
+.mono{
 
-      border-radius: 12px;
+  font-family:
+    'IBM Plex Mono',
+    monospace;
 
-      display: grid;
-      place-items: center;
+  font-variant-numeric:
+    tabular-nums;
 
-      font-size: 19px;
-      font-weight: 900;
+}
 
-      color: #07101c;
+.hidden{
+  display:none!important;
+}
 
-      background:
-        linear-gradient(
-          135deg,
-          var(--gold2),
-          var(--gold)
-        );
 
-      box-shadow:
-        0 8px 25px rgba(201, 162, 39, .18);
-    }
+/* =========================================================
+   HEADER
+========================================================= */
 
-    .brand-info {
-      min-width: 0;
-    }
+.topbar{
 
-    .brand-title {
-      margin: 0;
+  position:sticky;
 
-      font-size: 16px;
-      font-weight: 800;
-    }
+  top:0;
 
-    .brand-sub {
-      margin: 2px 0 0;
+  z-index:100;
 
-      color: var(--faint);
+  width:100%;
 
-      font-size: 11px;
-    }
+  border-bottom:
+    1px solid var(--border);
 
-    .sync {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+  background:
+    rgba(7,11,18,.78);
 
-      color: var(--muted);
+  backdrop-filter:
+    blur(22px);
 
-      font-size: 11px;
+  -webkit-backdrop-filter:
+    blur(22px);
 
-      white-space: nowrap;
-    }
+}
 
-    .sync-dot {
-      width: 7px;
-      height: 7px;
+.topbar-inner{
 
-      border-radius: 50%;
+  width:min(1500px,100%);
 
-      background: var(--green);
+  margin:auto;
 
-      box-shadow:
-        0 0 0 0 rgba(33, 208, 122, .5);
+  padding:
+    clamp(12px,2vw,20px)
+    clamp(14px,3vw,36px);
 
-      animation:
-        pulse 1.7s infinite;
-    }
+  display:flex;
 
-    @keyframes pulse {
+  align-items:center;
 
-      0% {
-        box-shadow:
-          0 0 0 0 rgba(33, 208, 122, .5);
-      }
+  justify-content:space-between;
 
-      70% {
-        box-shadow:
-          0 0 0 9px rgba(33, 208, 122, 0);
-      }
+  gap:20px;
 
-      100% {
-        box-shadow:
-          0 0 0 0 rgba(33, 208, 122, 0);
-      }
+}
 
-    }
+.brand{
 
+  display:flex;
 
-    /* =====================================================
-       CONTAINER
-    ===================================================== */
+  align-items:center;
 
-    .container {
-      width: min(1500px, 100%);
+  gap:11px;
 
-      margin: auto;
+  min-width:0;
 
-      padding:
-        clamp(18px, 3vw, 38px)
-        clamp(14px, 3vw, 38px)
-        60px;
-    }
+}
 
+.brand-mark{
 
-    /* =====================================================
-       HERO
-    ===================================================== */
+  flex:0 0 auto;
 
-    .hero {
-      display: flex;
+  width:42px;
 
-      align-items: flex-end;
-      justify-content: space-between;
+  height:42px;
 
-      gap: 25px;
+  border-radius:12px;
 
-      margin-bottom: 25px;
+  display:grid;
 
-      animation:
-        heroIn .9s cubic-bezier(.16, 1, .3, 1);
-    }
+  place-items:center;
 
-    @keyframes heroIn {
+  font-size:19px;
 
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
+  font-weight:900;
 
-      to {
-        opacity: 1;
-        transform: none;
-      }
+  color:#07101c;
 
-    }
+  background:
 
-    .hero-eyebrow {
-      margin-bottom: 7px;
+    linear-gradient(
+      135deg,
+      var(--gold2),
+      var(--gold)
+    );
 
-      color: var(--gold2);
+  box-shadow:
+    0 8px 25px rgba(201,162,39,.18);
 
-      font-size: 10px;
-      font-weight: 900;
+}
 
-      letter-spacing: .18em;
-    }
+.brand-info{
+  min-width:0;
+}
 
-    .hero h1 {
-      margin: 0;
+.brand-title{
 
-      font-size:
-        clamp(27px, 4vw, 48px);
+  margin:0;
 
-      line-height: 1.05;
+  font-size:16px;
 
-      letter-spacing: -.04em;
-    }
+  font-weight:800;
 
-    .hero p {
-      max-width: 720px;
+}
 
-      margin: 11px 0 0;
+.brand-sub{
 
-      color: var(--muted);
+  margin:2px 0 0;
 
-      font-size:
-        clamp(11px, 1.3vw, 14px);
+  color:var(--faint);
 
-      line-height: 1.8;
-    }
+  font-size:11px;
 
-    .live {
-      flex: 0 0 auto;
+}
 
-      display: flex;
-      align-items: center;
+.sync{
 
-      gap: 8px;
+  display:flex;
 
-      padding: 9px 13px;
+  align-items:center;
 
-      border: 1px solid rgba(33, 208, 122, .2);
+  gap:8px;
 
-      border-radius: 999px;
+  color:var(--muted);
 
-      background: rgba(33, 208, 122, .07);
+  font-size:11px;
 
-      color: #a8e9c8;
+  white-space:nowrap;
 
-      font-size: 10px;
-      font-weight: 800;
-    }
+}
 
-    .live span {
-      width: 7px;
-      height: 7px;
+.sync-dot{
 
-      border-radius: 50%;
+  width:7px;
 
-      background: var(--green);
+  height:7px;
 
-      box-shadow:
-        0 0 15px var(--green);
-    }
+  border-radius:50%;
 
+  background:var(--green);
 
-    /* =====================================================
-       KPI
-    ===================================================== */
+  box-shadow:
+    0 0 0 0 rgba(33,208,122,.5);
 
-    .kpi-grid {
-      display: grid;
+  animation:
+    pulse 1.7s infinite;
 
-      grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+}
 
-      gap: 14px;
+@keyframes pulse{
 
-      margin-bottom: 16px;
-    }
+  0%{
+    box-shadow:
+      0 0 0 0 rgba(33,208,122,.5);
+  }
 
-    .kpi {
-      position: relative;
+  70%{
+    box-shadow:
+      0 0 0 9px rgba(33,208,122,0);
+  }
 
-      min-width: 0;
+  100%{
+    box-shadow:
+      0 0 0 0 rgba(33,208,122,0);
+  }
 
-      padding:
-        clamp(17px, 2vw, 22px);
+}
 
-      overflow: hidden;
 
-      border:
-        1px solid var(--border);
+/* =========================================================
+   CONTAINER
+========================================================= */
 
-      border-radius:
-        var(--radius);
+.container{
 
-      background:
-        linear-gradient(
-          145deg,
-          rgba(20, 28, 44, .9),
-          rgba(9, 14, 23, .82)
-        );
+  width:min(1500px,100%);
 
-      box-shadow: var(--shadow);
+  margin:auto;
 
-      transition:
-        transform .45s cubic-bezier(.16, 1, .3, 1),
-        border-color .4s,
-        box-shadow .4s;
+  padding:
+    clamp(18px,3vw,38px)
+    clamp(14px,3vw,38px)
+    60px;
 
-      animation:
-        cardIn .8s cubic-bezier(.16, 1, .3, 1) both;
-    }
+}
 
-    .kpi:nth-child(1) {
-      animation-delay: .05s;
-    }
 
-    .kpi:nth-child(2) {
-      animation-delay: .12s;
-    }
+/* =========================================================
+   HERO
+========================================================= */
 
-    .kpi:nth-child(3) {
-      animation-delay: .19s;
-    }
+.hero{
 
-    .kpi:nth-child(4) {
-      animation-delay: .26s;
-    }
+  display:flex;
 
-    @keyframes cardIn {
+  align-items:flex-end;
 
-      from {
-        opacity: 0;
-        transform:
-          translateY(25px)
-          scale(.97);
-      }
+  justify-content:space-between;
 
-      to {
-        opacity: 1;
-        transform: none;
-      }
+  gap:25px;
 
-    }
+  margin-bottom:25px;
 
-    .kpi:hover {
-      transform: translateY(-7px);
+  animation:
+    heroIn .9s cubic-bezier(.16,1,.3,1);
 
-      border-color:
-        rgba(201, 162, 39, .25);
+}
 
-      box-shadow:
-        0 30px 80px rgba(0, 0, 0, .35);
-    }
+@keyframes heroIn{
 
-    .kpi::before {
-      content: "";
+  from{
 
-      position: absolute;
+    opacity:0;
 
-      top: 0;
-      right: 0;
-      left: 0;
+    transform:
+      translateY(20px);
 
-      height: 2px;
+  }
 
-      background: var(--gold);
-    }
+  to{
 
-    .kpi.income::before {
-      background: var(--green);
-    }
+    opacity:1;
 
-    .kpi.expense::before {
-      background: var(--red);
-    }
+    transform:none;
 
-    .kpi.net::before {
-      background: var(--gold);
-    }
+  }
 
-    .kpi-label {
-      color: var(--muted);
+}
 
-      font-size: 12px;
-    }
+.hero-eyebrow{
 
-    .kpi-value {
-      margin-top: 10px;
+  margin-bottom:7px;
 
-      font-size:
-        clamp(21px, 2.5vw, 30px);
+  color:var(--gold2);
 
-      font-weight: 800;
+  font-size:10px;
 
-      line-height: 1.15;
+  font-weight:900;
 
-      word-break: break-word;
-    }
+  letter-spacing:.18em;
 
-    .kpi-sub {
-      margin-top: 7px;
+}
 
-      color: var(--faint);
+.hero h1{
 
-      font-size: 11px;
-    }
+  margin:0;
 
+  font-size:
+    clamp(27px,4vw,48px);
 
-    /* =====================================================
-       CARD
-    ===================================================== */
+  line-height:1.05;
 
-    .card {
-      min-width: 0;
+  letter-spacing:-.04em;
 
-      border:
-        1px solid var(--border);
+}
 
-      border-radius:
-        var(--radius);
+.hero p{
 
-      background:
-        linear-gradient(
-          145deg,
-          rgba(18, 26, 41, .88),
-          rgba(9, 14, 23, .78)
-        );
+  max-width:720px;
 
-      box-shadow:
-        var(--shadow);
+  margin:11px 0 0;
 
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+  color:var(--muted);
 
-      overflow: hidden;
-    }
+  font-size:
+    clamp(11px,1.3vw,14px);
 
-    .card-header {
-      padding:
-        clamp(17px, 2vw, 22px);
+  line-height:1.8;
 
-      padding-bottom: 8px;
-    }
+}
 
-    .card-title {
-      margin: 0;
+.live{
 
-      font-size: 15px;
-      font-weight: 800;
-    }
+  flex:0 0 auto;
 
-    .card-hint {
-      margin: 5px 0 0;
+  display:flex;
 
-      color: var(--faint);
+  align-items:center;
 
-      font-size: 11px;
-    }
+  gap:8px;
 
+  padding:9px 13px;
 
-    /* =====================================================
-       CHARTS
-    ===================================================== */
+  border:
+    1px solid rgba(33,208,122,.2);
 
-    .charts-grid {
-      display: grid;
+  border-radius:999px;
 
-      grid-template-columns:
-        minmax(0, 2fr)
-        minmax(280px, 1fr);
+  background:
+    rgba(33,208,122,.07);
 
-      gap: 16px;
+  color:#a8e9c8;
 
-      margin-bottom: 16px;
-    }
+  font-size:10px;
 
-    .chart-card {
-      min-width: 0;
-    }
+  font-weight:800;
 
-    .chart-box {
-      position: relative;
+}
 
-      width: 100%;
+.live span{
 
-      height:
-        clamp(260px, 32vw, 390px);
+  width:7px;
 
-      padding:
-        10px
-        clamp(12px, 2vw, 20px)
-        20px;
-    }
+  height:7px;
 
-    .chart-box canvas {
-      width: 100% !important;
-      height: 100% !important;
-    }
+  border-radius:50%;
 
+  background:var(--green);
 
-    /* =====================================================
-       PROFIT STORY
-    ===================================================== */
+  box-shadow:
+    0 0 15px var(--green);
 
-    .profit {
-      position: relative;
+}
 
-      overflow: hidden;
 
-      margin-bottom: 16px;
+/* =========================================================
+   KPI
+========================================================= */
 
-      padding:
-        clamp(25px, 5vw, 48px)
-        clamp(16px, 4vw, 35px);
+.kpi-grid{
 
-      text-align: center;
+  display:grid;
 
-      border:
-        1px solid var(--border);
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
 
-      border-radius: 24px;
+  gap:14px;
 
-      background:
-        radial-gradient(
-          circle at center,
-          rgba(201, 162, 39, .10),
-          transparent 45%
-        ),
-        linear-gradient(
-          145deg,
-          rgba(20, 27, 42, .96),
-          rgba(6, 10, 16, .96)
-        );
+  margin-bottom:16px;
 
-      box-shadow:
-        0 30px 90px rgba(0, 0, 0, .35);
-    }
+}
 
-    .profit::before {
-      content: "";
+.kpi{
 
-      position: absolute;
+  position:relative;
 
-      width:
-        clamp(180px, 30vw, 350px);
+  min-width:0;
 
-      aspect-ratio: 1;
+  padding:
+    clamp(17px,2vw,22px);
 
-      left: 50%;
-      top: 50%;
+  overflow:hidden;
 
-      transform:
-        translate(-50%, -50%);
+  border:
+    1px solid var(--border);
 
-      border-radius: 50%;
+  border-radius:
+    var(--radius);
 
-      border:
-        1px solid rgba(255, 255, 255, .04);
+  background:
 
-      animation:
-        aura 4s ease-in-out infinite;
-    }
+    linear-gradient(
+      145deg,
+      rgba(20,28,44,.9),
+      rgba(9,14,23,.82)
+    );
 
-    @keyframes aura {
+  box-shadow:var(--shadow);
 
-      0%, 100% {
-        transform:
-          translate(-50%, -50%)
-          scale(.9);
-      }
+  transition:
+    transform .45s cubic-bezier(.16,1,.3,1),
+    border-color .4s,
+    box-shadow .4s;
 
-      50% {
-        transform:
-          translate(-50%, -50%)
-          scale(1.1);
-      }
+  animation:
+    cardIn .8s cubic-bezier(.16,1,.3,1) both;
 
-    }
+}
 
-    .profit-content {
-      position: relative;
-      z-index: 2;
-    }
+.kpi:nth-child(1){
+  animation-delay:.05s
+}
 
-    .profit-label {
-      color: var(--faint);
+.kpi:nth-child(2){
+  animation-delay:.12s
+}
 
-      font-size: 10px;
-      font-weight: 900;
+.kpi:nth-child(3){
+  animation-delay:.19s
+}
 
-      letter-spacing: .2em;
-    }
+.kpi:nth-child(4){
+  animation-delay:.26s
+}
 
-    .profit-title {
-      margin: 9px 0;
+@keyframes cardIn{
 
-      font-size:
-        clamp(26px, 6vw, 58px);
+  from{
 
-      line-height: 1;
+    opacity:0;
 
-      font-weight: 900;
+    transform:
+      translateY(25px)
+      scale(.97);
 
-      letter-spacing: -.05em;
-    }
+  }
 
-    .profit-percent {
-      display: inline-block;
+  to{
 
-      font-family:
-        "IBM Plex Mono",
-        monospace;
+    opacity:1;
 
-      text-shadow:
-        0 0 35px currentColor;
-    }
+    transform:none;
 
-    .profit-caption {
-      color: var(--muted);
+  }
 
-      font-size:
-        clamp(11px, 1.5vw, 14px);
-    }
+}
 
-    .profit-bar {
-      width: min(600px, 100%);
+.kpi:hover{
 
-      height: 9px;
+  transform:
+    translateY(-7px);
 
-      margin: 25px auto 13px;
+  border-color:
+    rgba(201,162,39,.25);
 
-      overflow: hidden;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.35);
 
-      border-radius: 999px;
+}
 
-      background: rgba(255, 255, 255, .07);
-    }
+.kpi::before{
 
-    .profit-fill {
-      width: 0;
-      height: 100%;
+  content:"";
 
-      border-radius: inherit;
+  position:absolute;
 
-      transition:
-        width 1.8s cubic-bezier(.16, 1, .3, 1);
-    }
+  top:0;
+  right:0;
+  left:0;
 
-    .profit-status {
-      display: inline-flex;
+  height:2px;
 
-      align-items: center;
+  background:var(--gold);
 
-      gap: 8px;
+}
 
-      padding: 8px 13px;
+.kpi.income::before{
+  background:var(--green);
+}
 
-      border:
-        1px solid var(--border);
+.kpi.expense::before{
+  background:var(--red);
+}
 
-      border-radius: 999px;
+.kpi.net::before{
+  background:var(--gold);
+}
 
-      background: rgba(255, 255, 255, .035);
+.kpi-label{
 
-      font-size: 11px;
-      font-weight: 800;
-    }
+  color:var(--muted);
 
-    .status-dot {
-      width: 7px;
-      height: 7px;
+  font-size:12px;
 
-      border-radius: 50%;
-    }
+}
 
-    .profit.profit-mode .profit-title {
-      color: var(--green);
-    }
+.kpi-value{
 
-    .profit.profit-mode .profit-fill {
-      background:
-        linear-gradient(
-          90deg,
-          #21d07a,
-          #8bffc0
-        );
+  margin-top:10px;
 
-      box-shadow:
-        0 0 20px rgba(33, 208, 122, .5);
-    }
+  font-size:
+    clamp(21px,2.5vw,30px);
 
-    .profit.profit-mode .status-dot {
-      background: var(--green);
+  font-weight:800;
 
-      box-shadow:
-        0 0 15px var(--green);
-    }
+  line-height:1.15;
 
-    .profit.loss-mode .profit-title {
-      color: var(--red);
-    }
+  word-break:break-word;
 
-    .profit.loss-mode .profit-fill {
-      background:
-        linear-gradient(
-          90deg,
-          #ff5c6c,
-          #ff9c88
-        );
+}
 
-      box-shadow:
-        0 0 20px rgba(255, 92, 108, .5);
-    }
+.kpi-sub{
 
-    .profit.loss-mode .status-dot {
-      background: var(--red);
+  margin-top:7px;
 
-      box-shadow:
-        0 0 15px var(--red);
-    }
+  color:var(--faint);
 
-    .profit.neutral-mode .profit-title {
-      color: var(--gold2);
-    }
+  font-size:11px;
 
-    .profit.neutral-mode .profit-fill {
-      background:
-        linear-gradient(
-          90deg,
-          var(--gold),
-          var(--gold2)
-        );
-    }
+}
 
-    .profit.neutral-mode .status-dot {
-      background: var(--gold);
-    }
+.positive{
+  color:var(--green)!important;
+}
 
+.negative{
+  color:var(--red)!important;
+}
 
-    /* =====================================================
-       ANALYSIS
-    ===================================================== */
 
-    .analysis {
-      padding:
-        clamp(17px, 2vw, 24px);
+/* =========================================================
+   CARD
+========================================================= */
 
-      margin-bottom: 16px;
-    }
+.card{
 
-    .section-title {
-      display: flex;
+  min-width:0;
 
-      align-items: center;
+  border:
+    1px solid var(--border);
 
-      gap: 8px;
+  border-radius:
+    var(--radius);
 
-      margin: 0;
+  background:
 
-      font-size: 16px;
-    }
+    linear-gradient(
+      145deg,
+      rgba(18,26,41,.88),
+      rgba(9,14,23,.78)
+    );
 
-    .section-title-dot {
-      width: 7px;
-      height: 7px;
+  box-shadow:var(--shadow);
 
-      border-radius: 50%;
+  backdrop-filter:
+    blur(16px);
 
-      background: var(--gold);
+  -webkit-backdrop-filter:
+    blur(16px);
 
-      box-shadow:
-        0 0 12px rgba(201, 162, 39, .7);
-    }
+  overflow:hidden;
 
-    .section-subtitle {
-      margin: 5px 0 18px;
+}
 
-      color: var(--faint);
+.card-header{
 
-      font-size: 11px;
-    }
+  padding:
+    clamp(17px,2vw,22px);
 
+  padding-bottom:8px;
 
-    /* =====================================================
-       METRICS
-    ===================================================== */
+}
 
-    .metrics {
-      display: grid;
+.card-title{
 
-      grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+  margin:0;
 
-      gap: 12px;
+  font-size:15px;
 
-      margin-bottom: 16px;
-    }
+  font-weight:800;
 
-    .metric {
-      position: relative;
+}
 
-      min-width: 0;
+.card-hint{
 
-      padding: 16px;
+  margin:5px 0 0;
 
-      border:
-        1px solid var(--border);
+  color:var(--faint);
 
-      border-radius: 16px;
+  font-size:11px;
 
-      background:
-        linear-gradient(
-          145deg,
-          rgba(255, 255, 255, .04),
-          rgba(255, 255, 255, .01)
-        );
+}
 
-      transition:
-        transform .4s,
-        border-color .4s,
-        box-shadow .4s;
 
-      overflow: hidden;
-    }
+/* =========================================================
+   CHARTS
+========================================================= */
 
-    .metric:hover {
-      transform:
-        translateY(-6px);
+.charts-grid{
 
-      border-color:
-        rgba(201, 162, 39, .25);
+  display:grid;
 
-      box-shadow:
-        0 20px 45px rgba(0, 0, 0, .2);
-    }
+  grid-template-columns:
+    minmax(0,2fr)
+    minmax(280px,1fr);
 
-    .metric-label {
-      color: var(--muted);
+  gap:16px;
 
-      font-size: 10px;
+  margin-bottom:16px;
 
-      letter-spacing: .05em;
-    }
+}
 
-    .metric-value {
-      margin-top: 8px;
+.chart-card{
 
-      font-size:
-        clamp(18px, 2vw, 27px);
+  min-width:0;
 
-      font-weight: 800;
+}
 
-      line-height: 1.2;
+.chart-box{
 
-      word-break: break-word;
-    }
+  position:relative;
 
+  width:100%;
 
-    /* =====================================================
-       ANALYSIS TABLES
-    ===================================================== */
+  height:
+    clamp(260px,32vw,390px);
 
-    .analysis-tables {
-      display: grid;
+  padding:
+    10px
+    clamp(12px,2vw,20px)
+    20px;
 
-      grid-template-columns:
-        minmax(0, 1.2fr)
-        minmax(0, 1fr);
+}
 
-      gap: 16px;
-    }
+.chart-box canvas{
 
-    .table-panel {
-      min-width: 0;
+  display:block;
 
-      padding: 16px;
+  width:100%!important;
 
-      border:
-        1px solid var(--border);
+  height:100%!important;
 
-      border-radius: 16px;
+}
 
-      background:
-        rgba(255, 255, 255, .018);
-    }
+.chart-error{
 
-    .table-panel-title {
-      margin: 0;
+  height:100%;
 
-      font-size: 13px;
-      font-weight: 800;
-    }
+  display:grid;
 
-    .table-panel-hint {
-      margin: 4px 0 12px;
+  place-items:center;
 
-      color: var(--faint);
+  text-align:center;
 
-      font-size: 10.5px;
-    }
+  color:var(--muted);
 
-    .scroll-table {
-      width: 100%;
+  font-size:12px;
 
-      overflow-x: auto;
+  line-height:2;
 
-      scrollbar-width: thin;
+  padding:20px;
 
-      -webkit-overflow-scrolling: touch;
-    }
+}
 
-    .data-table {
-      width: 100%;
 
-      min-width: 470px;
+/* =========================================================
+   PROFIT STORY
+========================================================= */
 
-      border-collapse: collapse;
-    }
+.profit{
 
-    .data-table th {
-      padding:
-        10px 8px;
+  position:relative;
 
-      text-align: right;
+  overflow:hidden;
 
-      color: var(--faint);
+  margin-bottom:16px;
 
-      font-size: 10px;
-      font-weight: 700;
+  padding:
+    clamp(25px,5vw,48px)
+    clamp(16px,4vw,35px);
 
-      border-bottom:
-        1px solid var(--border);
-    }
+  text-align:center;
 
-    .data-table td {
-      padding:
-        10px 8px;
+  border:
+    1px solid var(--border);
 
-      border-bottom:
-        1px solid var(--border);
+  border-radius:24px;
 
-      font-size: 11px;
+  background:
 
-      white-space: nowrap;
-    }
+    radial-gradient(
+      circle at center,
+      rgba(201,162,39,.10),
+      transparent 45%
+    ),
 
-    .data-table tbody tr {
-      transition:
-        background .25s,
-        transform .25s;
-    }
+    linear-gradient(
+      145deg,
+      rgba(20,27,42,.96),
+      rgba(6,10,16,.96)
+    );
 
-    .data-table tbody tr:hover {
-      background:
-        rgba(201, 162, 39, .045);
-    }
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.35);
 
+}
 
-    /* =====================================================
-       TRANSACTIONS
-    ===================================================== */
+.profit::before{
 
-    .transactions {
-      padding:
-        clamp(16px, 2vw, 22px);
+  content:"";
 
-      margin-bottom: 16px;
-    }
+  position:absolute;
 
-    .toolbar {
-      display: grid;
+  width:
+    clamp(180px,30vw,350px);
 
-      grid-template-columns:
-        minmax(180px, 1fr)
-        repeat(3, minmax(130px, 180px));
+  aspect-ratio:1;
 
-      gap: 9px;
+  left:50%;
+  top:50%;
 
-      margin-bottom: 15px;
-    }
+  transform:
+    translate(-50%,-50%);
 
-    .control {
-      width: 100%;
+  border-radius:50%;
 
-      min-width: 0;
+  border:
+    1px solid rgba(255,255,255,.04);
 
-      height: 42px;
+  animation:
+    aura 4s ease-in-out infinite;
 
-      padding:
-        0 12px;
+}
 
-      border:
-        1px solid var(--border);
+@keyframes aura{
 
-      border-radius: 10px;
+  0%,100%{
 
-      outline: none;
+    transform:
+      translate(-50%,-50%)
+      scale(.9);
 
-      background:
-        var(--surface2);
+  }
 
-      color: var(--text);
+  50%{
 
-      font-family:
-        "Tajawal",
-        sans-serif;
+    transform:
+      translate(-50%,-50%)
+      scale(1.1);
 
-      font-size: 12px;
-    }
+  }
 
-    .control:focus {
-      border-color:
-        var(--border-gold);
+}
 
-      box-shadow:
-        0 0 0 3px
-        rgba(201, 162, 39, .06);
-    }
+.profit-content{
 
-    .count {
-      display: flex;
+  position:relative;
 
-      align-items: center;
-      justify-content: center;
+  z-index:2;
 
-      min-width: 100px;
+}
 
-      width: fit-content;
+.profit-label{
 
-      padding: 8px 14px;
+  color:var(--faint);
 
-      margin-bottom: 12px;
+  font-size:10px;
 
-      border:
-        1px solid var(--border);
+  font-weight:900;
 
-      border-radius: 999px;
+  letter-spacing:.2em;
 
-      color: var(--muted);
+}
 
-      background:
-        rgba(255, 255, 255, .025);
+.profit-title{
 
-      font-size: 11px;
-    }
+  margin:9px 0;
 
-    .transactions-table-wrap {
-      width: 100%;
+  font-size:
+    clamp(26px,6vw,58px);
 
-      overflow-x: auto;
+  line-height:1;
 
-      -webkit-overflow-scrolling: touch;
-    }
+  font-weight:900;
 
-    .transactions-table {
-      width: 100%;
+  letter-spacing:-.05em;
 
-      min-width: 700px;
+}
 
-      border-collapse: collapse;
-    }
+.profit-percent{
 
-    .transactions-table th {
-      padding:
-        10px 9px;
+  display:inline-block;
 
-      text-align: right;
+  font-family:
+    'IBM Plex Mono',
+    monospace;
 
-      color: var(--faint);
+  text-shadow:
+    0 0 35px currentColor;
 
-      font-size: 10px;
+}
 
-      border-bottom:
-        1px solid var(--border);
-    }
+.profit-caption{
 
-    .transactions-table td {
-      padding:
-        12px 9px;
+  color:var(--muted);
 
-      font-size: 11.5px;
+  font-size:
+    clamp(11px,1.5vw,14px);
 
-      border-bottom:
-        1px solid var(--border);
-    }
+}
 
-    .transactions-table tr {
-      transition:
-        background .25s;
-    }
+.profit-bar{
 
-    .transactions-table tbody tr:hover {
-      background:
-        rgba(201, 162, 39, .045);
-    }
+  width:min(600px,100%);
 
-    .badge {
-      display: inline-flex;
+  height:9px;
 
-      align-items: center;
+  margin:25px auto 13px;
 
-      padding: 4px 9px;
+  overflow:hidden;
 
-      border-radius: 999px;
+  border-radius:999px;
 
-      font-size: 10px;
-      font-weight: 800;
-    }
+  background:rgba(255,255,255,.07);
 
-    .badge.in {
-      color: var(--green);
+}
 
-      background:
-        var(--green-soft);
-    }
+.profit-fill{
 
-    .badge.out {
-      color: var(--red);
+  width:0;
 
-      background:
-        var(--red-soft);
-    }
+  height:100%;
 
+  border-radius:inherit;
 
-    /* =====================================================
-       LOADING
-    ===================================================== */
+  transition:
+    width 1.8s cubic-bezier(.16,1,.3,1);
 
-    .loading {
-      min-height: 180px;
+}
 
-      display: grid;
+.profit-status{
 
-      place-items: center;
+  display:inline-flex;
 
-      color: var(--muted);
+  align-items:center;
 
-      font-size: 12px;
+  gap:8px;
 
-      text-align: center;
-    }
+  padding:8px 13px;
 
-    .spinner {
-      width: 25px;
-      height: 25px;
+  border:
+    1px solid var(--border);
 
-      margin: 0 auto 10px;
+  border-radius:999px;
 
-      border:
-        2px solid rgba(255, 255, 255, .08);
+  background:
+    rgba(255,255,255,.035);
 
-      border-top-color:
-        var(--gold);
+  font-size:11px;
 
-      border-radius: 50%;
+  font-weight:800;
 
-      animation:
-        spin .8s linear infinite;
-    }
+}
 
-    @keyframes spin {
+.status-dot{
 
-      to {
-        transform: rotate(360deg);
-      }
+  width:7px;
 
-    }
+  height:7px;
 
+  border-radius:50%;
 
-    /* =====================================================
-       EMPTY / ERROR
-    ===================================================== */
+}
 
-    .empty,
-    .error {
-      padding: 45px 20px;
+.profit.profit-mode .profit-title{
+  color:var(--green);
+}
 
-      text-align: center;
+.profit.profit-mode .profit-fill{
 
-      color: var(--muted);
+  background:
+    linear-gradient(
+      90deg,
+      #21d07a,
+      #8bffc0
+    );
 
-      font-size: 12px;
-    }
+  box-shadow:
+    0 0 20px rgba(33,208,122,.5);
 
-    .error {
-      color: var(--red);
-    }
+}
 
+.profit.profit-mode .status-dot{
 
-    /* =====================================================
-       FOOTER
-    ===================================================== */
+  background:var(--green);
 
-    footer {
-      padding:
-        20px;
+  box-shadow:
+    0 0 15px var(--green);
 
-      text-align: center;
+}
 
-      color: var(--faint);
+.profit.loss-mode .profit-title{
+  color:var(--red);
+}
 
-      font-size: 10px;
+.profit.loss-mode .profit-fill{
 
-      border-top:
-        1px solid var(--border);
-    }
+  background:
+    linear-gradient(
+      90deg,
+      #ff5c6c,
+      #ff9c88
+    );
 
+  box-shadow:
+    0 0 20px rgba(255,92,108,.5);
 
-    /* =====================================================
-       TABLET
-    ===================================================== */
+}
 
-    @media (max-width: 1100px) {
+.profit.loss-mode .status-dot{
 
-      .kpi-grid {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-      }
+  background:var(--red);
 
-      .metrics {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-      }
+  box-shadow:
+    0 0 15px var(--red);
 
-      .charts-grid {
-        grid-template-columns:
-          1fr;
-      }
+}
 
-      .analysis-tables {
-        grid-template-columns:
-          1fr;
-      }
 
-      .toolbar {
-        grid-template-columns:
-          1fr 1fr 1fr;
-      }
+/* =========================================================
+   ANALYSIS
+========================================================= */
 
-    }
+.analysis{
 
+  padding:
+    clamp(17px,2vw,24px);
 
-    /* =====================================================
-       MOBILE
-    ===================================================== */
+  margin-bottom:16px;
 
-    @media (max-width: 700px) {
+}
 
-      .topbar-inner {
-        align-items: flex-start;
-      }
+.section-title{
 
-      .brand-mark {
-        width: 38px;
-        height: 38px;
+  display:flex;
 
-        border-radius: 10px;
-      }
+  align-items:center;
 
-      .brand-title {
-        font-size: 14px;
-      }
+  gap:8px;
 
-      .sync {
-        font-size: 9px;
-      }
+  margin:0;
 
-      .hero {
-        flex-direction: column;
+  font-size:16px;
 
-        align-items: flex-start;
+}
 
-        gap: 13px;
-      }
+.section-title-dot{
 
-      .hero h1 {
-        font-size:
-          clamp(27px, 9vw, 38px);
-      }
+  width:7px;
 
-      .live {
-        align-self: flex-start;
-      }
+  height:7px;
 
-      .kpi-grid {
-        grid-template-columns:
-          1fr 1fr;
+  border-radius:50%;
 
-        gap: 9px;
-      }
+  background:var(--gold);
 
-      .kpi {
-        border-radius: 15px;
+  box-shadow:
+    0 0 12px rgba(201,162,39,.7);
 
-        padding: 14px;
-      }
+}
 
-      .kpi-value {
-        font-size:
-          clamp(17px, 5vw, 23px);
-      }
+.section-subtitle{
 
-      .kpi-label {
-        font-size: 10px;
-      }
+  margin:5px 0 18px;
 
-      .kpi-sub {
-        font-size: 9px;
-      }
+  color:var(--faint);
 
-      .chart-box {
-        height: 280px;
+  font-size:11px;
 
-        padding:
-          5px 8px 15px;
-      }
+}
 
-      .metrics {
-        grid-template-columns:
-          1fr 1fr;
 
-        gap: 9px;
-      }
+/* =========================================================
+   METRICS
+========================================================= */
 
-      .metric {
-        padding: 13px;
+.metrics{
 
-        border-radius: 14px;
-      }
+  display:grid;
 
-      .metric-value {
-        font-size:
-          clamp(16px, 4.5vw, 22px);
-      }
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
 
-      .analysis {
-        padding: 14px;
-      }
+  gap:12px;
 
-      .toolbar {
-        grid-template-columns:
-          1fr 1fr;
-      }
+  margin-bottom:16px;
 
-      .count {
-        min-height: 42px;
-      }
+}
 
-    }
+.metric{
 
+  position:relative;
 
-    /* =====================================================
-       SMALL MOBILE
-    ===================================================== */
+  min-width:0;
 
-    @media (max-width: 430px) {
+  padding:16px;
 
-      .container {
-        padding:
-          14px
-          10px
-          35px;
-      }
+  border:
+    1px solid var(--border);
 
-      .topbar-inner {
-        padding:
-          11px 12px;
-      }
+  border-radius:16px;
 
-      .brand-sub {
-        display: none;
-      }
+  background:
 
-      .sync span:last-child {
-        display: none;
-      }
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.01)
+    );
 
-      .kpi-grid {
-        grid-template-columns:
-          1fr 1fr;
-      }
+  transition:
+    transform .4s,
+    border-color .4s,
+    box-shadow .4s;
 
-      .kpi {
-        min-height: 110px;
-      }
+  overflow:hidden;
 
-      .profit {
-        border-radius: 18px;
+}
 
-        padding:
-          28px 12px;
-      }
+.metric:hover{
 
-      .profit-title {
-        font-size:
-          clamp(25px, 9vw, 38px);
-      }
+  transform:
+    translateY(-6px);
 
-      .profit-caption {
-        line-height: 1.8;
-      }
+  border-color:
+    rgba(201,162,39,.25);
 
-      .metrics {
-        grid-template-columns:
-          1fr;
-      }
+  box-shadow:
+    0 20px 45px rgba(0,0,0,.2);
 
-      .toolbar {
-        grid-template-columns:
-          1fr;
-      }
+}
 
-      .chart-box {
-        height: 250px;
-      }
+.metric-label{
 
-    }
+  color:var(--muted);
 
+  font-size:10px;
 
-    /* =====================================================
-       VERY SMALL
-    ===================================================== */
+  letter-spacing:.05em;
 
-    @media (max-width: 340px) {
+}
 
-      .kpi-grid {
-        grid-template-columns:
-          1fr;
-      }
+.metric-value{
 
-      .hero h1 {
-        font-size: 25px;
-      }
+  margin-top:8px;
 
-    }
+  font-size:
+    clamp(18px,2vw,27px);
 
+  font-weight:800;
 
-    /* =====================================================
-       REDUCED MOTION
-    ===================================================== */
+  line-height:1.2;
 
-    @media (prefers-reduced-motion: reduce) {
+  word-break:break-word;
 
-      *,
-      *::before,
-      *::after {
-        animation-duration: .01ms !important;
+}
 
-        animation-iteration-count: 1 !important;
 
-        transition-duration: .01ms !important;
+/* =========================================================
+   TABLES
+========================================================= */
 
-        scroll-behavior: auto !important;
-      }
+.analysis-tables{
 
-    }
+  display:grid;
 
-  </style>
+  grid-template-columns:
+    minmax(0,1.2fr)
+    minmax(0,1fr);
+
+  gap:16px;
+
+}
+
+.table-panel{
+
+  min-width:0;
+
+  padding:16px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:16px;
+
+  background:
+    rgba(255,255,255,.018);
+
+}
+
+.table-panel-title{
+
+  margin:0;
+
+  font-size:13px;
+
+  font-weight:800;
+
+}
+
+.table-panel-hint{
+
+  margin:4px 0 12px;
+
+  color:var(--faint);
+
+  font-size:10.5px;
+
+}
+
+.scroll-table{
+
+  width:100%;
+
+  overflow-x:auto;
+
+  scrollbar-width:thin;
+
+  -webkit-overflow-scrolling:touch;
+
+}
+
+.data-table{
+
+  width:100%;
+
+  min-width:470px;
+
+  border-collapse:collapse;
+
+}
+
+.data-table th{
+
+  padding:10px 8px;
+
+  text-align:right;
+
+  color:var(--faint);
+
+  font-size:10px;
+
+  font-weight:700;
+
+  border-bottom:
+    1px solid var(--border);
+
+}
+
+.data-table td{
+
+  padding:10px 8px;
+
+  border-bottom:
+    1px solid var(--border);
+
+  font-size:11px;
+
+  white-space:nowrap;
+
+}
+
+.data-table tbody tr{
+
+  transition:
+    background .25s;
+
+}
+
+.data-table tbody tr:hover{
+
+  background:
+    rgba(201,162,39,.045);
+
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+.transactions{
+
+  padding:
+    clamp(16px,2vw,22px);
+
+  margin-bottom:16px;
+
+}
+
+.toolbar{
+
+  display:grid;
+
+  grid-template-columns:
+    minmax(180px,1fr)
+    repeat(3,minmax(130px,180px));
+
+  gap:9px;
+
+  margin-bottom:15px;
+
+}
+
+.control{
+
+  width:100%;
+
+  min-width:0;
+
+  height:42px;
+
+  padding:0 12px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:10px;
+
+  outline:none;
+
+  background:var(--surface2);
+
+  color:var(--text);
+
+  font-family:'Tajawal',sans-serif;
+
+  font-size:12px;
+
+}
+
+.control:focus{
+
+  border-color:
+    var(--border-gold);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(201,162,39,.06);
+
+}
+
+.count{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  min-width:100px;
+
+  width:max-content;
+
+  margin-bottom:14px;
+
+  padding:7px 14px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:999px;
+
+  color:var(--muted);
+
+  background:
+    rgba(255,255,255,.025);
+
+  font-size:11px;
+
+}
+
+.transactions-table-wrap{
+
+  width:100%;
+
+  overflow-x:auto;
+
+  -webkit-overflow-scrolling:touch;
+
+}
+
+.transactions-table{
+
+  width:100%;
+
+  min-width:700px;
+
+  border-collapse:collapse;
+
+}
+
+.transactions-table th{
+
+  padding:10px 9px;
+
+  text-align:right;
+
+  color:var(--faint);
+
+  font-size:10px;
+
+  border-bottom:
+    1px solid var(--border);
+
+}
+
+.transactions-table td{
+
+  padding:12px 9px;
+
+  font-size:11.5px;
+
+  border-bottom:
+    1px solid var(--border);
+
+}
+
+.transactions-table tbody tr{
+
+  transition:
+    background .25s;
+
+}
+
+.transactions-table tbody tr:hover{
+
+  background:
+    rgba(201,162,39,.045);
+
+}
+
+.badge{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  padding:4px 9px;
+
+  border-radius:999px;
+
+  font-size:10px;
+
+  font-weight:800;
+
+}
+
+.badge.in{
+
+  color:var(--green);
+
+  background:
+    var(--green-soft);
+
+}
+
+.badge.out{
+
+  color:var(--red);
+
+  background:
+    var(--red-soft);
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading{
+
+  min-height:180px;
+
+  display:grid;
+
+  place-items:center;
+
+  color:var(--muted);
+
+  font-size:12px;
+
+  text-align:center;
+
+}
+
+.spinner{
+
+  width:25px;
+
+  height:25px;
+
+  margin:0 auto 12px;
+
+  border:
+    2px solid rgba(255,255,255,.08);
+
+  border-top-color:
+    var(--gold);
+
+  border-radius:50%;
+
+  animation:
+    spin .8s linear infinite;
+
+}
+
+@keyframes spin{
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   EMPTY / ERROR
+========================================================= */
+
+.empty,
+.error{
+
+  padding:45px 20px;
+
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:12px;
+
+  line-height:1.8;
+
+}
+
+.error{
+  color:var(--red);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+
+  padding:20px;
+
+  text-align:center;
+
+  color:var(--faint);
+
+  font-size:10px;
+
+  border-top:
+    1px solid var(--border);
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:1100px){
+
+  .kpi-grid{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
+  }
+
+  .metrics{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
+  }
+
+  .charts-grid{
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+  .analysis-tables{
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+  .toolbar{
+
+    grid-template-columns:
+      1fr
+      1fr
+      1fr;
+
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:700px){
+
+  .topbar-inner{
+
+    align-items:flex-start;
+
+  }
+
+  .brand-mark{
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:10px;
+
+  }
+
+  .brand-title{
+    font-size:14px;
+  }
+
+  .sync{
+    font-size:9px;
+  }
+
+  .hero{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:13px;
+
+  }
+
+  .hero h1{
+
+    font-size:
+      clamp(27px,9vw,38px);
+
+  }
+
+  .live{
+
+    align-self:flex-start;
+
+  }
+
+  .kpi-grid{
+
+    grid-template-columns:
+      1fr 1fr;
+
+    gap:9px;
+
+  }
+
+  .kpi{
+
+    border-radius:15px;
+
+    padding:14px;
+
+  }
+
+  .kpi-value{
+
+    font-size:
+      clamp(17px,5vw,23px);
+
+  }
+
+  .kpi-label{
+    font-size:10px;
+  }
+
+  .kpi-sub{
+    font-size:9px;
+  }
+
+  .chart-box{
+
+    height:300px;
+
+    padding:
+      5px 8px 15px;
+
+  }
+
+  .metrics{
+
+    grid-template-columns:
+      1fr 1fr;
+
+    gap:9px;
+
+  }
+
+  .metric{
+
+    padding:13px;
+
+    border-radius:14px;
+
+  }
+
+  .metric-value{
+
+    font-size:
+      clamp(16px,4.5vw,22px);
+
+  }
+
+  .analysis{
+
+    padding:14px;
+
+  }
+
+  .toolbar{
+
+    grid-template-columns:
+      1fr 1fr;
+
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media(max-width:430px){
+
+  .container{
+
+    padding:
+      14px
+      10px
+      35px;
+
+  }
+
+  .topbar-inner{
+
+    padding:
+      11px 12px;
+
+  }
+
+  .brand-sub{
+    display:none;
+  }
+
+  .sync span:last-child{
+    display:none;
+  }
+
+  .kpi-grid{
+
+    grid-template-columns:
+      1fr 1fr;
+
+  }
+
+  .kpi{
+
+    min-height:110px;
+
+  }
+
+  .profit{
+
+    border-radius:18px;
+
+    padding:
+      28px 12px;
+
+  }
+
+  .profit-title{
+
+    font-size:
+      clamp(25px,9vw,38px);
+
+  }
+
+  .profit-caption{
+
+    line-height:1.8;
+
+  }
+
+  .metrics{
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+  .toolbar{
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+  .chart-box{
+
+    height:270px;
+
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL
+========================================================= */
+
+@media(max-width:340px){
+
+  .kpi-grid{
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+  .hero h1{
+
+    font-size:25px;
+
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+  *,
+  *::before,
+  *::after{
+
+    animation-duration:.01ms!important;
+
+    animation-iteration-count:1!important;
+
+    transition-duration:.01ms!important;
+
+    scroll-behavior:auto!important;
+
+  }
+
+}
+
+</style>
+
 </head>
 
 
 <body>
 
 
-  <!-- =====================================================
-       HEADER
-  ===================================================== -->
+<!-- ========================================================
+     HEADER
+======================================================== -->
 
-  <header class="topbar">
+<header class="topbar">
 
-    <div class="topbar-inner">
+  <div class="topbar-inner">
 
-      <div class="brand">
+    <div class="brand">
 
-        <div class="brand-mark">
-          د
-        </div>
-
-        <div class="brand-info">
-
-          <h1 class="brand-title">
-            دفتر
-          </h1>
-
-          <p class="brand-sub">
-            لوحة التحكم المالية
-          </p>
-
-        </div>
-
+      <div class="brand-mark">
+        د
       </div>
 
+      <div class="brand-info">
 
-      <div class="sync">
+        <h1 class="brand-title">
+          دفتر
+        </h1>
 
-        <span class="sync-dot"></span>
-
-        <span id="syncTime">
-          جارِ المزامنة…
-        </span>
+        <p class="brand-sub">
+          لوحة التحكم المالية
+        </p>
 
       </div>
 
     </div>
 
-  </header>
+
+    <div class="sync">
+
+      <span class="sync-dot"></span>
+
+      <span id="syncTime">
+        جارِ المزامنة…
+      </span>
+
+    </div>
+
+  </div>
+
+</header>
 
 
-  <!-- =====================================================
-       MAIN
-  ===================================================== -->
+<!-- ========================================================
+     MAIN
+======================================================== -->
 
-  <main class="container">
+<main class="container">
 
 
-    <!-- HERO -->
+<!-- ========================================================
+     HERO
+======================================================== -->
 
-    <section class="hero">
+<section class="hero">
+
+  <div>
+
+    <div class="hero-eyebrow">
+      EXECUTIVE FINANCIAL CONTROL
+    </div>
+
+    <h1>
+      Financial Intelligence
+    </h1>
+
+    <p>
+      لوحة مالية احترافية تعرض الأداء الحقيقي للدخل والمصروفات
+      والربحية والفئات والمعاملات مباشرة من بيانات Google Sheets.
+    </p>
+
+  </div>
+
+
+  <div class="live">
+
+    <span></span>
+
+    LIVE DATA
+
+  </div>
+
+</section>
+
+
+<!-- ========================================================
+     KPI
+======================================================== -->
+
+<section class="kpi-grid">
+
+
+  <div class="kpi income">
+
+    <div class="kpi-label">
+      إجمالي الدخل
+    </div>
+
+    <div
+      class="kpi-value mono"
+      id="kpiIncome">
+      —
+    </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiIncomeCount">
+      —
+    </div>
+
+  </div>
+
+
+  <div class="kpi expense">
+
+    <div class="kpi-label">
+      إجمالي المصروف
+    </div>
+
+    <div
+      class="kpi-value mono"
+      id="kpiExpense">
+      —
+    </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiExpenseCount">
+      —
+    </div>
+
+  </div>
+
+
+  <div class="kpi net">
+
+    <div class="kpi-label">
+      صافي الربح / الخسارة
+    </div>
+
+    <div
+      class="kpi-value mono"
+      id="kpiNet">
+      —
+    </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiMargin">
+      —
+    </div>
+
+  </div>
+
+
+  <div class="kpi">
+
+    <div class="kpi-label">
+      عدد المعاملات
+    </div>
+
+    <div
+      class="kpi-value mono"
+      id="kpiCount">
+      —
+    </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiAvg">
+      —
+    </div>
+
+  </div>
+
+
+</section>
+
+
+<!-- ========================================================
+     CHARTS
+======================================================== -->
+
+<section class="charts-grid">
+
+
+  <!-- TREND -->
+
+  <div class="card chart-card">
+
+    <div class="card-header">
+
+      <h2 class="card-title">
+        الاتجاه الشهري
+      </h2>
+
+      <p class="card-hint">
+        الدخل مقابل المصروف على مدار الأشهر المسجلة
+      </p>
+
+    </div>
+
+    <div class="chart-box">
+
+      <canvas id="trendChart"></canvas>
+
+    </div>
+
+  </div>
+
+
+  <!-- CATEGORY -->
+
+  <div class="card chart-card">
+
+    <div class="card-header">
+
+      <h2 class="card-title">
+        التوزيع حسب الفئة
+      </h2>
+
+      <p class="card-hint">
+        أكبر الفئات من حيث حجم المعاملات
+      </p>
+
+    </div>
+
+    <div class="chart-box">
+
+      <canvas id="categoryChart"></canvas>
+
+    </div>
+
+  </div>
+
+
+</section>
+
+
+<!-- ========================================================
+     PROFIT STORY
+======================================================== -->
+
+<section
+  class="profit loss-mode"
+  id="profitStory">
+
+  <div class="profit-content">
+
+    <div class="profit-label">
+      FINANCIAL PERFORMANCE
+    </div>
+
+    <div class="profit-title">
+
+      <span id="profitVerb">
+        جاري التحليل
+      </span>
+
+      <span
+        class="profit-percent"
+        id="profitPercent">
+        0.0%
+      </span>
+
+    </div>
+
+    <div
+      class="profit-caption"
+      id="profitCaption">
+
+      جاري قراءة البيانات…
+
+    </div>
+
+
+    <div class="profit-bar">
+
+      <div
+        class="profit-fill"
+        id="profitFill">
+      </div>
+
+    </div>
+
+
+    <div class="profit-status">
+
+      <span class="status-dot"></span>
+
+      <span id="profitStatus">
+        تحليل الأداء المالي
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ========================================================
+     FINANCIAL ANALYSIS
+======================================================== -->
+
+<section class="card analysis">
+
+  <h2 class="section-title">
+
+    <span class="section-title-dot"></span>
+
+    التحليل المالي الكامل
+
+  </h2>
+
+  <p class="section-subtitle">
+
+    ملخص مالي شامل + تحليل الفئات + التحليل الشهري + المتوسطات
+
+  </p>
+
+
+  <!-- METRICS -->
+
+  <div class="metrics">
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        إجمالي الدخل
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisIncome">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        إجمالي المصروف
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisExpense">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        صافي الربح / الخسارة
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisNet">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        نسبة المصروف من الدخل
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisExpenseRatio">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        عدد المعاملات
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisCount">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        متوسط قيمة معاملة الدخل
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisAvgIncome">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        متوسط قيمة معاملة المصروف
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisAvgExpense">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        هامش الربح
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisMargin">
+        —
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <!-- TABLES -->
+
+  <div class="analysis-tables">
+
+
+    <!-- CATEGORY TABLE -->
+
+    <div class="table-panel">
+
+      <h3 class="table-panel-title">
+        التحليل حسب الفئة
+      </h3>
+
+      <p class="table-panel-hint">
+        الدخل والمصروف والصافي لكل فئة
+      </p>
+
+      <div class="scroll-table">
+
+        <table class="data-table">
+
+          <thead>
+
+            <tr>
+
+              <th>الفئة</th>
+
+              <th>دخل</th>
+
+              <th>مصروف</th>
+
+              <th>الصافي</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="categoryAnalysisBody">
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+    <!-- MONTHLY TABLE -->
+
+    <div class="table-panel">
+
+      <h3 class="table-panel-title">
+        التحليل الشهري
+      </h3>
+
+      <p class="table-panel-hint">
+        الدخل والمصروف والصافي لكل شهر
+      </p>
+
+      <div class="scroll-table">
+
+        <table class="data-table">
+
+          <thead>
+
+            <tr>
+
+              <th>الشهر</th>
+
+              <th>دخل</th>
+
+              <th>مصروف</th>
+
+              <th>الصافي</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="monthlyAnalysisBody">
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- ========================================================
+     TRANSACTIONS
+======================================================== -->
+
+<section class="card transactions">
+
+
+  <div class="card-header">
+
+    <h2 class="card-title">
+      المعاملات المالية
+    </h2>
+
+    <p class="card-hint">
+      جميع المعاملات القادمة من Google Sheets
+    </p>
+
+  </div>
+
+
+  <div class="toolbar">
+
+
+    <input
+      class="control"
+      type="search"
+      id="searchInput"
+      placeholder="ابحث بالوصف أو الملاحظات…"
+    >
+
+
+    <select
+      class="control"
+      id="typeFilter">
+
+      <option value="">
+        كل الأنواع
+      </option>
+
+      <option value="دخل">
+        دخل
+      </option>
+
+      <option value="مصروف">
+        مصروف
+      </option>
+
+    </select>
+
+
+    <select
+      class="control"
+      id="categoryFilter">
+
+      <option value="">
+        كل الفئات
+      </option>
+
+    </select>
+
+
+    <input
+      class="control"
+      type="month"
+      id="monthFilter"
+    >
+
+
+  </div>
+
+
+  <div
+    class="count"
+    id="countPill">
+
+    — عملية
+
+  </div>
+
+
+  <div
+    id="tableWrap"
+    class="transactions-table-wrap">
+
+    <div class="loading">
 
       <div>
 
-        <div class="hero-eyebrow">
-          EXECUTIVE FINANCIAL CONTROL
-        </div>
+        <div class="spinner"></div>
 
-        <h1>
-          Financial Intelligence
-        </h1>
-
-        <p>
-          لوحة مالية احترافية تعرض الأداء الحقيقي للدخل والمصروفات
-          والربحية والفئات والمعاملات مباشرة من بيانات Google Sheets.
-        </p>
+        جارِ تحميل البيانات من Google Sheets…
 
       </div>
 
+    </div>
 
-      <div class="live">
+  </div>
 
-        <span></span>
 
-        LIVE DATA
+</section>
 
-      </div>
 
-    </section>
+</main>
 
 
-    <!-- =====================================================
-         KPI
-    ===================================================== -->
+<footer>
 
-    <section class="kpi-grid">
+  يتم تحديث البيانات تلقائيًا من Google Sheets
 
+</footer>
 
-      <div class="kpi income">
 
-        <div class="kpi-label">
-          إجمالي الدخل
-        </div>
+<script>
 
-        <div
-          class="kpi-value mono"
-          id="kpiIncome">
-          —
-        </div>
+/* =========================================================
+   CONFIG
+========================================================= */
 
-        <div
-          class="kpi-sub"
-          id="kpiIncomeCount">
-          —
-        </div>
+const CONFIG = {
 
-      </div>
+  SHEET_ID:
+    "1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w",
 
+  DATA_GID:
+    "1216353093",
 
-      <div class="kpi expense">
+  REFRESH_INTERVAL:
+    60000
 
-        <div class="kpi-label">
-          إجمالي المصروف
-        </div>
+};
 
-        <div
-          class="kpi-value mono"
-          id="kpiExpense">
-          —
-        </div>
 
-        <div
-          class="kpi-sub"
-          id="kpiExpenseCount">
-          —
-        </div>
+const GVIZ_URL =
+  `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
 
-      </div>
 
+/* =========================================================
+   STATE
+========================================================= */
 
-      <div class="kpi net">
+let ALL_ROWS = [];
 
-        <div class="kpi-label">
-          صافي الربح / الخسارة
-        </div>
+let trendChart = null;
 
-        <div
-          class="kpi-value mono"
-          id="kpiNet">
-          —
-        </div>
+let categoryChart = null;
 
-        <div
-          class="kpi-sub"
-          id="kpiMargin">
-          —
-        </div>
 
-      </div>
+/* =========================================================
+   CHART.JS CHECK
+========================================================= */
 
+function checkChartJS(){
 
-      <div class="kpi">
+  if(
+    typeof Chart === "undefined"
+  ){
 
-        <div class="kpi-label">
-          عدد المعاملات
-        </div>
+    console.error(
+      "Chart.js failed to load."
+    );
 
-        <div
-          class="kpi-value mono"
-          id="kpiCount">
-          —
-        </div>
+    return false;
 
-        <div
-          class="kpi-sub"
-          id="kpiAvg">
-          —
-        </div>
+  }
 
-      </div>
+  console.log(
+    "Chart.js loaded:",
+    Chart.version
+  );
 
+  return true;
 
-    </section>
+}
 
 
-    <!-- =====================================================
-         CHARTS
-    ===================================================== -->
+/* =========================================================
+   FORMATTERS
+========================================================= */
 
-    <section class="charts-grid">
+function number(value){
 
+  const n =
+    Number(value);
 
-      <div class="card chart-card">
+  return Number.isFinite(n)
+    ? n
+    : 0;
 
-        <div class="card-header">
+}
 
-          <h2 class="card-title">
-            الاتجاه الشهري
-          </h2>
 
-          <p class="card-hint">
-            الدخل مقابل المصروف على مدار الأشهر المسجلة
-          </p>
+function money(value){
 
-        </div>
+  return number(value)
+    .toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )
+    + " ج.م";
 
-        <div class="chart-box">
+}
 
-          <canvas id="trendChart"></canvas>
 
-        </div>
+function integer(value){
 
-      </div>
+  return number(value)
+    .toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:0
+      }
+    );
 
+}
 
-      <div class="card chart-card">
 
-        <div class="card-header">
+/* =========================================================
+   TYPE NORMALIZATION
+========================================================= */
 
-          <h2 class="card-title">
-            التوزيع حسب الفئة
-          </h2>
+function normalizeType(value){
 
-          <p class="card-hint">
-            أكبر الفئات من حيث حجم المعاملات
-          </p>
+  const v =
+    String(value || "")
+      .trim()
+      .toLowerCase();
 
-        </div>
+  if(
 
-        <div class="chart-box">
+    v === "دخل" ||
+    v === "income" ||
+    v === "in" ||
+    v === "إيراد" ||
+    v === "ايراد"
 
-          <canvas id="categoryChart"></canvas>
+  ){
 
-        </div>
+    return "دخل";
 
-      </div>
+  }
 
+  if(
 
-    </section>
+    v === "مصروف" ||
+    v === "expense" ||
+    v === "out" ||
+    v === "expenses"
 
+  ){
 
-    <!-- =====================================================
-         PROFIT STORY
-    ===================================================== -->
+    return "مصروف";
 
-    <section
-      class="profit neutral-mode"
-      id="profitStory">
+  }
 
-      <div class="profit-content">
+  return "";
 
-        <div class="profit-label">
-          FINANCIAL PERFORMANCE
-        </div>
+}
 
-        <div class="profit-title">
 
-          <span id="profitVerb">
-            جاري التحليل
-          </span>
+/* =========================================================
+   AMOUNT PARSER
+========================================================= */
 
-          <span
-            class="profit-percent"
-            id="profitPercent">
-            0.0%
-          </span>
+function parseAmount(value){
 
-        </div>
+  if(
+    typeof value === "number"
+  ){
 
-        <div
-          class="profit-caption"
-          id="profitCaption">
+    return value;
 
-          جاري قراءة البيانات…
+  }
 
-        </div>
+  let s =
+    String(value || "")
+      .trim();
 
+  if(!s){
 
-        <div class="profit-bar">
+    return 0;
 
-          <div
-            class="profit-fill"
-            id="profitFill">
-          </div>
+  }
 
-        </div>
 
+  /* Arabic digits */
 
-        <div class="profit-status">
+  const arabicDigits =
+    "٠١٢٣٤٥٦٧٨٩";
 
-          <span class="status-dot"></span>
+  s =
+    s.replace(
+      /[٠-٩]/g,
+      d =>
+        arabicDigits.indexOf(d)
+    );
 
-          <span id="profitStatus">
-            تحليل الأداء المالي
-          </span>
 
-        </div>
+  /* Arabic decimal separator */
 
-      </div>
+  s =
+    s.replace(
+      /٫/g,
+      "."
+    );
 
-    </section>
 
+  /* Remove currency */
 
-    <!-- =====================================================
-         FULL ANALYSIS
-    ===================================================== -->
+  s =
+    s.replace(
+      /EGP|ج\.?\s*م|جنيه|جنيه مصري|£/gi,
+      ""
+    );
 
-    <section class="card analysis">
 
-      <h2 class="section-title">
+  /* Remove commas and spaces */
 
-        <span class="section-title-dot"></span>
+  s =
+    s.replace(
+      /[,\s٬]/g,
+      ""
+    );
 
-        التحليل المالي الكامل
 
-      </h2>
+  const n =
+    parseFloat(s);
 
-      <p class="section-subtitle">
-        ملخص مالي شامل + تحليل الفئات + التحليل الشهري + المتوسطات
-      </p>
+  return Number.isFinite(n)
+    ? n
+    : 0;
 
+}
 
-      <div class="metrics">
 
+/* =========================================================
+   DATE PARSER
+========================================================= */
 
-        <div class="metric">
+function normalizeDate(cell){
 
-          <div class="metric-label">
-            إجمالي الدخل
-          </div>
+  if(!cell){
 
-          <div
-            class="metric-value mono"
-            id="analysisIncome">
-            —
-          </div>
+    return "";
 
-        </div>
+  }
 
 
-        <div class="metric">
+  const values = [
 
-          <div class="metric-label">
-            إجمالي المصروف
-          </div>
+    cell.f,
 
-          <div
-            class="metric-value mono"
-            id="analysisExpense">
-            —
-          </div>
+    cell.v
 
-        </div>
+  ].filter(
+    v =>
+      v !== undefined &&
+      v !== null
+  );
 
 
-        <div class="metric">
+  for(
+    const value of values
+  ){
 
-          <div class="metric-label">
-            صافي الربح / الخسارة
-          </div>
+    const raw =
+      String(value)
+        .trim();
 
-          <div
-            class="metric-value mono"
-            id="analysisNet">
-            —
-          </div>
 
-        </div>
+    if(!raw){
 
-
-        <div class="metric">
-
-          <div class="metric-label">
-            نسبة المصروف من الدخل
-          </div>
-
-          <div
-            class="metric-value mono"
-            id="analysisExpenseRatio">
-            —
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <div class="metric-label">
-            عدد المعاملات
-          </div>
-
-          <div
-            class="metric-value mono"
-            id="analysisCount">
-            —
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <div class="metric-label">
-            متوسط قيمة معاملة الدخل
-          </div>
-
-          <div
-            class="metric-value mono"
-            id="analysisAvgIncome">
-            —
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <div class="metric-label">
-            متوسط قيمة معاملة المصروف
-          </div>
-
-          <div
-            class="metric-value mono"
-            id="analysisAvgExpense">
-            —
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <div class="metric-label">
-            هامش الربح
-          </div>
-
-          <div
-            class="metric-value mono"
-            id="analysisMargin">
-            —
-          </div>
-
-        </div>
-
-
-      </div>
-
-
-      <div class="analysis-tables">
-
-
-        <!-- CATEGORY TABLE -->
-
-        <div class="table-panel">
-
-          <h3 class="table-panel-title">
-            التحليل حسب الفئة
-          </h3>
-
-          <p class="table-panel-hint">
-            الدخل والمصروف والصافي لكل فئة
-          </p>
-
-          <div class="scroll-table">
-
-            <table class="data-table">
-
-              <thead>
-
-                <tr>
-
-                  <th>
-                    الفئة
-                  </th>
-
-                  <th>
-                    دخل
-                  </th>
-
-                  <th>
-                    مصروف
-                  </th>
-
-                  <th>
-                    الصافي
-                  </th>
-
-                </tr>
-
-              </thead>
-
-              <tbody id="categoryAnalysisBody"></tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-
-
-        <!-- MONTHLY TABLE -->
-
-        <div class="table-panel">
-
-          <h3 class="table-panel-title">
-            التحليل الشهري
-          </h3>
-
-          <p class="table-panel-hint">
-            الدخل والمصروف والصافي لكل شهر
-          </p>
-
-          <div class="scroll-table">
-
-            <table class="data-table">
-
-              <thead>
-
-                <tr>
-
-                  <th>
-                    الشهر
-                  </th>
-
-                  <th>
-                    دخل
-                  </th>
-
-                  <th>
-                    مصروف
-                  </th>
-
-                  <th>
-                    الصافي
-                  </th>
-
-                </tr>
-
-              </thead>
-
-              <tbody id="monthlyAnalysisBody"></tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         TRANSACTIONS
-    ===================================================== -->
-
-    <section class="card transactions">
-
-
-      <div class="card-header">
-
-        <h2 class="card-title">
-          المعاملات المالية
-        </h2>
-
-        <p class="card-hint">
-          جميع المعاملات القادمة من Google Sheets
-        </p>
-
-      </div>
-
-
-      <div class="toolbar">
-
-
-        <input
-          class="control"
-          type="search"
-          id="searchInput"
-          placeholder="ابحث بالوصف أو الملاحظات…"
-          autocomplete="off"
-        >
-
-
-        <select
-          class="control"
-          id="typeFilter">
-
-          <option value="">
-            كل الأنواع
-          </option>
-
-          <option value="دخل">
-            دخل
-          </option>
-
-          <option value="مصروف">
-            مصروف
-          </option>
-
-        </select>
-
-
-        <select
-          class="control"
-          id="categoryFilter">
-
-          <option value="">
-            كل الفئات
-          </option>
-
-        </select>
-
-
-        <input
-          class="control"
-          type="month"
-          id="monthFilter"
-        >
-
-
-      </div>
-
-
-      <div
-        class="count"
-        id="countPill">
-
-        — عملية
-
-      </div>
-
-
-      <div
-        id="tableWrap"
-        class="transactions-table-wrap">
-
-        <div class="loading">
-
-          <div>
-
-            <div class="spinner"></div>
-
-            <div>
-              جارِ تحميل البيانات من Google Sheets…
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-    </section>
-
-
-  </main>
-
-
-  <footer>
-    يتم تحديث البيانات تلقائيًا من Google Sheets
-  </footer>
-
-
-  <script>
-
-    /* =====================================================
-       GOOGLE SHEETS CONFIGURATION
-    ===================================================== */
-
-    const CONFIG = {
-
-      SHEET_ID:
-        "1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w",
-
-      DATA_GID:
-        "1216353093",
-
-      REFRESH_INTERVAL:
-        60000
-
-    };
-
-
-    const GVIZ_URL =
-      `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
-
-
-    /* =====================================================
-       GLOBAL STATE
-    ===================================================== */
-
-    let ALL_ROWS = [];
-
-    let trendChart = null;
-
-    let categoryChart = null;
-
-    let isLoading = false;
-
-
-    /* =====================================================
-       DOM HELPER
-    ===================================================== */
-
-    function $(id) {
-      return document.getElementById(id);
-    }
-
-
-    /* =====================================================
-       NUMBER
-    ===================================================== */
-
-    function number(value) {
-
-      const n = Number(value);
-
-      return Number.isFinite(n)
-        ? n
-        : 0;
+      continue;
 
     }
 
 
-    /* =====================================================
-       MONEY
-    ===================================================== */
+    /* -----------------------------------------
+       Google Sheets Date(...)
+    ----------------------------------------- */
 
-    function money(value) {
+    let match =
+      raw.match(
+        /Date\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))?/
+      );
 
-      const n = number(value);
 
-      return (
-        n.toLocaleString(
-          "en-US",
-          {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          }
-        )
-        + " ج.م"
+    if(match){
+
+      const year =
+        Number(match[1]);
+
+      const month =
+        Number(match[2]) + 1;
+
+      const day =
+        Number(match[3]);
+
+
+      return [
+
+        year,
+
+        String(month)
+          .padStart(2,"0"),
+
+        String(day)
+          .padStart(2,"0")
+
+      ].join("-");
+
+    }
+
+
+    /* -----------------------------------------
+       YYYY-MM-DD
+    ----------------------------------------- */
+
+    match =
+      raw.match(
+        /^(\d{4})-(\d{1,2})-(\d{1,2})/
+      );
+
+
+    if(match){
+
+      return [
+
+        match[1],
+
+        String(match[2])
+          .padStart(2,"0"),
+
+        String(match[3])
+          .padStart(2,"0")
+
+      ].join("-");
+
+    }
+
+
+    /* -----------------------------------------
+       YYYY/MM/DD
+    ----------------------------------------- */
+
+    match =
+      raw.match(
+        /^(\d{4})\/(\d{1,2})\/(\d{1,2})/
+      );
+
+
+    if(match){
+
+      return [
+
+        match[1],
+
+        String(match[2])
+          .padStart(2,"0"),
+
+        String(match[3])
+          .padStart(2,"0")
+
+      ].join("-");
+
+    }
+
+
+    /* -----------------------------------------
+       DD/MM/YYYY
+    ----------------------------------------- */
+
+    match =
+      raw.match(
+        /^(\d{1,2})\/(\d{1,2})\/(\d{4})/
+      );
+
+
+    if(match){
+
+      const first =
+        Number(match[1]);
+
+      const second =
+        Number(match[2]);
+
+      const year =
+        Number(match[3]);
+
+
+      /*
+        If first > 12:
+        definitely DD/MM/YYYY.
+      */
+
+      if(first > 12){
+
+        return [
+
+          year,
+
+          String(second)
+            .padStart(2,"0"),
+
+          String(first)
+            .padStart(2,"0")
+
+        ].join("-");
+
+      }
+
+
+      /*
+        Otherwise assume
+        DD/MM/YYYY because
+        this dashboard is Arabic.
+      */
+
+      return [
+
+        year,
+
+        String(second)
+          .padStart(2,"0"),
+
+        String(first)
+          .padStart(2,"0")
+
+      ].join("-");
+
+    }
+
+  }
+
+
+  return "";
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(
+    value ?? ""
+  )
+
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+
+  .replace(
+    /</g,
+    "&lt;"
+  )
+
+  .replace(
+    />/g,
+    "&gt;"
+  )
+
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================================
+   LOAD GOOGLE SHEETS
+========================================================= */
+
+async function loadData(){
+
+  try{
+
+    console.log(
+      "Loading Google Sheets..."
+    );
+
+
+    const response =
+      await fetch(
+        GVIZ_URL,
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        `HTTP ${response.status}`
       );
 
     }
 
 
-    /* =====================================================
-       INTEGER
-    ===================================================== */
-
-    function integer(value) {
-
-      return number(value)
-        .toLocaleString(
-          "en-US",
-          {
-            maximumFractionDigits: 0
-          }
-        );
-
-    }
+    const text =
+      await response.text();
 
 
-    /* =====================================================
-       NORMALIZE TEXT
-    ===================================================== */
+    const start =
+      text.indexOf("{");
 
-    function normalizeText(value) {
 
-      return String(value ?? "")
-        .trim()
-        .replace(/\s+/g, " ");
+    const end =
+      text.lastIndexOf("}");
+
+
+    if(
+      start === -1 ||
+      end === -1
+    ){
+
+      throw new Error(
+        "Invalid Google Sheets response."
+      );
 
     }
 
 
-    /* =====================================================
-       NORMALIZE TYPE
-    ===================================================== */
-
-    function normalizeType(value) {
-
-      const v =
-        normalizeText(value)
-          .toLowerCase();
-
-      if (
-        [
-          "دخل",
-          "income",
-          "in",
-          "credit",
-          "إيراد",
-          "ايراد",
-          "مبيعات",
-          "sale",
-          "sales"
-        ].includes(v)
-      ) {
-
-        return "دخل";
-
-      }
-
-
-      if (
-        [
-          "مصروف",
-          "expense",
-          "out",
-          "debit",
-          "مصاريف",
-          "نفقة",
-          "purchase",
-          "purchases"
-        ].includes(v)
-      ) {
-
-        return "مصروف";
-
-      }
-
-
-      return "";
-
-    }
-
-
-    /* =====================================================
-       ARABIC DIGITS
-    ===================================================== */
-
-    function normalizeArabicDigits(value) {
-
-      const arabicDigits =
-        "٠١٢٣٤٥٦٧٨٩";
-
-      const persianDigits =
-        "۰۱۲۳۴۵۶۷۸۹";
-
-      return String(value ?? "")
-        .replace(
-          /[٠-٩]/g,
-          digit =>
-            arabicDigits.indexOf(digit)
+    const json =
+      JSON.parse(
+        text.slice(
+          start,
+          end + 1
         )
-        .replace(
-          /[۰-۹]/g,
-          digit =>
-            persianDigits.indexOf(digit)
-        );
-
-    }
-
-
-    /* =====================================================
-       PARSE AMOUNT
-    ===================================================== */
-
-    function parseAmount(value) {
-
-      if (
-        typeof value === "number" &&
-        Number.isFinite(value)
-      ) {
-
-        return value;
-
-      }
-
-
-      let s =
-        normalizeArabicDigits(value)
-          .trim();
-
-
-      if (!s) {
-        return 0;
-      }
-
-
-      /*
-       * Remove currency names.
-       */
-
-      s =
-        s.replace(
-          /EGP|ج\.?\s*م|جنيه(?:\s*مصري)?|جنية|LE/gi,
-          ""
-        );
-
-
-      /*
-       * Remove spaces.
-       */
-
-      s =
-        s.replace(
-          /\s+/g,
-          ""
-        );
-
-
-      /*
-       * Remove Arabic thousands separator.
-       */
-
-      s =
-        s.replace(
-          /٬/g,
-          ""
-        );
-
-
-      /*
-       * Handle parentheses:
-       * (1000) => -1000
-       */
-
-      let negative =
-        false;
-
-
-      if (
-        /^\(.*\)$/.test(s)
-      ) {
-
-        negative = true;
-
-        s =
-          s.slice(
-            1,
-            -1
-          );
-
-      }
-
-
-      /*
-       * Remove commas.
-       */
-
-      s =
-        s.replace(
-          /,/g,
-          ""
-        );
-
-
-      /*
-       * Keep digits, dot and minus.
-       */
-
-      s =
-        s.replace(
-          /[^0-9.-]/g,
-          ""
-        );
-
-
-      const parsed =
-        parseFloat(s);
-
-
-      if (
-        !Number.isFinite(parsed)
-      ) {
-
-        return 0;
-
-      }
-
-
-      return negative
-        ? -Math.abs(parsed)
-        : parsed;
-
-    }
-
-
-    /* =====================================================
-       DATE PARSER
-    ===================================================== */
-
-    function normalizeDate(cell) {
-
-      if (!cell) {
-        return "";
-      }
-
-
-      const values = [
-
-        cell.f,
-
-        cell.v
-
-      ].filter(
-        value =>
-          value !== undefined &&
-          value !== null &&
-          value !== ""
       );
 
 
-      for (
-        const value of values
-      ) {
-
-        const raw =
-          String(value)
-            .trim();
+    const cols =
+      json?.table?.cols || [];
 
 
-        /*
-         * Google Visualization format:
-         *
-         * Date(2026,7,14)
-         */
-
-        let match =
-          raw.match(
-            /^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})/
-          );
+    const rows =
+      json?.table?.rows || [];
 
 
-        if (match) {
-
-          const year =
-            Number(match[1]);
-
-          const month =
-            Number(match[2]) + 1;
-
-          const day =
-            Number(match[3]);
+    console.log(
+      "Google Sheets columns:",
+      cols
+    );
 
 
-          return [
-            year,
-            String(month).padStart(2, "0"),
-            String(day).padStart(2, "0")
-          ].join("-");
-
-        }
+    console.log(
+      "Google Sheets rows:",
+      rows.length
+    );
 
 
-        /*
-         * YYYY-MM-DD
-         */
+    if(!cols.length){
 
-        match =
-          raw.match(
-            /^(\d{4})-(\d{1,2})-(\d{1,2})/
-          );
-
-
-        if (match) {
-
-          return [
-            match[1],
-            String(match[2]).padStart(2, "0"),
-            String(match[3]).padStart(2, "0")
-          ].join("-");
-
-        }
-
-
-        /*
-         * YYYY/MM/DD
-         */
-
-        match =
-          raw.match(
-            /^(\d{4})\/(\d{1,2})\/(\d{1,2})/
-          );
-
-
-        if (match) {
-
-          return [
-            match[1],
-            String(match[2]).padStart(2, "0"),
-            String(match[3]).padStart(2, "0")
-          ].join("-");
-
-        }
-
-
-        /*
-         * MM/DD/YYYY
-         */
-
-        match =
-          raw.match(
-            /^(\d{1,2})\/(\d{1,2})\/(\d{4})/
-          );
-
-
-        if (match) {
-
-          return [
-            match[3],
-            String(match[1]).padStart(2, "0"),
-            String(match[2]).padStart(2, "0")
-          ].join("-");
-
-        }
-
-
-        /*
-         * DD/MM/YYYY
-         *
-         * Used only when the first number > 12.
-         */
-
-        match =
-          raw.match(
-            /^(\d{1,2})\/(\d{1,2})\/(\d{4})/
-          );
-
-
-        if (match) {
-
-          const first =
-            Number(match[1]);
-
-          const second =
-            Number(match[2]);
-
-
-          if (first > 12) {
-
-            return [
-              match[3],
-              String(second).padStart(2, "0"),
-              String(first).padStart(2, "0")
-            ].join("-");
-
-          }
-
-        }
-
-
-        /*
-         * ISO date inside a string.
-         */
-
-        match =
-          raw.match(
-            /(\d{4})-(\d{1,2})-(\d{1,2})/
-          );
-
-
-        if (match) {
-
-          return [
-            match[1],
-            String(match[2]).padStart(2, "0"),
-            String(match[3]).padStart(2, "0")
-          ].join("-");
-
-        }
-
-      }
-
-
-      return "";
+      throw new Error(
+        "No columns found in Google Sheet."
+      );
 
     }
 
 
-    /* =====================================================
-       GET CELL VALUE
-    ===================================================== */
+    /*
+      Google Sheets sometimes gives
+      blank column labels.
 
-    function getCellValue(cells, index) {
+      We also inspect the first row
+      as a fallback.
+    */
 
-      if (
-        index === -1 ||
-        index === undefined ||
-        index === null
-      ) {
-
-        return "";
-
-      }
-
-
-      const cell =
-        cells[index];
-
-
-      if (!cell) {
-        return "";
-      }
-
-
-      if (
-        cell.f !== undefined &&
-        cell.f !== null &&
-        cell.f !== ""
-      ) {
-
-        return cell.f;
-
-      }
-
-
-      if (
-        cell.v !== undefined &&
-        cell.v !== null
-      ) {
-
-        return cell.v;
-
-      }
-
-
-      return "";
-
-    }
-
-
-    /* =====================================================
-       HEADER NORMALIZATION
-    ===================================================== */
-
-    function normalizeHeader(value) {
-
-      return normalizeArabicDigits(
-        normalizeText(value)
+    const labels =
+      cols.map(
+        c =>
+          String(
+            c.label || ""
+          )
+          .trim()
           .toLowerCase()
-          .replace(
-            /[\u200e\u200f]/g,
-            ""
-          )
       );
 
-    }
 
+    const findColumn =
+      patterns => {
 
-    /* =====================================================
-       FIND COLUMN
-    ===================================================== */
-
-    function findColumn(
-      headers,
-      patterns
-    ) {
-
-      const normalizedPatterns =
-        patterns.map(
-          pattern =>
-            normalizeHeader(pattern)
-        );
-
-
-      return headers.findIndex(
-        header =>
-          normalizedPatterns.some(
-            pattern =>
-              header === pattern ||
-              header.includes(pattern)
-          )
-      );
-
-    }
-
-
-    /* =====================================================
-       COLUMN DETECTION
-    ===================================================== */
-
-    function detectColumns(
-      columns
-    ) {
-
-      const headers =
-        columns.map(
-          column =>
-            normalizeHeader(
-              column.label ||
-              column.id ||
-              ""
+        return labels.findIndex(
+          label =>
+            patterns.some(
+              pattern =>
+                label.includes(pattern)
             )
         );
-
-
-      let dateIndex =
-        findColumn(
-          headers,
-          [
-            "date",
-            "التاريخ",
-            "تاريخ",
-            "transaction date",
-            "تاريخ العملية"
-          ]
-        );
-
-
-      let typeIndex =
-        findColumn(
-          headers,
-          [
-            "type",
-            "النوع",
-            "transaction type",
-            "نوع العملية"
-          ]
-        );
-
-
-      let categoryIndex =
-        findColumn(
-          headers,
-          [
-            "category",
-            "الفئة",
-            "التصنيف",
-            "التصنيف المالي"
-          ]
-        );
-
-
-      let descriptionIndex =
-        findColumn(
-          headers,
-          [
-            "description",
-            "الوصف",
-            "البيان",
-            "تفاصيل",
-            "details"
-          ]
-        );
-
-
-      let amountIndex =
-        findColumn(
-          headers,
-          [
-            "amount",
-            "المبلغ",
-            "value",
-            "القيمة",
-            "price",
-            "السعر"
-          ]
-        );
-
-
-      let notesIndex =
-        findColumn(
-          headers,
-          [
-            "notes",
-            "note",
-            "ملاحظات",
-            "ملاحظة",
-            "comment",
-            "comments"
-          ]
-        );
-
-
-      /*
-       * Fallback:
-       *
-       * Date
-       * Type
-       * Category
-       * Description
-       * Amount
-       * Notes
-       */
-
-      if (dateIndex === -1 && columns.length >= 1) {
-        dateIndex = 0;
-      }
-
-      if (typeIndex === -1 && columns.length >= 2) {
-        typeIndex = 1;
-      }
-
-      if (categoryIndex === -1 && columns.length >= 3) {
-        categoryIndex = 2;
-      }
-
-      if (descriptionIndex === -1 && columns.length >= 4) {
-        descriptionIndex = 3;
-      }
-
-      if (amountIndex === -1 && columns.length >= 5) {
-        amountIndex = 4;
-      }
-
-      if (notesIndex === -1 && columns.length >= 6) {
-        notesIndex = 5;
-      }
-
-
-      return {
-
-        dateIndex,
-        typeIndex,
-        categoryIndex,
-        descriptionIndex,
-        amountIndex,
-        notesIndex,
-
-        headers
 
       };
 
+
+    const dateIndex =
+      findColumn([
+        "date",
+        "التاريخ"
+      ]);
+
+
+    const typeIndex =
+      findColumn([
+        "type",
+        "النوع"
+      ]);
+
+
+    const categoryIndex =
+      findColumn([
+        "category",
+        "الفئة",
+        "التصنيف"
+      ]);
+
+
+    const descriptionIndex =
+      findColumn([
+        "description",
+        "الوصف",
+        "desc"
+      ]);
+
+
+    const amountIndex =
+      findColumn([
+        "amount",
+        "المبلغ",
+        "value",
+        "القيمة"
+      ]);
+
+
+    const notesIndex =
+      findColumn([
+        "notes",
+        "note",
+        "ملاحظات"
+      ]);
+
+
+    console.log(
+      "Detected indexes:",
+      {
+
+        dateIndex,
+
+        typeIndex,
+
+        categoryIndex,
+
+        descriptionIndex,
+
+        amountIndex,
+
+        notesIndex
+
+      }
+    );
+
+
+    /*
+      If headers are not detected,
+      use the expected order:
+
+      Date
+      Type
+      Category
+      Description
+      Amount
+      Notes
+    */
+
+    const finalDateIndex =
+      dateIndex >= 0
+        ? dateIndex
+        : 0;
+
+
+    const finalTypeIndex =
+      typeIndex >= 0
+        ? typeIndex
+        : 1;
+
+
+    const finalCategoryIndex =
+      categoryIndex >= 0
+        ? categoryIndex
+        : 2;
+
+
+    const finalDescriptionIndex =
+      descriptionIndex >= 0
+        ? descriptionIndex
+        : 3;
+
+
+    const finalAmountIndex =
+      amountIndex >= 0
+        ? amountIndex
+        : 4;
+
+
+    const finalNotesIndex =
+      notesIndex >= 0
+        ? notesIndex
+        : 5;
+
+
+    ALL_ROWS =
+      rows
+
+      .map(
+        row => {
+
+          const cells =
+            row.c || [];
+
+
+          const cell =
+            index =>
+              index >= 0
+                ? cells[index]
+                : null;
+
+
+          const typeRaw =
+            cell(
+              finalTypeIndex
+            )?.f ??
+            cell(
+              finalTypeIndex
+            )?.v ??
+            "";
+
+
+          const categoryRaw =
+            cell(
+              finalCategoryIndex
+            )?.f ??
+            cell(
+              finalCategoryIndex
+            )?.v ??
+            "";
+
+
+          const descriptionRaw =
+            cell(
+              finalDescriptionIndex
+            )?.f ??
+            cell(
+              finalDescriptionIndex
+            )?.v ??
+            "";
+
+
+          const notesRaw =
+            cell(
+              finalNotesIndex
+            )?.f ??
+            cell(
+              finalNotesIndex
+            )?.v ??
+            "";
+
+
+          const amountCell =
+            cell(
+              finalAmountIndex
+            );
+
+
+          return {
+
+            date:
+              normalizeDate(
+                cell(
+                  finalDateIndex
+                )
+              ),
+
+            type:
+              normalizeType(
+                typeRaw
+              ),
+
+            category:
+              String(
+                categoryRaw
+              ).trim(),
+
+            description:
+              String(
+                descriptionRaw
+              ).trim(),
+
+            amount:
+              parseAmount(
+                amountCell?.v ??
+                amountCell?.f
+              ),
+
+            notes:
+              String(
+                notesRaw
+              ).trim()
+
+          };
+
+        }
+      )
+
+      .filter(
+        row =>
+          row.type ||
+          row.amount ||
+          row.description ||
+          row.date
+      );
+
+
+    console.log(
+      "Loaded normalized rows:",
+      ALL_ROWS
+    );
+
+
+    if(!ALL_ROWS.length){
+
+      throw new Error(
+        "Google Sheet returned zero usable transactions."
+      );
+
     }
 
 
-    /* =====================================================
-       LOAD GOOGLE SHEETS
-    ===================================================== */
+    populateCategoryFilter();
 
-    async function loadData() {
 
-      if (isLoading) {
-        return;
+    render();
+
+
+    document.getElementById(
+      "syncTime"
+    ).textContent =
+      "آخر مزامنة: " +
+      new Date()
+        .toLocaleTimeString(
+          "ar-EG"
+        );
+
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Google Sheets Error:",
+      error
+    );
+
+
+    document.getElementById(
+      "syncTime"
+    ).textContent =
+      "تعذرت المزامنة";
+
+
+    document.getElementById(
+      "tableWrap"
+    ).innerHTML = `
+
+      <div class="error">
+
+        تعذر تحميل البيانات من Google Sheets.
+
+        <br><br>
+
+        ${escapeHTML(
+          error.message
+        )}
+
+        <br><br>
+
+        تأكد أن Google Sheet متاح للعرض
+        وأن الـ Sheet ID والـ GID صحيحان.
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   CATEGORY FILTER
+========================================================= */
+
+function populateCategoryFilter(){
+
+  const select =
+    document.getElementById(
+      "categoryFilter"
+    );
+
+
+  const current =
+    select.value;
+
+
+  select.innerHTML = `
+
+    <option value="">
+      كل الفئات
+    </option>
+
+  `;
+
+
+  const categories =
+    [
+      ...new Set(
+
+        ALL_ROWS
+
+          .map(
+            row =>
+              row.category
+          )
+
+          .filter(Boolean)
+
+      )
+    ]
+
+    .sort(
+      (a,b) =>
+        a.localeCompare(
+          b,
+          "ar"
+        )
+    );
+
+
+  categories.forEach(
+    category => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        category;
+
+
+      option.textContent =
+        category;
+
+
+      select.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  if(
+    categories.includes(
+      current
+    )
+  ){
+
+    select.value =
+      current;
+
+  }
+
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function getFilteredRows(){
+
+  const search =
+    document.getElementById(
+      "searchInput"
+    )
+    .value
+    .trim()
+    .toLowerCase();
+
+
+  const type =
+    document.getElementById(
+      "typeFilter"
+    ).value;
+
+
+  const category =
+    document.getElementById(
+      "categoryFilter"
+    ).value;
+
+
+  const month =
+    document.getElementById(
+      "monthFilter"
+    ).value;
+
+
+  return ALL_ROWS.filter(
+    row => {
+
+      if(
+        type &&
+        row.type !== type
+      ){
+
+        return false;
+
       }
 
 
-      isLoading = true;
+      if(
+        category &&
+        row.category !== category
+      ){
+
+        return false;
+
+      }
 
 
-      try {
+      if(
+        month &&
+        !row.date.startsWith(month)
+      ){
 
-        const response =
-          await fetch(
-            GVIZ_URL,
-            {
-              method: "GET",
-              cache: "no-store"
-            }
-          );
+        return false;
+
+      }
 
 
-        if (!response.ok) {
+      if(search){
 
-          throw new Error(
-            `HTTP ${response.status}`
-          );
+        const haystack = [
 
-        }
+          row.description,
 
+          row.notes,
 
-        const text =
-          await response.text();
+          row.category,
 
+          row.type
 
-        /*
-         * GViz returns something like:
-         *
-         * google.visualization.Query.setResponse({...});
-         *
-         * We extract the JSON object.
-         */
+        ]
 
-        const start =
-          text.indexOf("{");
+        .join(" ")
+
+        .toLowerCase();
 
 
-        const end =
-          text.lastIndexOf("}");
+        if(
+          !haystack.includes(
+            search
+          )
+        ){
 
-
-        if (
-          start === -1 ||
-          end === -1
-        ) {
-
-          throw new Error(
-            "Google Sheets returned invalid data."
-          );
+          return false;
 
         }
 
+      }
 
-        const json =
-          JSON.parse(
-            text.slice(
-              start,
-              end + 1
-            )
+
+      return true;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CALCULATE TOTALS
+========================================================= */
+
+function calculateTotals(rows){
+
+  let income = 0;
+
+  let expense = 0;
+
+  let incomeCount = 0;
+
+  let expenseCount = 0;
+
+
+  rows.forEach(
+    row => {
+
+      if(
+        row.type === "دخل"
+      ){
+
+        income +=
+          number(
+            row.amount
           );
 
+        incomeCount++;
 
-        if (
-          !json.table
-        ) {
+      }
 
-          throw new Error(
-            "Google Sheets table was not found."
+
+      else if(
+        row.type === "مصروف"
+      ){
+
+        expense +=
+          number(
+            row.amount
           );
 
-        }
+        expenseCount++;
 
+      }
 
-        const columns =
-          json.table.cols || [];
+    }
+  );
 
 
-        const rows =
-          json.table.rows || [];
+  return {
 
+    income,
 
-        const indexes =
-          detectColumns(
-            columns
-          );
+    expense,
 
+    net:
+      income - expense,
 
-        console.log(
-          "Google Sheets headers:",
-          indexes.headers
-        );
+    incomeCount,
 
+    expenseCount,
 
-        console.log(
-          "Detected columns:",
-          indexes
-        );
+    count:
+      rows.length,
 
+    margin:
+      income
+        ? (
+            (income-expense)
+            /
+            income
+          ) * 100
+        : 0
 
-        ALL_ROWS =
-          rows
-            .map(
-              row => {
+  };
 
-                const cells =
-                  row.c || [];
+}
 
 
-                const dateCell =
-                  cells[
-                    indexes.dateIndex
-                  ] || null;
+/* =========================================================
+   MAIN RENDER
+========================================================= */
 
+function render(){
 
-                const typeValue =
-                  getCellValue(
-                    cells,
-                    indexes.typeIndex
-                  );
+  const filtered =
+    getFilteredRows();
 
 
-                const categoryValue =
-                  getCellValue(
-                    cells,
-                    indexes.categoryIndex
-                  );
+  renderKPIs(
+    filtered
+  );
 
 
-                const descriptionValue =
-                  getCellValue(
-                    cells,
-                    indexes.descriptionIndex
-                  );
+  renderTransactions(
+    filtered
+  );
 
 
-                const amountValue =
-                  getCellValue(
-                    cells,
-                    indexes.amountIndex
-                  );
+  /*
+    Full analysis remains based
+    on ALL data.
+  */
 
+  renderFinancialAnalysis(
+    ALL_ROWS
+  );
 
-                const notesValue =
-                  getCellValue(
-                    cells,
-                    indexes.notesIndex
-                  );
 
+  /*
+    Charts follow filters.
+  */
 
-                return {
+  renderTrendChart(
+    filtered
+  );
 
-                  date:
-                    normalizeDate(
-                      dateCell
-                    ),
 
-                  type:
-                    normalizeType(
-                      typeValue
-                    ),
+  renderCategoryChart(
+    filtered
+  );
 
-                  category:
-                    normalizeText(
-                      categoryValue
-                    ),
+}
 
-                  description:
-                    normalizeText(
-                      descriptionValue
-                    ),
 
-                  amount:
-                    Math.abs(
-                      parseAmount(
-                        amountValue
-                      )
-                    ),
+/* =========================================================
+   KPI
+========================================================= */
 
-                  notes:
-                    normalizeText(
-                      notesValue
-                    )
+function renderKPIs(rows){
 
-                };
+  const data =
+    calculateTotals(
+      rows
+    );
 
-              }
-            )
-            .filter(
-              row =>
-                row.date ||
-                row.type ||
-                row.category ||
-                row.description ||
-                row.amount !== 0
-            );
 
+  document.getElementById(
+    "kpiIncome"
+  ).textContent =
+    money(
+      data.income
+    );
 
-        console.log(
-          "Loaded financial rows:",
-          ALL_ROWS
-        );
 
+  document.getElementById(
+    "kpiIncomeCount"
+  ).textContent =
+    `${integer(
+      data.incomeCount
+    )} عملية دخل`;
 
-        populateCategoryFilter();
 
-        render();
+  document.getElementById(
+    "kpiExpense"
+  ).textContent =
+    money(
+      data.expense
+    );
 
 
-        $("syncTime").textContent =
-          "آخر مزامنة: " +
-          new Date()
-            .toLocaleTimeString(
-              "ar-EG"
-            );
+  document.getElementById(
+    "kpiExpenseCount"
+  ).textContent =
+    `${integer(
+      data.expenseCount
+    )} عملية مصروف`;
 
 
-      } catch (error) {
+  const netElement =
+    document.getElementById(
+      "kpiNet"
+    );
 
-        console.error(
-          "Google Sheets Error:",
-          error
-        );
 
+  netElement.textContent =
+    money(
+      data.net
+    );
 
-        $("syncTime").textContent =
-          "تعذرت المزامنة";
 
+  netElement.classList.remove(
+    "positive",
+    "negative"
+  );
 
-        /*
-         * Do not destroy existing data
-         * if refresh fails.
-         */
 
-        if (!ALL_ROWS.length) {
+  netElement.classList.add(
+    data.net >= 0
+      ? "positive"
+      : "negative"
+  );
 
-          $("tableWrap").innerHTML = `
 
-            <div class="error">
+  document.getElementById(
+    "kpiMargin"
+  ).textContent =
+    data.income
+      ? `هامش صافي ${data.margin.toFixed(1)}%`
+      : "لا يوجد دخل مسجل";
 
-              <strong>
-                تعذر تحميل البيانات من Google Sheets
-              </strong>
 
-              <br><br>
+  document.getElementById(
+    "kpiCount"
+  ).textContent =
+    integer(
+      data.count
+    );
 
-              تأكد من:
 
-              <br>
+  const average =
+    data.count
+      ? (
+          data.income +
+          data.expense
+        )
+        /
+        data.count
+      : 0;
 
-              1. أن Google Sheet متاح للعرض.
 
-              <br>
+  document.getElementById(
+    "kpiAvg"
+  ).textContent =
+    `متوسط العملية ${money(
+      average
+    )}`;
 
-              2. أن الـ SHEET_ID صحيح.
 
-              <br>
+  document.getElementById(
+    "countPill"
+  ).textContent =
+    `${integer(
+      rows.length
+    )} عملية`;
 
-              3. أن الـ GID صحيح.
+}
 
-              <br>
 
-              4. أن أسماء الأعمدة صحيحة.
+/* =========================================================
+   FINANCIAL ANALYSIS
+========================================================= */
 
-            </div>
+function renderFinancialAnalysis(rows){
+
+  const data =
+    calculateTotals(
+      rows
+    );
+
+
+  const incomeRows =
+    rows.filter(
+      r =>
+        r.type === "دخل"
+    );
+
+
+  const expenseRows =
+    rows.filter(
+      r =>
+        r.type === "مصروف"
+    );
+
+
+  const avgIncome =
+    incomeRows.length
+      ? data.income /
+        incomeRows.length
+      : 0;
+
+
+  const avgExpense =
+    expenseRows.length
+      ? data.expense /
+        expenseRows.length
+      : 0;
+
+
+  const expenseRatio =
+    data.income
+      ? (
+          data.expense /
+          data.income
+        ) * 100
+      : 0;
+
+
+  document.getElementById(
+    "analysisIncome"
+  ).textContent =
+    money(
+      data.income
+    );
+
+
+  document.getElementById(
+    "analysisExpense"
+  ).textContent =
+    money(
+      data.expense
+    );
+
+
+  const netEl =
+    document.getElementById(
+      "analysisNet"
+    );
+
+
+  netEl.textContent =
+    money(
+      data.net
+    );
+
+
+  netEl.className =
+    "metric-value mono " +
+    (
+      data.net >= 0
+        ? "positive"
+        : "negative"
+    );
+
+
+  document.getElementById(
+    "analysisExpenseRatio"
+  ).textContent =
+    expenseRatio.toFixed(
+      1
+    ) + "%";
+
+
+  document.getElementById(
+    "analysisCount"
+  ).textContent =
+    integer(
+      data.count
+    );
+
+
+  document.getElementById(
+    "analysisAvgIncome"
+  ).textContent =
+    money(
+      avgIncome
+    );
+
+
+  document.getElementById(
+    "analysisAvgExpense"
+  ).textContent =
+    money(
+      avgExpense
+    );
+
+
+  const marginEl =
+    document.getElementById(
+      "analysisMargin"
+    );
+
+
+  marginEl.textContent =
+    data.margin.toFixed(
+      1
+    ) + "%";
+
+
+  marginEl.className =
+    "metric-value mono " +
+    (
+      data.margin >= 0
+        ? "positive"
+        : "negative"
+    );
+
+
+  renderCategoryAnalysis(
+    rows
+  );
+
+
+  renderMonthlyAnalysis(
+    rows
+  );
+
+
+  animateProfit(
+    data.income,
+    data.expense
+  );
+
+}
+
+
+/* =========================================================
+   CATEGORY ANALYSIS
+========================================================= */
+
+function renderCategoryAnalysis(rows){
+
+  const categories = {};
+
+
+  rows.forEach(
+    row => {
+
+      const category =
+        row.category ||
+        "أخرى";
+
+
+      if(
+        !categories[category]
+      ){
+
+        categories[category] = {
+
+          income:0,
+
+          expense:0
+
+        };
+
+      }
+
+
+      if(
+        row.type === "دخل"
+      ){
+
+        categories[category]
+          .income +=
+            row.amount;
+
+      }
+
+
+      if(
+        row.type === "مصروف"
+      ){
+
+        categories[category]
+          .expense +=
+            row.amount;
+
+      }
+
+    }
+  );
+
+
+  const entries =
+    Object.entries(
+      categories
+    )
+    .sort(
+      (a,b) => {
+
+        const aTotal =
+          a[1].income +
+          a[1].expense;
+
+
+        const bTotal =
+          b[1].income +
+          b[1].expense;
+
+
+        return bTotal -
+          aTotal;
+
+      }
+    );
+
+
+  const body =
+    document.getElementById(
+      "categoryAnalysisBody"
+    );
+
+
+  if(!entries.length){
+
+    body.innerHTML = `
+
+      <tr>
+
+        <td colspan="4">
+          لا توجد بيانات
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+
+  body.innerHTML =
+    entries
+
+      .map(
+        ([category,data]) => {
+
+          const net =
+            data.income -
+            data.expense;
+
+
+          return `
+
+            <tr>
+
+              <td>
+                ${escapeHTML(
+                  category
+                )}
+              </td>
+
+              <td class="mono positive">
+                ${money(
+                  data.income
+                )}
+              </td>
+
+              <td class="mono ${
+                data.expense > 0
+                  ? "negative"
+                  : ""
+              }">
+                ${money(
+                  data.expense
+                )}
+              </td>
+
+              <td class="mono ${
+                net < 0
+                  ? "negative"
+                  : "positive"
+              }">
+                ${money(
+                  net
+                )}
+              </td>
+
+            </tr>
 
           `;
 
         }
+      )
+      .join("");
 
-      } finally {
 
-        isLoading = false;
+  const totals =
+    calculateTotals(
+      rows
+    );
 
-      }
 
-    }
+  body.innerHTML += `
 
+    <tr>
 
-    /* =====================================================
-       CATEGORY FILTER
-    ===================================================== */
+      <td>
+        <strong>
+          الإجمالي
+        </strong>
+      </td>
 
-    function populateCategoryFilter() {
+      <td class="mono positive">
 
-      const select =
-        $("categoryFilter");
+        <strong>
+          ${money(
+            totals.income
+          )}
+        </strong>
 
+      </td>
 
-      const current =
-        select.value;
+      <td class="mono negative">
 
+        <strong>
+          ${money(
+            totals.expense
+          )}
+        </strong>
 
-      select.innerHTML = `
+      </td>
 
-        <option value="">
-          كل الفئات
-        </option>
+      <td class="mono ${
+        totals.net < 0
+          ? "negative"
+          : "positive"
+      }">
 
-      `;
+        <strong>
+          ${money(
+            totals.net
+          )}
+        </strong>
 
+      </td>
 
-      const categories =
-        [
-          ...new Set(
-            ALL_ROWS
-              .map(
-                row =>
-                  row.category
-              )
-              .filter(Boolean)
-          )
-        ]
-        .sort(
-          (a, b) =>
-            a.localeCompare(
-              b,
-              "ar"
-            )
-        );
+    </tr>
 
+  `;
 
-      categories.forEach(
-        category => {
+}
 
-          const option =
-            document.createElement(
-              "option"
-            );
 
+/* =========================================================
+   MONTHLY ANALYSIS
+========================================================= */
 
-          option.value =
-            category;
+function buildMonthlyData(rows){
 
+  const monthly = {};
 
-          option.textContent =
-            category;
 
+  rows.forEach(
+    row => {
 
-          select.appendChild(
-            option
-          );
-
-        }
-      );
-
-
-      if (
-        categories.includes(current)
-      ) {
-
-        select.value =
-          current;
-
-      }
-
-    }
-
-
-    /* =====================================================
-       FILTERED ROWS
-    ===================================================== */
-
-    function getFilteredRows() {
-
-      const search =
-        normalizeText(
-          $("searchInput").value
-        )
-        .toLowerCase();
-
-
-      const type =
-        $("typeFilter").value;
-
-
-      const category =
-        $("categoryFilter").value;
-
-
-      const month =
-        $("monthFilter").value;
-
-
-      return ALL_ROWS.filter(
-        row => {
-
-          if (
-            type &&
-            row.type !== type
-          ) {
-
-            return false;
-
-          }
-
-
-          if (
-            category &&
-            row.category !== category
-          ) {
-
-            return false;
-
-          }
-
-
-          if (
-            month &&
-            !row.date.startsWith(month)
-          ) {
-
-            return false;
-
-          }
-
-
-          if (search) {
-
-            const haystack =
-              [
-                row.description,
-                row.notes,
-                row.category,
-                row.type,
-                row.date
-              ]
-              .join(" ")
-              .toLowerCase();
-
-
-            if (
-              !haystack.includes(search)
-            ) {
-
-              return false;
-
-            }
-
-          }
-
-
-          return true;
-
-        }
-      );
-
-    }
-
-
-    /* =====================================================
-       TOTALS
-    ===================================================== */
-
-    function calculateTotals(rows) {
-
-      let income = 0;
-
-      let expense = 0;
-
-      let incomeCount = 0;
-
-      let expenseCount = 0;
-
-
-      rows.forEach(
-        row => {
-
-          if (
-            row.type === "دخل"
-          ) {
-
-            income +=
-              number(
-                row.amount
-              );
-
-            incomeCount++;
-
-          }
-
-
-          if (
-            row.type === "مصروف"
-          ) {
-
-            expense +=
-              number(
-                row.amount
-              );
-
-            expenseCount++;
-
-          }
-
-        }
-      );
-
-
-      const net =
-        income -
-        expense;
-
-
-      const margin =
-        income !== 0
-          ? (net / income) * 100
-          : 0;
-
-
-      return {
-
-        income,
-
-        expense,
-
-        net,
-
-        incomeCount,
-
-        expenseCount,
-
-        count:
-          rows.length,
-
-        margin
-
-      };
-
-    }
-
-
-    /* =====================================================
-       MAIN RENDER
-    ===================================================== */
-
-    function render() {
-
-      const filtered =
-        getFilteredRows();
-
-
-      /*
-       * KPI follows filters.
-       */
-
-      renderKPIs(
-        filtered
-      );
-
-
-      /*
-       * Transactions follow filters.
-       */
-
-      renderTransactions(
-        filtered
-      );
-
-
-      /*
-       * Charts follow filters.
-       */
-
-      renderTrendChart(
-        filtered
-      );
-
-
-      renderCategoryChart(
-        filtered
-      );
-
-
-      /*
-       * Full financial analysis
-       * always uses ALL data.
-       */
-
-      renderFinancialAnalysis(
-        ALL_ROWS
-      );
-
-    }
-
-
-    /* =====================================================
-       KPI
-    ===================================================== */
-
-    function renderKPIs(rows) {
-
-      const data =
-        calculateTotals(
-          rows
-        );
-
-
-      $("kpiIncome")
-        .textContent =
-        money(
-          data.income
-        );
-
-
-      $("kpiIncomeCount")
-        .textContent =
-        `${integer(data.incomeCount)} عملية دخل`;
-
-
-      $("kpiExpense")
-        .textContent =
-        money(
-          data.expense
-        );
-
-
-      $("kpiExpenseCount")
-        .textContent =
-        `${integer(data.expenseCount)} عملية مصروف`;
-
-
-      const netElement =
-        $("kpiNet");
-
-
-      netElement.textContent =
-        money(
-          data.net
-        );
-
-
-      netElement.classList.remove(
-        "positive",
-        "negative"
-      );
-
-
-      netElement.classList.add(
-        data.net >= 0
-          ? "positive"
-          : "negative"
-      );
-
-
-      $("kpiMargin")
-        .textContent =
-        data.income
-          ? `هامش صافي ${data.margin.toFixed(1)}%`
-          : "لا يوجد دخل مسجل";
-
-
-      $("kpiCount")
-        .textContent =
-        integer(
-          data.count
-        );
-
-
-      const average =
-        data.count
-          ? (
-              data.income +
-              data.expense
-            ) / data.count
-          : 0;
-
-
-      $("kpiAvg")
-        .textContent =
-        `متوسط العملية ${money(average)}`;
-
-
-      $("countPill")
-        .textContent =
-        `${integer(rows.length)} عملية`;
-
-    }
-
-
-    /* =====================================================
-       FINANCIAL ANALYSIS
-    ===================================================== */
-
-    function renderFinancialAnalysis(rows) {
-
-      const data =
-        calculateTotals(
-          rows
-        );
-
-
-      const incomeRows =
-        rows.filter(
-          row =>
-            row.type === "دخل"
-        );
-
-
-      const expenseRows =
-        rows.filter(
-          row =>
-            row.type === "مصروف"
-        );
-
-
-      const avgIncome =
-        incomeRows.length
-          ? data.income /
-            incomeRows.length
-          : 0;
-
-
-      const avgExpense =
-        expenseRows.length
-          ? data.expense /
-            expenseRows.length
-          : 0;
-
-
-      const expenseRatio =
-        data.income
-          ? (
-              data.expense /
-              data.income
-            ) * 100
-          : 0;
-
-
-      $("analysisIncome")
-        .textContent =
-        money(
-          data.income
-        );
-
-
-      $("analysisExpense")
-        .textContent =
-        money(
-          data.expense
-        );
-
-
-      const netElement =
-        $("analysisNet");
-
-
-      netElement.textContent =
-        money(
-          data.net
-        );
-
-
-      netElement.classList.remove(
-        "positive",
-        "negative"
-      );
-
-
-      netElement.classList.add(
-        data.net >= 0
-          ? "positive"
-          : "negative"
-      );
-
-
-      $("analysisExpenseRatio")
-        .textContent =
-        expenseRatio.toFixed(1)
-        + "%";
-
-
-      $("analysisCount")
-        .textContent =
-        integer(
-          data.count
-        );
-
-
-      $("analysisAvgIncome")
-        .textContent =
-        money(
-          avgIncome
-        );
-
-
-      $("analysisAvgExpense")
-        .textContent =
-        money(
-          avgExpense
-        );
-
-
-      const marginElement =
-        $("analysisMargin");
-
-
-      marginElement.textContent =
-        data.margin.toFixed(1)
-        + "%";
-
-
-      marginElement.classList.remove(
-        "positive",
-        "negative"
-      );
-
-
-      marginElement.classList.add(
-        data.margin >= 0
-          ? "positive"
-          : "negative"
-      );
-
-
-      renderCategoryAnalysis(
-        rows
-      );
-
-
-      renderMonthlyAnalysis(
-        rows
-      );
-
-
-      animateProfit(
-        data.income,
-        data.expense
-      );
-
-    }
-
-
-    /* =====================================================
-       CATEGORY ANALYSIS
-    ===================================================== */
-
-    function renderCategoryAnalysis(rows) {
-
-      const categories = {};
-
-
-      rows.forEach(
-        row => {
-
-          const category =
-            row.category ||
-            "أخرى";
-
-
-          if (
-            !categories[category]
-          ) {
-
-            categories[category] = {
-
-              income: 0,
-
-              expense: 0
-
-            };
-
-          }
-
-
-          if (
-            row.type === "دخل"
-          ) {
-
-            categories[category].income +=
-              row.amount;
-
-          }
-
-
-          if (
-            row.type === "مصروف"
-          ) {
-
-            categories[category].expense +=
-              row.amount;
-
-          }
-
-        }
-      );
-
-
-      const entries =
-        Object.entries(
-          categories
-        )
-        .sort(
-          (a, b) => {
-
-            const totalA =
-              a[1].income +
-              a[1].expense;
-
-
-            const totalB =
-              b[1].income +
-              b[1].expense;
-
-
-            return totalB - totalA;
-
-          }
-        );
-
-
-      const body =
-        $("categoryAnalysisBody");
-
-
-      if (!entries.length) {
-
-        body.innerHTML = `
-
-          <tr>
-
-            <td colspan="4">
-              لا توجد بيانات
-            </td>
-
-          </tr>
-
-        `;
+      if(!row.date){
 
         return;
 
       }
 
 
-      body.innerHTML =
-        entries
-          .map(
-            ([category, data]) => {
-
-              const net =
-                data.income -
-                data.expense;
-
-
-              return `
-
-                <tr>
-
-                  <td>
-                    ${escapeHTML(category)}
-                  </td>
-
-                  <td class="mono positive">
-                    ${money(data.income)}
-                  </td>
-
-                  <td
-                    class="mono ${
-                      data.expense > 0
-                        ? "negative"
-                        : ""
-                    }">
-
-                    ${money(data.expense)}
-
-                  </td>
-
-                  <td
-                    class="mono ${
-                      net < 0
-                        ? "negative"
-                        : "positive"
-                    }">
-
-                    ${money(net)}
-
-                  </td>
-
-                </tr>
-
-              `;
-
-            }
-          )
-          .join("");
-
-
-      const totals =
-        calculateTotals(
-          rows
+      const month =
+        row.date.substring(
+          0,
+          7
         );
 
 
-      body.innerHTML += `
+      if(
+        !/^\d{4}-\d{2}$/.test(
+          month
+        )
+      ){
+
+        return;
+
+      }
+
+
+      if(
+        !monthly[month]
+      ){
+
+        monthly[month] = {
+
+          income:0,
+
+          expense:0
+
+        };
+
+      }
+
+
+      if(
+        row.type === "دخل"
+      ){
+
+        monthly[month]
+          .income +=
+            row.amount;
+
+      }
+
+
+      else if(
+        row.type === "مصروف"
+      ){
+
+        monthly[month]
+          .expense +=
+            row.amount;
+
+      }
+
+    }
+  );
+
+
+  return monthly;
+
+}
+
+
+function renderMonthlyAnalysis(rows){
+
+  const monthly =
+    buildMonthlyData(
+      rows
+    );
+
+
+  const months =
+    Object.keys(
+      monthly
+    ).sort();
+
+
+  const body =
+    document.getElementById(
+      "monthlyAnalysisBody"
+    );
+
+
+  if(!months.length){
+
+    body.innerHTML = `
+
+      <tr>
+
+        <td colspan="4">
+          لا توجد بيانات شهرية
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+
+  body.innerHTML =
+    months
+
+      .map(
+        month => {
+
+          const data =
+            monthly[month];
+
+
+          const net =
+            data.income -
+            data.expense;
+
+
+          return `
+
+            <tr>
+
+              <td class="mono">
+                ${escapeHTML(
+                  month
+                )}
+              </td>
+
+              <td class="mono positive">
+                ${money(
+                  data.income
+                )}
+              </td>
+
+              <td class="mono ${
+                data.expense > 0
+                  ? "negative"
+                  : ""
+              }">
+                ${money(
+                  data.expense
+                )}
+              </td>
+
+              <td class="mono ${
+                net < 0
+                  ? "negative"
+                  : "positive"
+              }">
+                ${money(
+                  net
+                )}
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+      )
+
+      .join("");
+
+}
+
+
+/* =========================================================
+   PROFIT ANIMATION
+========================================================= */
+
+function animateProfit(
+  income,
+  expense
+){
+
+  const story =
+    document.getElementById(
+      "profitStory"
+    );
+
+
+  const verb =
+    document.getElementById(
+      "profitVerb"
+    );
+
+
+  const percent =
+    document.getElementById(
+      "profitPercent"
+    );
+
+
+  const caption =
+    document.getElementById(
+      "profitCaption"
+    );
+
+
+  const status =
+    document.getElementById(
+      "profitStatus"
+    );
+
+
+  const fill =
+    document.getElementById(
+      "profitFill"
+    );
+
+
+  const net =
+    income -
+    expense;
+
+
+  const percentage =
+    income
+      ? (
+          net /
+          income
+        ) * 100
+      : 0;
+
+
+  const absolute =
+    Math.abs(
+      percentage
+    );
+
+
+  story.classList.remove(
+    "profit-mode",
+    "loss-mode"
+  );
+
+
+  if(net >= 0){
+
+    story.classList.add(
+      "profit-mode"
+    );
+
+
+    verb.textContent =
+      "أنت كسبان";
+
+
+    status.textContent =
+      "أداء مربح";
+
+
+    caption.textContent =
+      `صافي ربحك ${money(
+        net
+      )} من إجمالي الدخل`;
+
+  }
+
+  else{
+
+    story.classList.add(
+      "loss-mode"
+    );
+
+
+    verb.textContent =
+      "أنت خسران";
+
+
+    status.textContent =
+      "أداء يحتاج انتباه";
+
+
+    caption.textContent =
+      `مصروفاتك أعلى من دخلك بـ ${money(
+        Math.abs(net)
+      )}`;
+
+  }
+
+
+  percent.textContent =
+    "0.0%";
+
+
+  const start =
+    performance.now();
+
+
+  const duration =
+    1600;
+
+
+  function animate(now){
+
+    const progress =
+      Math.min(
+        (now-start) /
+        duration,
+        1
+      );
+
+
+    const eased =
+      1 -
+      Math.pow(
+        1-progress,
+        3
+      );
+
+
+    percent.textContent =
+      `${(
+        absolute *
+        eased
+      ).toFixed(1)}%`;
+
+
+    if(
+      progress < 1
+    ){
+
+      requestAnimationFrame(
+        animate
+      );
+
+    }
+
+  }
+
+
+  requestAnimationFrame(
+    animate
+  );
+
+
+  const width =
+    Math.min(
+      Math.max(
+        absolute,
+        4
+      ),
+      100
+    );
+
+
+  fill.style.width =
+    "0%";
+
+
+  requestAnimationFrame(
+    () => {
+
+      fill.style.width =
+        width + "%";
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CHART ERROR
+========================================================= */
+
+function showChartError(
+  canvas,
+  message
+){
+
+  const box =
+    canvas.parentElement;
+
+
+  box.innerHTML = `
+
+    <div class="chart-error">
+
+      <div>
+
+        <strong>
+          تعذر رسم البيانات
+        </strong>
+
+        <br>
+
+        ${escapeHTML(
+          message
+        )}
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   TREND CHART
+========================================================= */
+
+function renderTrendChart(rows){
+
+  const box =
+    document.querySelector(
+      "#trendChart"
+    )?.parentElement;
+
+
+  if(!box){
+
+    console.error(
+      "Trend chart container not found."
+    );
+
+    return;
+
+  }
+
+
+  /*
+    Re-create canvas if it was
+    replaced by an error message.
+  */
+
+  let canvas =
+    document.getElementById(
+      "trendChart"
+    );
+
+
+  if(!canvas){
+
+    box.innerHTML =
+      `<canvas id="trendChart"></canvas>`;
+
+    canvas =
+      document.getElementById(
+        "trendChart"
+      );
+
+  }
+
+
+  if(
+    typeof Chart === "undefined"
+  ){
+
+    showChartError(
+      canvas,
+      "Chart.js لم يتم تحميلها."
+    );
+
+    return;
+
+  }
+
+
+  const monthly =
+    buildMonthlyData(
+      rows
+    );
+
+
+  const months =
+    Object.keys(
+      monthly
+    ).sort();
+
+
+  console.log(
+    "TREND MONTHS:",
+    months
+  );
+
+
+  console.log(
+    "TREND DATA:",
+    monthly
+  );
+
+
+  if(
+    trendChart
+  ){
+
+    trendChart.destroy();
+
+    trendChart = null;
+
+  }
+
+
+  if(!months.length){
+
+    showChartError(
+      canvas,
+      "لا توجد تواريخ شهرية صالحة في البيانات."
+    );
+
+    return;
+
+  }
+
+
+  const income =
+    months.map(
+      month =>
+        monthly[month]
+          .income
+    );
+
+
+  const expense =
+    months.map(
+      month =>
+        monthly[month]
+          .expense
+    );
+
+
+  trendChart =
+    new Chart(
+      canvas,
+      {
+
+        type:"line",
+
+        data:{
+
+          labels:months,
+
+          datasets:[
+
+            {
+
+              label:"الدخل",
+
+              data:income,
+
+              borderColor:
+                "#21d07a",
+
+              backgroundColor:
+                "rgba(33,208,122,.15)",
+
+              borderWidth:3,
+
+              fill:true,
+
+              tension:.42,
+
+              pointRadius:4,
+
+              pointHoverRadius:8,
+
+              pointBackgroundColor:
+                "#21d07a"
+
+            },
+
+            {
+
+              label:"المصروف",
+
+              data:expense,
+
+              borderColor:
+                "#ff5c6c",
+
+              backgroundColor:
+                "rgba(255,92,108,.12)",
+
+              borderWidth:3,
+
+              fill:true,
+
+              tension:.42,
+
+              pointRadius:4,
+
+              pointHoverRadius:8,
+
+              pointBackgroundColor:
+                "#ff5c6c"
+
+            }
+
+          ]
+
+        },
+
+
+        options:{
+
+          responsive:true,
+
+          maintainAspectRatio:false,
+
+          interaction:{
+
+            intersect:false,
+
+            mode:"index"
+
+          },
+
+          animation:{
+
+            duration:1400,
+
+            easing:"easeOutQuart"
+
+          },
+
+          plugins:{
+
+            legend:{
+
+              display:true,
+
+              position:"top",
+
+              align:"start",
+
+              labels:{
+
+                color:"#91a0b5",
+
+                font:{
+
+                  family:"Tajawal",
+
+                  size:11
+
+                },
+
+                usePointStyle:true,
+
+                padding:15
+
+              }
+
+            },
+
+            tooltip:{
+
+              rtl:true,
+
+              backgroundColor:
+                "rgba(8,12,20,.97)",
+
+              borderColor:
+                "rgba(255,255,255,.08)",
+
+              borderWidth:1,
+
+              titleColor:"#fff",
+
+              bodyColor:"#d7deea",
+
+              padding:12,
+
+              callbacks:{
+
+                label:
+                  context =>
+
+                    `${context.dataset.label}: ${money(
+                      context.raw
+                    )}`
+
+              }
+
+            }
+
+          },
+
+
+          scales:{
+
+            x:{
+
+              ticks:{
+
+                color:"#64748b",
+
+                font:{
+
+                  family:
+                    "IBM Plex Mono",
+
+                  size:9
+
+                },
+
+                maxRotation:0,
+
+                autoSkip:true,
+
+                maxTicksLimit:8
+
+              },
+
+              grid:{
+
+                color:
+                  "rgba(255,255,255,.035)"
+
+              }
+
+            },
+
+            y:{
+
+              beginAtZero:true,
+
+              ticks:{
+
+                color:"#64748b",
+
+                font:{
+
+                  family:
+                    "IBM Plex Mono",
+
+                  size:9
+
+                },
+
+                callback:
+                  value =>
+                    Number(
+                      value
+                    )
+                    .toLocaleString(
+                      "en-US"
+                    )
+
+              },
+
+              grid:{
+
+                color:
+                  "rgba(255,255,255,.035)"
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   CATEGORY CHART
+========================================================= */
+
+function renderCategoryChart(rows){
+
+  const box =
+    document.querySelector(
+      "#categoryChart"
+    )?.parentElement;
+
+
+  if(!box){
+
+    console.error(
+      "Category chart container not found."
+    );
+
+    return;
+
+  }
+
+
+  let canvas =
+    document.getElementById(
+      "categoryChart"
+    );
+
+
+  if(!canvas){
+
+    box.innerHTML =
+      `<canvas id="categoryChart"></canvas>`;
+
+    canvas =
+      document.getElementById(
+        "categoryChart"
+      );
+
+  }
+
+
+  if(
+    typeof Chart === "undefined"
+  ){
+
+    showChartError(
+      canvas,
+      "Chart.js لم يتم تحميلها."
+    );
+
+    return;
+
+  }
+
+
+  const categories = {};
+
+
+  rows.forEach(
+    row => {
+
+      const category =
+        row.category ||
+        "أخرى";
+
+
+      if(
+        !categories[category]
+      ){
+
+        categories[category] =
+          0;
+
+      }
+
+
+      categories[category] +=
+        number(
+          row.amount
+        );
+
+    }
+  );
+
+
+  const entries =
+    Object.entries(
+      categories
+    )
+
+    .sort(
+      (a,b) =>
+        b[1] -
+        a[1]
+    )
+
+    .slice(
+      0,
+      8
+    );
+
+
+  console.log(
+    "CATEGORY DATA:",
+    entries
+  );
+
+
+  if(
+    categoryChart
+  ){
+
+    categoryChart.destroy();
+
+    categoryChart = null;
+
+  }
+
+
+  if(!entries.length){
+
+    showChartError(
+      canvas,
+      "لا توجد بيانات فئات صالحة."
+    );
+
+    return;
+
+  }
+
+
+  categoryChart =
+    new Chart(
+      canvas,
+      {
+
+        type:"bar",
+
+        data:{
+
+          labels:
+            entries.map(
+              item =>
+                item[0]
+            ),
+
+          datasets:[
+
+            {
+
+              label:
+                "إجمالي المعاملات",
+
+              data:
+                entries.map(
+                  item =>
+                    item[1]
+                ),
+
+              backgroundColor:
+                "rgba(201,162,39,.82)",
+
+              borderColor:
+                "#e4c458",
+
+              borderWidth:1,
+
+              borderRadius:8,
+
+              borderSkipped:false
+
+            }
+
+          ]
+
+        },
+
+
+        options:{
+
+          indexAxis:"y",
+
+          responsive:true,
+
+          maintainAspectRatio:false,
+
+          animation:{
+
+            duration:1300,
+
+            easing:"easeOutQuart"
+
+          },
+
+          plugins:{
+
+            legend:{
+              display:false
+            },
+
+            tooltip:{
+
+              rtl:true,
+
+              backgroundColor:
+                "rgba(8,12,20,.97)",
+
+              borderColor:
+                "rgba(201,162,39,.3)",
+
+              borderWidth:1,
+
+              padding:12,
+
+              callbacks:{
+
+                label:
+                  context =>
+                    ` ${money(
+                      context.raw
+                    )}`
+
+              }
+
+            }
+
+          },
+
+
+          scales:{
+
+            x:{
+
+              beginAtZero:true,
+
+              ticks:{
+
+                color:"#64748b",
+
+                font:{
+
+                  family:
+                    "IBM Plex Mono",
+
+                  size:9
+
+                }
+
+              },
+
+              grid:{
+
+                color:
+                  "rgba(255,255,255,.035)"
+
+              }
+
+            },
+
+            y:{
+
+              ticks:{
+
+                color:"#cbd5e1",
+
+                font:{
+
+                  family:
+                    "Tajawal",
+
+                  size:10
+
+                }
+
+              },
+
+              grid:{
+                display:false
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+function renderTransactions(rows){
+
+  const wrapper =
+    document.getElementById(
+      "tableWrap"
+    );
+
+
+  if(!rows.length){
+
+    wrapper.innerHTML = `
+
+      <div class="empty">
+
+        لا توجد معاملات مطابقة للفلاتر الحالية.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  const sorted =
+    [...rows]
+      .sort(
+        (a,b) =>
+          String(
+            b.date
+          )
+          .localeCompare(
+            String(
+              a.date
+            )
+          )
+      );
+
+
+  const visible =
+    sorted.slice(
+      0,
+      250
+    );
+
+
+  let html = `
+
+    <table class="transactions-table">
+
+      <thead>
 
         <tr>
 
+          <th>التاريخ</th>
+
+          <th>النوع</th>
+
+          <th>الفئة</th>
+
+          <th>الوصف</th>
+
+          <th>المبلغ</th>
+
+          <th>ملاحظات</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+  `;
+
+
+  visible.forEach(
+    row => {
+
+      const income =
+        row.type === "دخل";
+
+
+      html += `
+
+        <tr>
+
+          <td class="mono">
+
+            ${escapeHTML(
+              row.date ||
+              "—"
+            )}
+
+          </td>
+
           <td>
-            <strong>
-              الإجمالي
-            </strong>
+
+            <span
+              class="badge ${
+                income
+                  ? "in"
+                  : "out"
+              }">
+
+              ${escapeHTML(
+                row.type ||
+                "—"
+              )}
+
+            </span>
+
           </td>
 
-          <td class="mono positive">
-            <strong>
-              ${money(totals.income)}
-            </strong>
+          <td>
+
+            ${escapeHTML(
+              row.category ||
+              "—"
+            )}
+
           </td>
 
-          <td class="mono negative">
-            <strong>
-              ${money(totals.expense)}
-            </strong>
+          <td>
+
+            ${escapeHTML(
+              row.description ||
+              "—"
+            )}
+
           </td>
 
           <td
             class="mono ${
-              totals.net < 0
-                ? "negative"
-                : "positive"
+              income
+                ? "positive"
+                : "negative"
             }">
 
-            <strong>
-              ${money(totals.net)}
-            </strong>
+            ${income
+              ? "+"
+              : "-"}
+
+            ${money(
+              row.amount
+            )}
+
+          </td>
+
+          <td>
+
+            ${escapeHTML(
+              row.notes ||
+              ""
+            )}
 
           </td>
 
@@ -4071,1381 +5539,198 @@
       `;
 
     }
+  );
 
 
-    /* =====================================================
-       MONTHLY ANALYSIS
-    ===================================================== */
+  html += `
 
-    function renderMonthlyAnalysis(rows) {
+      </tbody>
 
-      const monthly = {};
+    </table>
 
-
-      rows.forEach(
-        row => {
-
-          const month =
-            row.date.slice(
-              0,
-              7
-            );
+  `;
 
 
-          if (
-            !/^\d{4}-\d{2}$/.test(
-              month
-            )
-          ) {
+  if(
+    rows.length > 250
+  ){
 
-            return;
+    html += `
 
-          }
+      <div
+        class="card-hint"
+        style="padding:14px">
 
+        عرض أحدث 250 معاملة من
+        ${integer(
+          rows.length
+        )}
+        معاملة.
 
-          if (
-            !monthly[month]
-          ) {
+      </div>
 
-            monthly[month] = {
+    `;
 
-              income: 0,
-
-              expense: 0
-
-            };
-
-          }
+  }
 
 
-          if (
-            row.type === "دخل"
-          ) {
+  wrapper.innerHTML =
+    html;
 
-            monthly[month].income +=
-              row.amount;
-
-          }
+}
 
 
-          if (
-            row.type === "مصروف"
-          ) {
+/* =========================================================
+   FILTER EVENTS
+========================================================= */
 
-            monthly[month].expense +=
-              row.amount;
+[
+  "searchInput",
+  "typeFilter",
+  "categoryFilter",
+  "monthFilter"
 
-          }
+].forEach(
+  id => {
 
-        }
+    const element =
+      document.getElementById(
+        id
       );
 
 
-      const months =
-        Object.keys(
-          monthly
-        )
-        .sort();
-
-
-      const body =
-        $("monthlyAnalysisBody");
-
-
-      if (!months.length) {
-
-        body.innerHTML = `
-
-          <tr>
-
-            <td colspan="4">
-              لا توجد بيانات شهرية
-            </td>
-
-          </tr>
-
-        `;
-
-        return;
-
-      }
-
-
-      body.innerHTML =
-        months
-          .map(
-            month => {
-
-              const data =
-                monthly[month];
-
-
-              const net =
-                data.income -
-                data.expense;
-
-
-              return `
-
-                <tr>
-
-                  <td class="mono">
-                    ${escapeHTML(month)}
-                  </td>
-
-                  <td class="mono positive">
-                    ${money(data.income)}
-                  </td>
-
-                  <td
-                    class="mono ${
-                      data.expense > 0
-                        ? "negative"
-                        : ""
-                    }">
-
-                    ${money(data.expense)}
-
-                  </td>
-
-                  <td
-                    class="mono ${
-                      net < 0
-                        ? "negative"
-                        : "positive"
-                    }">
-
-                    ${money(net)}
-
-                  </td>
-
-                </tr>
-
-              `;
-
-            }
-          )
-          .join("");
-
-    }
-
-
-    /* =====================================================
-       PROFIT ANIMATION
-    ===================================================== */
-
-    function animateProfit(
-      income,
-      expense
-    ) {
-
-      const story =
-        $("profitStory");
-
-
-      const verb =
-        $("profitVerb");
-
-
-      const percent =
-        $("profitPercent");
-
-
-      const caption =
-        $("profitCaption");
-
-
-      const status =
-        $("profitStatus");
-
-
-      const fill =
-        $("profitFill");
-
-
-      const net =
-        income -
-        expense;
-
-
-      const percentage =
-        income !== 0
-          ? (
-              net /
-              income
-            ) * 100
-          : 0;
-
-
-      const absolute =
-        Math.abs(
-          percentage
-        );
-
-
-      story.classList.remove(
-        "profit-mode",
-        "loss-mode",
-        "neutral-mode"
-      );
-
-
-      if (
-        income === 0 &&
-        expense === 0
-      ) {
-
-        story.classList.add(
-          "neutral-mode"
-        );
-
-
-        verb.textContent =
-          "لا توجد بيانات";
-
-
-        status.textContent =
-          "لا توجد معاملات";
-
-
-        caption.textContent =
-          "لم يتم تسجيل دخل أو مصروف حتى الآن.";
-
-      }
-
-      else if (
-        net > 0
-      ) {
-
-        story.classList.add(
-          "profit-mode"
-        );
-
-
-        verb.textContent =
-          "أنت كسبان";
-
-
-        status.textContent =
-          "أداء مربح";
-
-
-        caption.textContent =
-          `صافي ربحك ${money(net)} من إجمالي الدخل`;
-
-      }
-
-      else if (
-        net < 0
-      ) {
-
-        story.classList.add(
-          "loss-mode"
-        );
-
-
-        verb.textContent =
-          "أنت خسران";
-
-
-        status.textContent =
-          "أداء يحتاج انتباه";
-
-
-        caption.textContent =
-          `مصروفاتك أعلى من دخلك بـ ${money(Math.abs(net))}`;
-
-      }
-
-      else {
-
-        story.classList.add(
-          "neutral-mode"
-        );
-
-
-        verb.textContent =
-          "متوازن";
-
-
-        status.textContent =
-          "لا ربح ولا خسارة";
-
-
-        caption.textContent =
-          "الدخل يساوي المصروف تمامًا.";
-
-      }
-
-
-      percent.textContent =
-        "0.0%";
-
-
-      const start =
-        performance.now();
-
-
-      const duration =
-        1200;
-
-
-      function animate(now) {
-
-        const progress =
-          Math.min(
-            (
-              now -
-              start
-            ) /
-            duration,
-            1
-          );
-
-
-        const eased =
-          1 -
-          Math.pow(
-            1 - progress,
-            3
-          );
-
-
-        percent.textContent =
-          `${(
-            absolute *
-            eased
-          ).toFixed(1)}%`;
-
-
-        if (
-          progress < 1
-        ) {
-
-          requestAnimationFrame(
-            animate
-          );
-
-        }
-
-      }
-
-
-      requestAnimationFrame(
-        animate
-      );
-
-
-      const width =
-        Math.min(
-          Math.max(
-            absolute,
-            absolute > 0
-              ? 4
-              : 0
-          ),
-          100
-        );
-
-
-      fill.style.width =
-        "0%";
-
-
-      requestAnimationFrame(
-        () => {
-
-          fill.style.width =
-            width + "%";
-
-        }
-      );
-
-    }
-
-
-    /* =====================================================
-       CHART DEFAULTS
-    ===================================================== */
-
-    function chartDefaults() {
-
-      return {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        animation: {
-
-          duration: 1200,
-
-          easing: "easeOutQuart"
-
-        },
-
-        plugins: {
-
-          legend: {
-
-            labels: {
-
-              color:
-                "#91a0b5",
-
-              font: {
-
-                family:
-                  "Tajawal",
-
-                size: 11
-
-              }
-
-            }
-
-          }
-
-        }
-
-      };
-
-    }
-
-
-    /* =====================================================
-       TREND CHART
-    ===================================================== */
-
-    function renderTrendChart(rows) {
-
-      if (
-        typeof Chart === "undefined"
-      ) {
-
-        return;
-
-      }
-
-
-      const monthly = {};
-
-
-      rows.forEach(
-        row => {
-
-          const month =
-            row.date.slice(
-              0,
-              7
-            );
-
-
-          if (
-            !/^\d{4}-\d{2}$/.test(
-              month
-            )
-          ) {
-
-            return;
-
-          }
-
-
-          if (
-            !monthly[month]
-          ) {
-
-            monthly[month] = {
-
-              income: 0,
-
-              expense: 0
-
-            };
-
-          }
-
-
-          if (
-            row.type === "دخل"
-          ) {
-
-            monthly[month].income +=
-              row.amount;
-
-          }
-
-
-          if (
-            row.type === "مصروف"
-          ) {
-
-            monthly[month].expense +=
-              row.amount;
-
-          }
-
-        }
-      );
-
-
-      const months =
-        Object.keys(
-          monthly
-        )
-        .sort();
-
-
-      const income =
-        months.map(
-          month =>
-            monthly[month].income
-        );
-
-
-      const expense =
-        months.map(
-          month =>
-            monthly[month].expense
-        );
-
-
-      const canvas =
-        $("trendChart");
-
-
-      if (
-        trendChart
-      ) {
-
-        trendChart.destroy();
-
-        trendChart = null;
-
-      }
-
-
-      trendChart =
-        new Chart(
-          canvas,
-          {
-
-            type: "line",
-
-            data: {
-
-              labels:
-                months,
-
-              datasets: [
-
-                {
-
-                  label:
-                    "الدخل",
-
-                  data:
-                    income,
-
-                  borderColor:
-                    "#21d07a",
-
-                  backgroundColor:
-                    "rgba(33,208,122,.12)",
-
-                  borderWidth:
-                    2.5,
-
-                  fill:
-                    true,
-
-                  tension:
-                    .42,
-
-                  pointRadius:
-                    3,
-
-                  pointHoverRadius:
-                    7
-
-                },
-
-                {
-
-                  label:
-                    "المصروف",
-
-                  data:
-                    expense,
-
-                  borderColor:
-                    "#ff5c6c",
-
-                  backgroundColor:
-                    "rgba(255,92,108,.10)",
-
-                  borderWidth:
-                    2.5,
-
-                  fill:
-                    true,
-
-                  tension:
-                    .42,
-
-                  pointRadius:
-                    3,
-
-                  pointHoverRadius:
-                    7
-
-                }
-
-              ]
-
-            },
-
-            options: {
-
-              ...chartDefaults(),
-
-              interaction: {
-
-                intersect:
-                  false,
-
-                mode:
-                  "index"
-
-              },
-
-              plugins: {
-
-                legend: {
-
-                  position:
-                    "top",
-
-                  align:
-                    "start",
-
-                  labels: {
-
-                    color:
-                      "#91a0b5",
-
-                    font: {
-
-                      family:
-                        "Tajawal",
-
-                      size:
-                        11
-
-                    },
-
-                    usePointStyle:
-                      true,
-
-                    padding:
-                      15
-
-                  }
-
-                },
-
-                tooltip: {
-
-                  rtl:
-                    true,
-
-                  backgroundColor:
-                    "rgba(8,12,20,.96)",
-
-                  borderColor:
-                    "rgba(255,255,255,.08)",
-
-                  borderWidth:
-                    1,
-
-                  titleColor:
-                    "#fff",
-
-                  bodyColor:
-                    "#d7deea",
-
-                  padding:
-                    12,
-
-                  callbacks: {
-
-                    label:
-                      context =>
-                        `${context.dataset.label}: ${money(context.raw)}`
-
-                  }
-
-                }
-
-              },
-
-              scales: {
-
-                x: {
-
-                  ticks: {
-
-                    color:
-                      "#64748b",
-
-                    font: {
-
-                      family:
-                        "IBM Plex Mono",
-
-                      size:
-                        9
-
-                    },
-
-                    maxRotation:
-                      0,
-
-                    autoSkip:
-                      true,
-
-                    maxTicksLimit:
-                      8
-
-                  },
-
-                  grid: {
-
-                    color:
-                      "rgba(255,255,255,.035)"
-
-                  }
-
-                },
-
-                y: {
-
-                  beginAtZero:
-                    true,
-
-                  ticks: {
-
-                    color:
-                      "#64748b",
-
-                    font: {
-
-                      family:
-                        "IBM Plex Mono",
-
-                      size:
-                        9
-
-                    },
-
-                    callback:
-                      value =>
-                        Number(value)
-                          .toLocaleString(
-                            "en-US"
-                          )
-
-                  },
-
-                  grid: {
-
-                    color:
-                      "rgba(255,255,255,.035)"
-
-                  }
-
-                }
-
-              }
-
-            }
-
-          }
-
-        );
-
-    }
-
-
-    /* =====================================================
-       CATEGORY CHART
-    ===================================================== */
-
-    function renderCategoryChart(rows) {
-
-      if (
-        typeof Chart === "undefined"
-      ) {
-
-        return;
-
-      }
-
-
-      const categories = {};
-
-
-      rows.forEach(
-        row => {
-
-          const category =
-            row.category ||
-            "أخرى";
-
-
-          if (
-            !categories[category]
-          ) {
-
-            categories[category] =
-              0;
-
-          }
-
-
-          categories[category] +=
-            row.amount;
-
-        }
-      );
-
-
-      const entries =
-        Object.entries(
-          categories
-        )
-        .sort(
-          (a, b) =>
-            b[1] - a[1]
-        )
-        .slice(
-          0,
-          8
-        );
-
-
-      const canvas =
-        $("categoryChart");
-
-
-      if (
-        categoryChart
-      ) {
-
-        categoryChart.destroy();
-
-        categoryChart = null;
-
-      }
-
-
-      categoryChart =
-        new Chart(
-          canvas,
-          {
-
-            type:
-              "bar",
-
-            data: {
-
-              labels:
-                entries.map(
-                  item =>
-                    item[0]
-                ),
-
-              datasets: [
-
-                {
-
-                  data:
-                    entries.map(
-                      item =>
-                        item[1]
-                    ),
-
-                  backgroundColor:
-                    "rgba(201,162,39,.82)",
-
-                  borderColor:
-                    "#e4c458",
-
-                  borderWidth:
-                    1,
-
-                  borderRadius:
-                    8,
-
-                  borderSkipped:
-                    false
-
-                }
-
-              ]
-
-            },
-
-            options: {
-
-              ...chartDefaults(),
-
-              indexAxis:
-                "y",
-
-              plugins: {
-
-                legend: {
-
-                  display:
-                    false
-
-                },
-
-                tooltip: {
-
-                  rtl:
-                    true,
-
-                  backgroundColor:
-                    "rgba(8,12,20,.96)",
-
-                  borderColor:
-                    "rgba(201,162,39,.3)",
-
-                  borderWidth:
-                    1,
-
-                  padding:
-                    12,
-
-                  callbacks: {
-
-                    label:
-                      context =>
-                        ` ${money(context.raw)}`
-
-                  }
-
-                }
-
-              },
-
-              scales: {
-
-                x: {
-
-                  beginAtZero:
-                    true,
-
-                  ticks: {
-
-                    color:
-                      "#64748b",
-
-                    font: {
-
-                      family:
-                        "IBM Plex Mono",
-
-                      size:
-                        9
-
-                    }
-
-                  },
-
-                  grid: {
-
-                    color:
-                      "rgba(255,255,255,.035)"
-
-                  }
-
-                },
-
-                y: {
-
-                  ticks: {
-
-                    color:
-                      "#cbd5e1",
-
-                    font: {
-
-                      family:
-                        "Tajawal",
-
-                      size:
-                        10
-
-                    }
-
-                  },
-
-                  grid: {
-
-                    display:
-                      false
-
-                  }
-
-                }
-
-              }
-
-            }
-
-          }
-
-        );
-
-    }
-
-
-    /* =====================================================
-       TRANSACTIONS TABLE
-    ===================================================== */
-
-    function renderTransactions(rows) {
-
-      const wrapper =
-        $("tableWrap");
-
-
-      if (
-        !rows.length
-      ) {
-
-        wrapper.innerHTML = `
-
-          <div class="empty">
-
-            لا توجد معاملات مطابقة للفلاتر الحالية.
-
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      const sorted =
-        [...rows]
-          .sort(
-            (a, b) =>
-              b.date.localeCompare(
-                a.date
-              )
-          );
-
-
-      const visible =
-        sorted.slice(
-          0,
-          250
-        );
-
-
-      let html = `
-
-        <table class="transactions-table">
-
-          <thead>
-
-            <tr>
-
-              <th>
-                التاريخ
-              </th>
-
-              <th>
-                النوع
-              </th>
-
-              <th>
-                الفئة
-              </th>
-
-              <th>
-                الوصف
-              </th>
-
-              <th>
-                المبلغ
-              </th>
-
-              <th>
-                ملاحظات
-              </th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-      `;
-
-
-      visible.forEach(
-        row => {
-
-          const income =
-            row.type === "دخل";
-
-
-          const typeClass =
-            income
-              ? "in"
-              : "out";
-
-
-          const amountClass =
-            income
-              ? "positive"
-              : "negative";
-
-
-          const sign =
-            income
-              ? "+"
-              : "-";
-
-
-          html += `
-
-            <tr>
-
-              <td class="mono">
-
-                ${escapeHTML(
-                  row.date ||
-                  "—"
-                )}
-
-              </td>
-
-              <td>
-
-                <span
-                  class="badge ${typeClass}">
-
-                  ${escapeHTML(
-                    row.type ||
-                    "—"
-                  )}
-
-                </span>
-
-              </td>
-
-              <td>
-
-                ${escapeHTML(
-                  row.category ||
-                  "—"
-                )}
-
-              </td>
-
-              <td>
-
-                ${escapeHTML(
-                  row.description ||
-                  "—"
-                )}
-
-              </td>
-
-              <td
-                class="mono ${amountClass}">
-
-                ${sign}
-                ${money(
-                  row.amount
-                )}
-
-              </td>
-
-              <td>
-
-                ${escapeHTML(
-                  row.notes ||
-                  ""
-                )}
-
-              </td>
-
-            </tr>
-
-          `;
-
-        }
-      );
-
-
-      html += `
-
-          </tbody>
-
-        </table>
-
-      `;
-
-
-      if (
-        rows.length > 250
-      ) {
-
-        html += `
-
-          <div
-            class="card-hint"
-            style="padding:14px">
-
-            عرض أحدث 250 معاملة من
-            ${integer(rows.length)}
-            معاملة.
-
-          </div>
-
-        `;
-
-      }
-
-
-      wrapper.innerHTML =
-        html;
-
-    }
-
-
-    /* =====================================================
-       ESCAPE HTML
-    ===================================================== */
-
-    function escapeHTML(value) {
-
-      return String(
-        value ?? ""
-      )
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
-    }
-
-
-    /* =====================================================
-       FILTER EVENTS
-    ===================================================== */
-
-    [
-      "searchInput",
-      "typeFilter",
-      "categoryFilter",
-      "monthFilter"
-
-    ].forEach(
-      id => {
-
-        const element =
-          $(id);
-
-
-        element.addEventListener(
-          "input",
-          render
-        );
-
-
-        element.addEventListener(
-          "change",
-          render
-        );
-
-      }
+    element.addEventListener(
+      "input",
+      render
     );
 
 
-    /* =====================================================
-       INITIAL LOAD
-    ===================================================== */
-
-    loadData();
-
-
-    /* =====================================================
-       AUTO REFRESH
-    ===================================================== */
-
-    setInterval(
-      loadData,
-      CONFIG.REFRESH_INTERVAL
+    element.addEventListener(
+      "change",
+      render
     );
 
-
-    /* =====================================================
-       RESIZE CHARTS
-    ===================================================== */
-
-    window.addEventListener(
-      "resize",
-      () => {
-
-        if (
-          trendChart
-        ) {
-
-          trendChart.resize();
-
-        }
+  }
+);
 
 
-        if (
-          categoryChart
-        ) {
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
-          categoryChart.resize();
+console.log(
+  "Dashboard initializing..."
+);
 
-        }
 
-      }
+console.log(
+  "Chart.js:",
+  typeof Chart !== "undefined"
+    ? Chart.version
+    : "NOT LOADED"
+);
+
+
+if(
+  typeof Chart === "undefined"
+){
+
+  document.getElementById(
+    "syncTime"
+  ).textContent =
+    "مشكلة في Chart.js";
+
+}
+
+
+/* =========================================================
+   LOAD
+========================================================= */
+
+loadData();
+
+
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
+
+setInterval(
+  loadData,
+  CONFIG.REFRESH_INTERVAL
+);
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    if(
+      trendChart
+    ){
+
+      trendChart.resize();
+
+    }
+
+
+    if(
+      categoryChart
+    ){
+
+      categoryChart.resize();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   DEBUG
+========================================================= */
+
+setTimeout(
+  () => {
+
+    console.log(
+      "========== DASHBOARD DEBUG =========="
     );
 
-  </script>
+    console.log(
+      "Chart.js:",
+      typeof Chart !== "undefined"
+        ? Chart.version
+        : "NOT LOADED"
+    );
+
+    console.log(
+      "Rows:",
+      ALL_ROWS
+    );
+
+    console.log(
+      "Trend chart:",
+      trendChart
+    );
+
+    console.log(
+      "Category chart:",
+      categoryChart
+    );
+
+    console.log(
+      "======================================"
+    );
+
+  },
+  3000
+);
+
+</script>
 
 </body>
-
 </html>
