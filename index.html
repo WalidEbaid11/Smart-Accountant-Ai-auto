@@ -1,1388 +1,4043 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>دفتر — لوحة التحكم المالية</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>دفتر — Financial Intelligence</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
 <style>
-  :root{
-    --bg:#0E1A2B;
-    --bg-deep:#0A1522;
-    --surface:#132741;
-    --surface-alt:#1A3252;
-    --line:rgba(244,241,234,0.08);
-    --line-strong:rgba(201,162,39,0.35);
-    --gold:#C9A227;
-    --gold-soft:#E4C458;
-    --green:#2F9E6E;
-    --green-soft:rgba(47,158,110,0.14);
-    --red:#D9544F;
-    --red-soft:rgba(217,84,79,0.14);
-    --text:#F4F1EA;
-    --text-muted:#93A4BC;
-    --text-faint:#5E7089;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:
-      radial-gradient(circle at 15% 0%, rgba(201,162,39,0.06), transparent 40%),
-      var(--bg);
-    color:var(--text);
-    font-family:'Tajawal',sans-serif;
-    min-height:100vh;
-  }
-  .mono{font-family:'IBM Plex Mono',monospace; font-variant-numeric: tabular-nums;}
 
-  header.top{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:22px 32px;
-    border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg, var(--bg-deep), transparent);
-  }
-  .brand{display:flex; align-items:center; gap:12px;}
-  .brand .mark{
-    width:38px; height:38px; border-radius:8px;
-    background:linear-gradient(135deg, var(--gold), #8a6d15);
-    display:flex; align-items:center; justify-content:center;
-    font-weight:900; color:#0E1A2B; font-size:18px;
-  }
-  .brand h1{font-size:17px; margin:0; font-weight:700; letter-spacing:.2px;}
-  .brand p{margin:0; font-size:12px; color:var(--text-faint);}
-  .sync{font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:8px;}
-  .sync .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft);}
-
-  .ledger-band{
-    height:26px;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent, transparent 6px,
-      var(--line) 6px, var(--line) 7px
-    );
-    margin: 0 32px;
-    border-left:1px solid var(--line-strong);
-    border-right:1px solid var(--line-strong);
-  }
-
-  main{padding:28px 32px 60px; max-width:1320px; margin:0 auto;}
-
-  .kpi-grid{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
-    margin-top:24px;
-  }
-  .kpi{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:18px 20px;
-    position:relative;
-    overflow:hidden;
-  }
-  .kpi::before{
-    content:'';
-    position:absolute; inset:0 0 auto 0; height:3px;
-    background:var(--kpi-accent, var(--gold));
-  }
-  .kpi .label{font-size:12.5px; color:var(--text-muted); font-weight:500;}
-  .kpi .value{font-size:26px; font-weight:600; margin-top:10px;}
-  .kpi .sub{font-size:11.5px; color:var(--text-faint); margin-top:6px;}
-  .kpi.income{--kpi-accent:var(--green);}
-  .kpi.expense{--kpi-accent:var(--red);}
-  .kpi.net .value.pos{color:var(--green);}
-  .kpi.net .value.neg{color:var(--red);}
-
-  .panels{
-    display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-top:16px;
-  }
-  .card{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:20px;
-  }
-  .card h2{
-    font-size:14px; margin:0 0 4px; font-weight:700;
-  }
-  .card .hint{font-size:11.5px; color:var(--text-faint); margin:0 0 14px;}
-  .chart-wrap{height:260px; position:relative;}
-
-  .analysis-section{margin-top:16px;}
-  .analysis-grid{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px;
-  }
-  .analysis-metric{
-    background:var(--surface-alt);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:14px;
-  }
-  .analysis-metric .label{font-size:11.5px;color:var(--text-muted);}
-  .analysis-metric .value{font-size:20px;font-weight:700;margin-top:7px;}
-  .analysis-metric.negative .value{color:var(--red);}
-  .analysis-metric.positive .value{color:var(--green);}
-
-  .analysis-tables{
-    display:grid; grid-template-columns:1.25fr 1fr; gap:16px; margin-top:16px;
-  }
-  .analysis-table-wrap{overflow:auto;}
-  .analysis-table{min-width:520px;}
-  .analysis-table th,.analysis-table td{
-    padding:10px 9px; border-bottom:1px solid var(--line);
-  }
-  .analysis-table th{font-size:11px;color:var(--text-faint);}
-  .analysis-table td{font-size:12px;}
-  .analysis-table .negative{color:var(--red);}
-  .analysis-table .positive{color:var(--green);}
-  .analysis-note{
-    margin-top:12px; padding:11px 13px;
-    border-radius:9px; background:rgba(201,162,39,0.06);
-    border:1px solid var(--line);
-    color:var(--text-faint); font-size:11px; line-height:1.8;
-  }
-  .analysis-status{
-    margin-top:8px; color:var(--text-faint); font-size:10.5px;
-  }
-
-  .table-card{margin-top:16px;}
-  .table-toolbar{
-    display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;
-  }
-  .table-toolbar input, .table-toolbar select{
-    background:var(--surface-alt);
-    border:1px solid var(--line);
-    color:var(--text);
-    border-radius:8px;
-    padding:9px 12px;
-    font-family:'Tajawal',sans-serif;
-    font-size:13px;
-    outline:none;
-  }
-  .table-toolbar input:focus, .table-toolbar select:focus{border-color:var(--line-strong);}
-  .table-toolbar input[type="search"]{flex:1; min-width:180px;}
-  .count-pill{
-    margin-inline-start:auto;
-    font-size:12px; color:var(--text-muted);
-    background:var(--surface-alt); border:1px solid var(--line);
-    padding:6px 12px; border-radius:20px;
-  }
-
-  table{width:100%; border-collapse:collapse; font-size:13px;}
-  thead th{
-    text-align:right; color:var(--text-faint); font-weight:600; font-size:11.5px;
-    text-transform:uppercase; letter-spacing:.4px;
-    padding:10px 12px; border-bottom:1px solid var(--line);
-  }
-  tbody td{padding:12px; border-bottom:1px solid var(--line); vertical-align:middle;}
-  tbody tr:hover{background:rgba(255,255,255,0.02);}
-  .badge{
-    display:inline-block; padding:3px 10px; border-radius:20px; font-size:11.5px; font-weight:600;
-  }
-  .badge.in{background:var(--green-soft); color:var(--green);}
-  .badge.out{background:var(--red-soft); color:var(--red);}
-  .amt{font-weight:600;}
-  .amt.in{color:var(--green);}
-  .amt.out{color:var(--red);}
-  .cat-tag{color:var(--text-muted); font-size:12px;}
-
-  .empty, .loading, .error{
-    text-align:center; padding:60px 20px; color:var(--text-faint); font-size:13.5px;
-  }
-  .error{color:var(--red);}
-  .spinner{
-    width:22px;height:22px;border-radius:50%;
-    border:2px solid var(--line); border-top-color:var(--gold);
-    animation:spin .8s linear infinite; margin:0 auto 12px;
-  }
-  @keyframes spin{to{transform:rotate(360deg);}}
-
-  footer{
-    text-align:center; padding:20px; color:var(--text-faint); font-size:11.5px;
-    border-top:1px solid var(--line);
-  }
-
-  @media (max-width: 900px){
-    .kpi-grid{grid-template-columns:1fr 1fr;}
-    .panels{grid-template-columns:1fr;}
-    .analysis-grid{grid-template-columns:1fr 1fr;}
-    .analysis-tables{grid-template-columns:1fr;}
-    main{padding:20px 16px;}
-    header.top{padding:16px 18px;}
-    .ledger-band{margin:0 18px;}
-  }
-  @media (max-width: 600px){
-    .analysis-grid{grid-template-columns:1fr;}
-    .sheet-link{font-size:11px;padding:7px 9px;}
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    * { animation: none !important; transition: none !important; }
-  }
-
-/* PREMIUM ANIMATION */
-html{scroll-behavior:smooth}
-body{animation:pageIn .8s cubic-bezier(.16,1,.3,1) both}
-@keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-
-.card{
- animation:cardIn .7s cubic-bezier(.16,1,.3,1) both;
- transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s,border-color .4s;
-}
-.card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.18)}
-@keyframes cardIn{from{opacity:0;transform:translateY(25px) scale(.985)}to{opacity:1;transform:none}}
-
-.analysis-metric{
- position:relative;overflow:hidden;
- transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s,border-color .4s;
-}
-.analysis-metric::before{
- content:"";position:absolute;width:120px;height:120px;right:-60px;top:-60px;
- border-radius:50%;background:rgba(201,162,39,.08);
- transition:transform .55s cubic-bezier(.16,1,.3,1);
-}
-.analysis-metric:hover{
- transform:translateY(-8px) scale(1.015);
- box-shadow:0 16px 38px rgba(0,0,0,.18);
- border-color:rgba(201,162,39,.4);
-}
-.analysis-metric:hover::before{transform:scale(2.2)}
-.analysis-metric .value{animation:numberPop .8s cubic-bezier(.16,1,.3,1) both}
-@keyframes numberPop{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
-
-.dot{
- box-shadow:0 0 0 0 rgba(201,162,39,.45);
- animation:dotPulse 2.4s ease-out infinite;
-}
-@keyframes dotPulse{
- 0%{box-shadow:0 0 0 0 rgba(201,162,39,.45)}
- 70%{box-shadow:0 0 0 9px rgba(201,162,39,0)}
- 100%{box-shadow:0 0 0 0 rgba(201,162,39,0)}
-}
-
-table tbody tr{transition:transform .25s,background .25s}
-table tbody tr:hover{transform:translateX(4px);background:rgba(201,162,39,.055)}
-
-button,.btn,select,input{transition:transform .2s,box-shadow .25s,border-color .25s}
-button:hover,.btn:hover{transform:translateY(-2px)}
-button:active,.btn:active{transform:scale(.97)}
-
-canvas{animation:chartIn 1s cubic-bezier(.16,1,.3,1) both}
-@keyframes chartIn{from{opacity:0;transform:scale(.96);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
-
-.sync .dot{animation:syncPulse 1.6s ease-in-out infinite}
-@keyframes syncPulse{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1.18)}}
-
-header{position:relative;overflow:hidden}
-header::after{
- content:"";position:absolute;inset:-120% -20%;
- background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.05) 48%,rgba(201,162,39,.1) 52%,transparent 65%);
- transform:translateX(-70%) rotate(8deg);
- animation:headerSweep 7s ease-in-out infinite;
- pointer-events:none;
-}
-@keyframes headerSweep{0%,55%{transform:translateX(-70%) rotate(8deg)}75%,100%{transform:translateX(70%) rotate(8deg)}}
-
-#financialAnalysis::after{
- content:"";position:absolute;left:5%;right:5%;bottom:-1px;height:1px;
- background:linear-gradient(90deg,transparent,rgba(201,162,39,.5),transparent);
- transform:scaleX(0);animation:lineReveal 1.4s .45s cubic-bezier(.16,1,.3,1) forwards;
-}
-@keyframes lineReveal{to{transform:scaleX(1)}}
-
-@media (prefers-reduced-motion:reduce){
- *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
-}
-
-
-/* ============================================================
-   EXECUTIVE FINANCE UI — RESPONSIVE / MOBILE FIRST
-   ============================================================ */
 :root{
-  --fx-bg:#070a11;
-  --fx-surface:rgba(15,20,32,.82);
-  --fx-surface-2:rgba(20,27,42,.72);
-  --fx-border:rgba(255,255,255,.075);
-  --fx-border-gold:rgba(201,162,39,.28);
-  --fx-text:#f5f7fb;
-  --fx-muted:#8d98aa;
-  --fx-gold:#c9a227;
-  --fx-green:#21d07a;
-  --fx-red:#ff5c6c;
-  --fx-blue:#6ea8ff;
-  --fx-radius:18px;
-  --fx-shadow:0 20px 60px rgba(0,0,0,.28);
+  --bg:#070b12;
+  --surface:#101722;
+  --surface2:#151e2d;
+  --surface3:#1a2638;
+
+  --border:rgba(255,255,255,.075);
+  --border-gold:rgba(201,162,39,.35);
+
+  --text:#f5f7fb;
+  --muted:#8d99ab;
+  --faint:#59677b;
+
+  --gold:#c9a227;
+  --gold2:#f1d36a;
+
+  --green:#21d07a;
+  --green-soft:rgba(33,208,122,.12);
+
+  --red:#ff5c6c;
+  --red-soft:rgba(255,92,108,.12);
+
+  --blue:#6ea8ff;
+
+  --radius:20px;
+
+  --shadow:
+    0 25px 80px rgba(0,0,0,.35);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
 }
 
 body{
+  margin:0;
+  min-height:100vh;
+
+  color:var(--text);
+
+  font-family:'Tajawal',sans-serif;
+
   background:
-    radial-gradient(circle at 8% 8%,rgba(201,162,39,.08),transparent 28%),
-    radial-gradient(circle at 92% 18%,rgba(80,130,255,.08),transparent 30%),
-    var(--fx-bg);
-  color:var(--fx-text);
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(201,162,39,.10),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(80,130,255,.08),
+      transparent 30%
+    ),
+    var(--bg);
+
+  overflow-x:hidden;
 }
 
-/* premium background */
+/* BACKGROUND GRID */
+
 body::before{
   content:"";
   position:fixed;
   inset:0;
   pointer-events:none;
   z-index:-1;
+
   background:
-    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+    linear-gradient(
+      rgba(255,255,255,.018) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.018) 1px,
+      transparent 1px
+    );
+
   background-size:48px 48px;
-  mask-image:linear-gradient(to bottom,black,transparent 85%);
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      black,
+      transparent 90%
+    );
 }
 
-main{
-  max-width:1500px !important;
-  margin:auto;
-  padding-left:clamp(14px,3vw,36px) !important;
-  padding-right:clamp(14px,3vw,36px) !important;
-}
+/* ================= HEADER ================= */
 
-.card{
-  background:linear-gradient(145deg,rgba(18,24,38,.86),rgba(10,14,23,.72)) !important;
-  border:1px solid var(--fx-border) !important;
-  border-radius:var(--fx-radius) !important;
-  box-shadow:var(--fx-shadow);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-}
+.top{
+  height:78px;
 
-/* KPI grid */
-.analysis-grid{
-  gap:16px !important;
-}
-.analysis-metric{
-  min-height:130px;
-  border-radius:16px !important;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 clamp(16px,4vw,48px);
+
+  border-bottom:1px solid var(--border);
+
   background:
-    linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012)) !important;
-}
-.analysis-metric .label{
-  text-transform:uppercase;
-  letter-spacing:.07em;
-  font-size:10px !important;
-}
-.analysis-metric .value{
-  font-size:clamp(21px,2.3vw,31px) !important;
-  line-height:1.1;
-}
+    linear-gradient(
+      180deg,
+      rgba(7,11,18,.96),
+      rgba(7,11,18,.70)
+    );
 
-/* add premium pseudo icon */
-.analysis-metric::after{
-  content:"";
-  position:absolute;
-  right:15px;
-  bottom:15px;
-  width:7px;height:7px;
-  border-radius:50%;
-  background:var(--fx-gold);
-  box-shadow:0 0 18px rgba(201,162,39,.65);
-  opacity:.8;
-}
+  backdrop-filter:blur(20px);
 
-/* Tables */
-.analysis-table-wrap{
-  scrollbar-width:thin;
-  scrollbar-color:rgba(201,162,39,.35) transparent;
-}
-.analysis-table{
-  border-collapse:separate !important;
-  border-spacing:0 5px !important;
-}
-.analysis-table th{
-  padding:11px 10px !important;
-  background:rgba(255,255,255,.025);
   position:sticky;
   top:0;
-  z-index:2;
-}
-.analysis-table td{
-  background:rgba(255,255,255,.018);
-  border-bottom:0 !important;
-}
-.analysis-table td:first-child{
-  border-radius:9px 0 0 9px;
-}
-.analysis-table td:last-child{
-  border-radius:0 9px 9px 0;
+  z-index:100;
 }
 
-/* Charts / existing dashboard panels */
-canvas{
-  max-width:100%;
-}
-
-/* Touch-friendly controls */
-button,.btn,select,input{
-  min-height:40px;
-}
-button,.btn{
-  border-radius:10px;
-}
-
-/* Mobile-first refinements */
-@media (max-width:900px){
-  .analysis-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  }
-  .analysis-tables{
-    grid-template-columns:1fr !important;
-  }
-}
-
-@media (max-width:600px){
-  body::before{background-size:34px 34px}
-  main{
-    padding-top:14px !important;
-    padding-bottom:24px !important;
-  }
-
-  header{
-    padding:12px 14px !important;
-  }
-
-  .analysis-grid{
-    grid-template-columns:1fr !important;
-    gap:10px !important;
-  }
-
-  .analysis-metric{
-    min-height:108px;
-    padding:15px !important;
-  }
-
-  .analysis-metric .value{
-    font-size:25px !important;
-  }
-
-  .analysis-tables{
-    gap:10px !important;
-  }
-
-  .analysis-tables > .card{
-    padding:13px !important;
-  }
-
-  .analysis-table{
-    min-width:500px !important;
-  }
-
-  .analysis-table-wrap{
-    margin-right:-4px;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-  }
-
-  .hint{
-    line-height:1.7 !important;
-  }
-
-  /* keep dense dashboard controls usable */
-  select,input,button,.btn{
-    width:100%;
-    max-width:100%;
-  }
-
-  /* prevent giant headings on phones */
-  h1{font-size:clamp(24px,7vw,34px) !important}
-  h2{font-size:clamp(17px,5vw,22px) !important}
-}
-
-@media (max-width:380px){
-  .analysis-metric .value{font-size:22px !important}
-  .card{border-radius:14px !important}
-}
-
-/* landscape phones / tablets */
-@media (min-width:601px) and (max-width:1100px){
-  .analysis-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  }
-}
-
-/* print-friendly executive report */
-@media print{
-  body{background:white !important;color:#111 !important}
-  body::before,header::after{display:none}
-  .card{box-shadow:none !important;background:white !important;color:#111 !important}
-}
-
-
-.executive-hero{
-  max-width:1500px;
-  margin:0 auto 8px;
-  padding:clamp(18px,3vw,30px) clamp(14px,3vw,36px) 8px;
+.brand{
   display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:20px;
-  animation:executiveIn .9s cubic-bezier(.16,1,.3,1) both;
+  align-items:center;
+  gap:12px;
 }
-.executive-hero .eyebrow{
-  color:var(--fx-gold);
-  font-size:10px;
+
+.brand-mark{
+  width:42px;
+  height:42px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:12px;
+
+  font-size:20px;
+  font-weight:900;
+
+  color:#101722;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--gold2),
+      var(--gold)
+    );
+
+  box-shadow:
+    0 0 30px rgba(201,162,39,.22);
+}
+
+.brand-title{
+  font-size:16px;
   font-weight:800;
-  letter-spacing:.18em;
-  margin-bottom:8px;
 }
-.executive-hero h1{
-  margin:0;
-  font-size:clamp(28px,4vw,48px);
-  letter-spacing:-.035em;
+
+.brand-sub{
+  margin-top:2px;
+  font-size:11px;
+  color:var(--faint);
 }
-.executive-hero p{
-  margin:9px 0 0;
-  color:var(--fx-muted);
-  font-size:clamp(11px,1.3vw,14px);
-}
-.live-badge{
-  flex:0 0 auto;
+
+.live{
   display:flex;
   align-items:center;
   gap:8px;
-  padding:9px 12px;
+
+  padding:8px 12px;
+
   border:1px solid rgba(33,208,122,.25);
-  background:rgba(33,208,122,.07);
-  color:#a8e9c8;
+
+  background:rgba(33,208,122,.06);
+
   border-radius:999px;
+
+  color:#a8e9c8;
+
   font-size:10px;
   font-weight:800;
   letter-spacing:.08em;
 }
-.live-badge span{
-  width:7px;height:7px;border-radius:50%;
-  background:var(--fx-green);
-  box-shadow:0 0 14px rgba(33,208,122,.8);
-  animation:livePulse 1.5s ease-in-out infinite;
+
+.live-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:var(--green);
+
+  box-shadow:
+    0 0 14px var(--green);
+
+  animation:livePulse 1.5s infinite;
 }
-@keyframes livePulse{50%{transform:scale(1.5);opacity:.55}}
-@keyframes executiveIn{
-  from{opacity:0;transform:translateY(18px)}
-  to{opacity:1;transform:none}
+
+@keyframes livePulse{
+
+  50%{
+    transform:scale(1.7);
+    opacity:.45;
+  }
+
 }
-@media(max-width:600px){
-  .executive-hero{
-    align-items:flex-start;
-    flex-direction:column;
-    gap:12px;
-    padding-top:16px;
+
+/* ================= HERO ================= */
+
+.hero{
+  max-width:1500px;
+  margin:auto;
+
+  padding:
+    clamp(30px,6vw,70px)
+    clamp(16px,4vw,48px)
+    30px;
+
+  animation:heroIn .9s cubic-bezier(.16,1,.3,1);
+}
+
+.hero-eyebrow{
+  color:var(--gold2);
+
+  font-size:10px;
+  font-weight:900;
+
+  letter-spacing:.18em;
+
+  margin-bottom:10px;
+}
+
+.hero h1{
+  margin:0;
+
+  font-size:
+    clamp(
+      30px,
+      5vw,
+      62px
+    );
+
+  line-height:1;
+
+  letter-spacing:-.045em;
+}
+
+.hero p{
+  margin:16px 0 0;
+
+  max-width:700px;
+
+  color:var(--muted);
+
+  font-size:
+    clamp(
+      12px,
+      1.5vw,
+      15px
+    );
+
+  line-height:1.8;
+}
+
+@keyframes heroIn{
+
+  from{
+    opacity:0;
+    transform:translateY(25px);
+  }
+
+  to{
+    opacity:1;
+    transform:none;
+  }
+
+}
+
+/* ================= MAIN ================= */
+
+main{
+  max-width:1500px;
+  margin:auto;
+
+  padding:
+    0
+    clamp(16px,4vw,48px)
+    70px;
+}
+
+/* ================= KPI ================= */
+
+.kpi-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
+
+  gap:16px;
+}
+
+.kpi{
+  position:relative;
+  overflow:hidden;
+
+  padding:22px;
+
+  min-height:145px;
+
+  border-radius:var(--radius);
+
+  border:1px solid var(--border);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.012)
+    );
+
+  box-shadow:var(--shadow);
+
+  transition:
+    transform .45s cubic-bezier(.16,1,.3,1),
+    border-color .3s,
+    box-shadow .4s;
+
+  animation:
+    cardIn .8s cubic-bezier(.16,1,.3,1) both;
+}
+
+.kpi:nth-child(2){
+  animation-delay:.08s;
+}
+
+.kpi:nth-child(3){
+  animation-delay:.16s;
+}
+
+.kpi:nth-child(4){
+  animation-delay:.24s;
+}
+
+.kpi:hover{
+  transform:translateY(-8px);
+
+  border-color:
+    rgba(201,162,39,.35);
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.45);
+}
+
+.kpi::after{
+  content:"";
+
+  position:absolute;
+
+  width:150px;
+  height:150px;
+
+  right:-70px;
+  top:-70px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(201,162,39,.12),
+      transparent 70%
+    );
+
+  transition:transform .6s;
+}
+
+.kpi:hover::after{
+  transform:scale(1.7);
+}
+
+.kpi-label{
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+.kpi-value{
+  margin-top:13px;
+
+  font-family:'IBM Plex Mono',monospace;
+
+  font-size:
+    clamp(
+      21px,
+      2.2vw,
+      30px
+    );
+
+  font-weight:700;
+
+  letter-spacing:-.04em;
+}
+
+.kpi-sub{
+  margin-top:8px;
+
+  color:var(--faint);
+
+  font-size:11px;
+}
+
+.kpi.income{
+  border-top:2px solid var(--green);
+}
+
+.kpi.expense{
+  border-top:2px solid var(--red);
+}
+
+.kpi.net{
+  border-top:2px solid var(--gold);
+}
+
+@keyframes cardIn{
+
+  from{
+    opacity:0;
+    transform:
+      translateY(30px)
+      scale(.97);
+  }
+
+  to{
+    opacity:1;
+    transform:none;
+  }
+
+}
+
+/* ================= PROFIT STORY ================= */
+
+.profit-story{
+
+  position:relative;
+
+  margin:18px 0;
+
+  padding:
+    clamp(28px,5vw,60px)
+    20px;
+
+  overflow:hidden;
+
+  text-align:center;
+
+  border-radius:28px;
+
+  border:1px solid var(--border);
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(201,162,39,.08),
+      transparent 45%
+    ),
+    linear-gradient(
+      145deg,
+      #111927,
+      #080c13
+    );
+
+  box-shadow:
+    0 35px 100px rgba(0,0,0,.45);
+}
+
+.profit-orbit{
+  position:absolute;
+
+  width:350px;
+  height:350px;
+
+  left:50%;
+  top:50%;
+
+  transform:
+    translate(-50%,-50%);
+
+  border-radius:50%;
+
+  border:1px solid rgba(255,255,255,.04);
+
+  animation:
+    orbitPulse 4s ease-in-out infinite;
+}
+
+@keyframes orbitPulse{
+
+  0%,100%{
+    transform:
+      translate(-50%,-50%)
+      scale(.9);
+
+    opacity:.35;
+  }
+
+  50%{
+    transform:
+      translate(-50%,-50%)
+      scale(1.1);
+
+    opacity:1;
+  }
+
+}
+
+.profit-content{
+  position:relative;
+  z-index:2;
+}
+
+.profit-kicker{
+  color:var(--muted);
+
+  font-family:'IBM Plex Mono',monospace;
+
+  font-size:10px;
+  font-weight:700;
+
+  letter-spacing:.18em;
+}
+
+.profit-title{
+  margin:12px 0;
+
+  font-size:
+    clamp(
+      28px,
+      6vw,
+      68px
+    );
+
+  font-weight:900;
+
+  letter-spacing:-.055em;
+}
+
+.profit-number{
+  font-family:'IBM Plex Mono',monospace;
+
+  text-shadow:
+    0 0 35px currentColor;
+}
+
+.profit-caption{
+  color:var(--muted);
+
+  font-size:13px;
+}
+
+.profit-meter{
+  width:min(560px,90%);
+
+  height:10px;
+
+  margin:28px auto 16px;
+
+  overflow:hidden;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.07);
+}
+
+.profit-meter-fill{
+  width:0;
+
+  height:100%;
+
+  border-radius:inherit;
+
+  transition:
+    width 1.8s
+    cubic-bezier(.16,1,.3,1);
+}
+
+.profit-status{
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  padding:9px 15px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.035);
+
+  border:1px solid var(--border);
+
+  font-size:11px;
+
+  font-weight:800;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  animation:statusPulse 1.4s infinite;
+}
+
+@keyframes statusPulse{
+
+  50%{
+    transform:scale(1.5);
+    opacity:.5;
+  }
+
+}
+
+.profit-story.profit .profit-title,
+.profit-story.profit .profit-status{
+  color:var(--green);
+}
+
+.profit-story.profit .profit-meter-fill{
+  background:
+    linear-gradient(
+      90deg,
+      var(--green),
+      #8affc4
+    );
+
+  box-shadow:
+    0 0 25px rgba(33,208,122,.5);
+}
+
+.profit-story.profit .status-dot{
+  background:var(--green);
+}
+
+.profit-story.loss .profit-title,
+.profit-story.loss .profit-status{
+  color:var(--red);
+}
+
+.profit-story.loss .profit-meter-fill{
+  background:
+    linear-gradient(
+      90deg,
+      var(--red),
+      #ff9a7a
+    );
+
+  box-shadow:
+    0 0 25px rgba(255,92,108,.5);
+}
+
+.profit-story.loss .status-dot{
+  background:var(--red);
+}
+
+/* ================= CHARTS ================= */
+
+.charts-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    2fr 1fr;
+
+  gap:16px;
+
+  margin-top:18px;
+}
+
+.card{
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(18,25,39,.9),
+      rgba(9,13,21,.85)
+    );
+
+  border:1px solid var(--border);
+
+  border-radius:var(--radius);
+
+  padding:22px;
+
+  box-shadow:var(--shadow);
+
+  backdrop-filter:blur(18px);
+
+  animation:
+    cardIn .8s
+    cubic-bezier(.16,1,.3,1)
+    both;
+}
+
+.card-header{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:flex-start;
+
+  gap:15px;
+
+  margin-bottom:18px;
+}
+
+.card h2{
+  margin:0;
+
+  font-size:15px;
+  font-weight:800;
+}
+
+.card-hint{
+  margin-top:5px;
+
+  color:var(--faint);
+
+  font-size:11px;
+}
+
+.chart-container{
+
+  height:320px;
+
+  position:relative;
+}
+
+canvas{
+  max-width:100%;
+}
+
+/* ================= ANALYSIS ================= */
+
+.analysis-section{
+  margin-top:18px;
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+
+  margin-bottom:5px;
+}
+
+.section-title-dot{
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:var(--gold);
+
+  box-shadow:
+    0 0 15px var(--gold);
+}
+
+.analysis-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
+
+  gap:12px;
+
+  margin-top:18px;
+}
+
+.metric{
+
+  position:relative;
+
+  padding:18px;
+
+  min-height:115px;
+
+  border-radius:16px;
+
+  border:1px solid var(--border);
+
+  background:
+    rgba(255,255,255,.025);
+
+  transition:
+    transform .35s,
+    border-color .35s;
+
+  overflow:hidden;
+}
+
+.metric:hover{
+
+  transform:
+    translateY(-6px);
+
+  border-color:
+    rgba(201,162,39,.35);
+}
+
+.metric-label{
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+.metric-value{
+
+  margin-top:9px;
+
+  font-family:'IBM Plex Mono',monospace;
+
+  font-size:
+    clamp(
+      19px,
+      2vw,
+      28px
+    );
+
+  font-weight:700;
+}
+
+.metric-value.positive{
+  color:var(--green);
+}
+
+.metric-value.negative{
+  color:var(--red);
+}
+
+/* ================= TABLE ANALYSIS ================= */
+
+.analysis-tables{
+
+  display:grid;
+
+  grid-template-columns:
+    1.2fr 1fr;
+
+  gap:16px;
+
+  margin-top:16px;
+}
+
+.table-scroll{
+
+  overflow:auto;
+
+  scrollbar-width:thin;
+
+  scrollbar-color:
+    rgba(201,162,39,.4)
+    transparent;
+}
+
+.analysis-table{
+
+  width:100%;
+
+  min-width:500px;
+
+  border-collapse:separate;
+
+  border-spacing:0 5px;
+}
+
+.analysis-table th{
+
+  padding:10px;
+
+  color:var(--faint);
+
+  font-size:10px;
+
+  font-weight:700;
+
+  text-align:right;
+
+  position:sticky;
+
+  top:0;
+
+  background:#111927;
+
+}
+
+.analysis-table td{
+
+  padding:10px;
+
+  font-size:12px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  border:0;
+}
+
+.analysis-table tr:hover td{
+
+  background:
+    rgba(201,162,39,.06);
+}
+
+.analysis-table td:first-child{
+
+  border-radius:
+    10px 0 0 10px;
+}
+
+.analysis-table td:last-child{
+
+  border-radius:
+    0 10px 10px 0;
+}
+
+.positive{
+  color:var(--green);
+}
+
+.negative{
+  color:var(--red);
+}
+
+.mono{
+  font-family:'IBM Plex Mono',monospace;
+
+  font-variant-numeric:
+    tabular-nums;
+}
+
+/* ================= TRANSACTIONS ================= */
+
+.transactions{
+  margin-top:18px;
+}
+
+.toolbar{
+
+  display:flex;
+
+  gap:10px;
+
+  flex-wrap:wrap;
+
+  margin-bottom:16px;
+}
+
+.toolbar input,
+.toolbar select{
+
+  min-height:42px;
+
+  padding:9px 12px;
+
+  border-radius:10px;
+
+  border:1px solid var(--border);
+
+  background:var(--surface2);
+
+  color:var(--text);
+
+  font-family:'Tajawal',sans-serif;
+
+  outline:none;
+}
+
+.toolbar input:focus,
+.toolbar select:focus{
+
+  border-color:
+    var(--border-gold);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(201,162,39,.06);
+}
+
+.search{
+
+  flex:1;
+
+  min-width:180px;
+}
+
+.count{
+
+  display:flex;
+
+  align-items:center;
+
+  padding:0 14px;
+
+  border-radius:999px;
+
+  background:var(--surface2);
+
+  border:1px solid var(--border);
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+.transactions-table{
+
+  width:100%;
+
+  border-collapse:collapse;
+}
+
+.transactions-table th{
+
+  color:var(--faint);
+
+  font-size:10px;
+
+  text-align:right;
+
+  padding:11px;
+
+  border-bottom:1px solid var(--border);
+}
+
+.transactions-table td{
+
+  padding:13px 11px;
+
+  font-size:12px;
+
+  border-bottom:1px solid var(--border);
+}
+
+.transactions-table tr{
+
+  transition:
+    background .25s,
+    transform .25s;
+}
+
+.transactions-table tbody tr:hover{
+
+  background:
+    rgba(201,162,39,.045);
+
+  transform:
+    translateX(-4px);
+}
+
+.badge{
+
+  display:inline-flex;
+
+  padding:5px 10px;
+
+  border-radius:999px;
+
+  font-size:10px;
+
+  font-weight:800;
+}
+
+.badge.income{
+
+  color:var(--green);
+
+  background:var(--green-soft);
+}
+
+.badge.expense{
+
+  color:var(--red);
+
+  background:var(--red-soft);
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  min-height:180px;
+
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+.loader{
+
+  width:32px;
+  height:32px;
+
+  margin-bottom:14px;
+
+  border-radius:50%;
+
+  border:2px solid rgba(255,255,255,.08);
+
+  border-top-color:var(--gold);
+
+  animation:
+    spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
   }
 }
 
+.error{
 
-/* ===== PROFIT / LOSS STORY ANIMATION ===== */
-.profit-story{
-  position:relative;
-  overflow:hidden;
-  margin:16px 0;
-  padding:clamp(22px,4vw,38px);
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.08);
-  background:
-    radial-gradient(circle at 50% 100%,rgba(201,162,39,.10),transparent 42%),
-    linear-gradient(145deg,rgba(20,27,42,.94),rgba(7,10,17,.94));
-  box-shadow:0 25px 80px rgba(0,0,0,.32);
+  padding:30px;
+
   text-align:center;
+
+  color:var(--red);
+
+  font-size:12px;
 }
-.profit-story::before{
-  content:"";
-  position:absolute;
-  width:280px;height:280px;
-  left:50%;top:50%;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.035);
-  box-shadow:0 0 80px rgba(201,162,39,.06);
-  animation:profitAura 4s ease-in-out infinite;
-}
-@keyframes profitAura{
-  0%,100%{transform:translate(-50%,-50%) scale(.92);opacity:.5}
-  50%{transform:translate(-50%,-50%) scale(1.08);opacity:1}
-}
-.profit-story-content{position:relative;z-index:2}
-.profit-kicker{
+
+/* ================= FOOTER ================= */
+
+footer{
+
+  padding:25px;
+
+  text-align:center;
+
+  color:var(--faint);
+
   font-size:10px;
-  letter-spacing:.18em;
-  font-weight:800;
-  color:#8d98aa;
-  text-transform:uppercase;
+
+  border-top:1px solid var(--border);
 }
-.profit-headline{
-  margin:8px 0 5px;
-  font-size:clamp(25px,5vw,52px);
-  font-weight:900;
-  letter-spacing:-.045em;
+
+/* ================= MOBILE ================= */
+
+@media(max-width:1000px){
+
+  .kpi-grid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+  }
+
+  .charts-grid{
+    grid-template-columns:1fr;
+  }
+
+  .analysis-grid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+  }
+
+  .analysis-tables{
+    grid-template-columns:1fr;
+  }
+
 }
-.profit-headline .profit-number{
-  display:inline-block;
-  font-variant-numeric:tabular-nums;
-  text-shadow:0 0 30px currentColor;
-}
-.profit-caption{
-  color:#8d98aa;
-  font-size:clamp(11px,1.5vw,14px);
-}
-.profit-meter{
-  position:relative;
-  width:min(520px,100%);
-  height:9px;
-  margin:24px auto 12px;
-  border-radius:99px;
-  background:rgba(255,255,255,.07);
-  overflow:hidden;
-}
-.profit-meter-fill{
-  height:100%;
-  width:0;
-  border-radius:inherit;
-  transform-origin:left center;
-  animation:meterGrow 1.8s cubic-bezier(.16,1,.3,1) forwards;
-}
-@keyframes meterGrow{to{width:var(--meter-width)}}
-.profit-status{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 13px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:800;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.035);
-}
-.profit-status-dot{
-  width:7px;height:7px;border-radius:50%;
-  animation:statusPulse 1.3s ease-in-out infinite;
-}
-@keyframes statusPulse{
-  50%{transform:scale(1.5);opacity:.55}
-}
-.profit-story.is-profit .profit-headline,
-.profit-story.is-profit .profit-status{color:#21d07a}
-.profit-story.is-profit .profit-meter-fill{background:linear-gradient(90deg,#21d07a,#7dffb9)}
-.profit-story.is-profit .profit-status-dot{background:#21d07a;box-shadow:0 0 15px #21d07a}
-.profit-story.is-loss .profit-headline,
-.profit-story.is-loss .profit-status{color:#ff5c6c}
-.profit-story.is-loss .profit-meter-fill{background:linear-gradient(90deg,#ff5c6c,#ff9a7a)}
-.profit-story.is-loss .profit-status-dot{background:#ff5c6c;box-shadow:0 0 15px #ff5c6c}
+
 @media(max-width:600px){
-  .profit-story{margin:12px 0;padding:24px 14px}
-  .profit-story::before{width:210px;height:210px}
+
+  .top{
+    height:68px;
+  }
+
+  .brand-sub{
+    display:none;
+  }
+
+  .live{
+    font-size:9px;
+    padding:7px 9px;
+  }
+
+  .hero{
+    padding-top:35px;
+  }
+
+  .hero h1{
+    line-height:1.05;
+  }
+
+  .kpi-grid{
+    grid-template-columns:1fr 1fr;
+
+    gap:9px;
+  }
+
+  .kpi{
+    min-height:125px;
+
+    padding:15px;
+
+    border-radius:15px;
+  }
+
+  .kpi-value{
+    font-size:18px;
+  }
+
+  .kpi-sub{
+    font-size:9px;
+  }
+
+  .card{
+    padding:15px;
+
+    border-radius:16px;
+  }
+
+  .chart-container{
+    height:280px;
+  }
+
+  .analysis-grid{
+    grid-template-columns:1fr;
+
+    gap:9px;
+  }
+
+  .metric{
+    min-height:100px;
+  }
+
+  .profit-story{
+    border-radius:20px;
+  }
+
+  .profit-orbit{
+    width:220px;
+    height:220px;
+  }
+
+  .toolbar{
+    flex-direction:column;
+  }
+
+  .toolbar input,
+  .toolbar select,
+  .count{
+    width:100%;
+  }
+
+  .transactions{
+    overflow:hidden;
+  }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  *,
+  *::before,
+  *::after{
+
+    animation-duration:.01ms!important;
+
+    animation-iteration-count:1!important;
+
+    transition-duration:.01ms!important;
+
+    scroll-behavior:auto!important;
+  }
+
 }
 
 </style>
 </head>
+
 <body>
 
+<!-- HEADER -->
+
 <header class="top">
+
   <div class="brand">
-    <div class="mark">د</div>
-    <div>
-      <h1>دفتر</h1>
-      <p>لوحة التحكم المالية</p>
+
+    <div class="brand-mark">
+      د
     </div>
+
+    <div>
+      <div class="brand-title">
+        دفتر
+      </div>
+
+      <div class="brand-sub">
+        Financial Intelligence
+      </div>
+    </div>
+
   </div>
-  <div style="display:flex;align-items:center;gap:14px;">
-    <div class="sync"><span class="dot"></span><span id="syncTime">جارِ المزامنة…</span></div>
+
+  <div class="live">
+    <span class="live-dot"></span>
+    LIVE DATA
   </div>
+
 </header>
-<div class="ledger-band"></div>
 
 
-<section class="executive-hero" id="executiveHero">
-  <div>
-    <div class="eyebrow">EXECUTIVE FINANCIAL CONTROL</div>
-    <h1>Financial Intelligence Dashboard</h1>
-    <p>قراءة لحظية للربحية والمصروفات والتدفقات والفئات — مبنية على بيانات المعاملات.</p>
+<!-- HERO -->
+
+<section class="hero">
+
+  <div class="hero-eyebrow">
+    EXECUTIVE FINANCIAL CONTROL
   </div>
-  <div class="live-badge"><span></span> LIVE DATA</div>
+
+  <h1>
+    Financial Intelligence
+  </h1>
+
+  <p>
+    لوحة تحكم مالية متقدمة تقرأ بيانات المعاملات مباشرةً من Google Sheets
+    وتحوّلها إلى مؤشرات ورسوم وتحليلات مالية واضحة.
+  </p>
+
 </section>
+
 
 <main>
 
-  <div class="kpi-grid" id="kpiGrid">
-    <div class="kpi income">
-      <div class="label">إجمالي الدخل</div>
-      <div class="value mono" id="kpiIncome">—</div>
-      <div class="sub" id="kpiIncomeCount">—</div>
-    </div>
-    <div class="kpi expense">
-      <div class="label">إجمالي المصروف</div>
-      <div class="value mono" id="kpiExpense">—</div>
-      <div class="sub" id="kpiExpenseCount">—</div>
-    </div>
-    <div class="kpi net">
-      <div class="label">صافي الربح / الخسارة</div>
-      <div class="value mono" id="kpiNet">—</div>
-      <div class="sub" id="kpiMargin">—</div>
-    </div>
-    <div class="kpi">
-      <div class="label">عدد المعاملات</div>
-      <div class="value mono" id="kpiCount">—</div>
-      <div class="sub" id="kpiAvg">—</div>
-    </div>
-  </div>
+<!-- KPI -->
 
-  <div class="panels">
-    <div class="card">
-      <h2>الاتجاه الشهري</h2>
-      <p class="hint">الدخل مقابل المصروف على مدار الأشهر المسجّلة</p>
-      <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+<section class="kpi-grid">
+
+  <div class="kpi income">
+
+    <div class="kpi-label">
+      إجمالي الدخل
     </div>
-    <div class="card">
-      <h2>التوزيع حسب الفئة</h2>
-      <p class="hint">أكبر الفئات من حيث الحجم</p>
-      <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+
+    <div
+      class="kpi-value mono"
+      id="kpiIncome">
+      —
     </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiIncomeCount">
+      —
+    </div>
+
   </div>
 
 
-  <!-- ===== Full Financial Analysis ===== -->
-  
-<section class="profit-story is-loss" id="profitStory">
-  <div class="profit-story-content">
-    <div class="profit-kicker">FINANCIAL PERFORMANCE</div>
-    <div class="profit-headline">
-      <span id="profitVerb">أنت خسران</span>
-      <span class="profit-number" id="profitPercent">0%</span>
+  <div class="kpi expense">
+
+    <div class="kpi-label">
+      إجمالي المصروف
     </div>
-    <div class="profit-caption" id="profitCaption">
-      جاري تحليل الدخل والمصروف...
+
+    <div
+      class="kpi-value mono"
+      id="kpiExpense">
+      —
+    </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiExpenseCount">
+      —
+    </div>
+
+  </div>
+
+
+  <div class="kpi net">
+
+    <div class="kpi-label">
+      صافي الربح / الخسارة
+    </div>
+
+    <div
+      class="kpi-value mono"
+      id="kpiNet">
+      —
+    </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiMargin">
+      —
+    </div>
+
+  </div>
+
+
+  <div class="kpi">
+
+    <div class="kpi-label">
+      عدد المعاملات
+    </div>
+
+    <div
+      class="kpi-value mono"
+      id="kpiCount">
+      —
+    </div>
+
+    <div
+      class="kpi-sub"
+      id="kpiAverage">
+      —
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- PROFIT STORY -->
+
+<section
+  class="profit-story"
+  id="profitStory">
+
+  <div class="profit-orbit"></div>
+
+  <div class="profit-content">
+
+    <div class="profit-kicker">
+      FINANCIAL PERFORMANCE
+    </div>
+
+    <div class="profit-title">
+
+      <span id="profitVerb">
+        جاري التحليل
+      </span>
+
+      <span
+        class="profit-number"
+        id="profitPercent">
+        0.0%
+      </span>
+
+    </div>
+
+    <div
+      class="profit-caption"
+      id="profitCaption">
+
+      جاري قراءة البيانات...
+
     </div>
 
     <div class="profit-meter">
-      <div class="profit-meter-fill" id="profitMeter"></div>
+
+      <div
+        class="profit-meter-fill"
+        id="profitMeter">
+      </div>
+
     </div>
 
     <div class="profit-status">
-      <span class="profit-status-dot"></span>
-      <span id="profitStatus">تحليل الأداء المالي</span>
+
+      <span
+        class="status-dot"
+        id="statusDot">
+      </span>
+
+      <span id="profitStatus">
+        تحليل الأداء المالي
+      </span>
+
     </div>
+
   </div>
+
 </section>
 
-<section class="card analysis-section" id="financialAnalysis">
-    <h2><span class="dot"></span>التحليل المالي الكامل</h2>
-    <p class="hint">ملخص مالي شامل + تحليل الفئات + التحليل الشهري + المتوسطات</p>
 
-    <div class="analysis-grid">
-      <div class="analysis-metric">
-        <div class="label">إجمالي الدخل</div>
-        <div class="value mono" id="analysisIncome">—</div>
-      </div>
-      <div class="analysis-metric">
-        <div class="label">إجمالي المصروف</div>
-        <div class="value mono" id="analysisExpense">—</div>
-      </div>
-      <div class="analysis-metric negative">
-        <div class="label">صافي الربح / الخسارة</div>
-        <div class="value mono" id="analysisNet">—</div>
-      </div>
-      <div class="analysis-metric negative">
-        <div class="label">نسبة المصروف من الدخل</div>
-        <div class="value mono" id="analysisExpenseRatio">—</div>
-      </div>
-    </div>
+<!-- CHARTS -->
 
-    <div class="analysis-grid">
-      <div class="analysis-metric">
-        <div class="label">عدد المعاملات</div>
-        <div class="value mono" id="analysisCount">—</div>
-      </div>
-      <div class="analysis-metric">
-        <div class="label">متوسط قيمة معاملة الدخل</div>
-        <div class="value mono" id="analysisAvgIncome">—</div>
-      </div>
-      <div class="analysis-metric">
-        <div class="label">متوسط قيمة معاملة المصروف</div>
-        <div class="value mono" id="analysisAvgExpense">—</div>
-      </div>
-      <div class="analysis-metric negative">
-        <div class="label">هامش الربح</div>
-        <div class="value mono" id="analysisMargin">—</div>
-      </div>
-    </div>
+<section class="charts-grid">
 
-    <div class="analysis-tables">
-      <div class="card" style="padding:16px;">
-        <h2><span class="dot"></span>التحليل حسب الفئة</h2>
-        <p class="hint">الدخل والمصروف والصافي لكل فئة</p>
-        <div class="analysis-table-wrap">
-          <table class="analysis-table">
-            <thead>
-              <tr><th>الفئة</th><th>دخل</th><th>مصروف</th><th>الصافي</th></tr>
-            </thead>
-            <tbody id="categoryAnalysisBody"></tbody>
-          </table>
+  <div class="card">
+
+    <div class="card-header">
+
+      <div>
+
+        <h2>
+          الاتجاه الشهري
+        </h2>
+
+        <div class="card-hint">
+          الدخل مقابل المصروف على مدار الأشهر المسجلة
         </div>
+
       </div>
 
-      <div class="card" style="padding:16px;">
-        <h2><span class="dot"></span>التحليل الشهري</h2>
-        <p class="hint">24 شهرًا من 2025-01 إلى 2026-12</p>
-        <div class="analysis-table-wrap">
-          <table class="analysis-table">
-            <thead>
-              <tr><th>الشهر</th><th>دخل</th><th>مصروف</th><th>الصافي</th></tr>
-            </thead>
-            <tbody id="monthlyAnalysisBody"></tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
-    <div class="analysis-note">
-      <strong>ملاحظات:</strong>
-      عمود Month في Sheet1 (G) بيتحسب أوتوماتيك من عمود Date.
-      لو أضفت فئة جديدة، أضف صفًا جديدًا في تحليل الفئات وانسخ المعادلة.
-      الجدول الشهري يغطي 24 شهرًا بداية من 2025-01.
-    </div>
-    <div class="analysis-status" id="analysisStatus">
-      التحليل يتم حسابه مباشرةً من نفس بيانات Google Sheets المستخدمة في الموقع.
-    </div>
-  </section>
+    <div class="chart-container">
 
-  <div class="card table-card">
-    <div class="table-toolbar">
-      <input type="search" id="searchInput" placeholder="ابحث بالوصف أو الملاحظات…" />
-      <select id="typeFilter">
-        <option value="">كل الأنواع</option>
-        <option value="دخل">دخل</option>
-        <option value="مصروف">مصروف</option>
-      </select>
-      <select id="categoryFilter"><option value="">كل الفئات</option></select>
-      <input type="month" id="monthFilter" />
-      <span class="count-pill" id="countPill">— عملية</span>
+      <canvas id="trendChart"></canvas>
+
     </div>
-    <div id="tableWrap">
-      <div class="loading"><div class="spinner"></div>جارِ تحميل البيانات من الشيت…</div>
-    </div>
+
   </div>
+
+
+  <div class="card">
+
+    <div class="card-header">
+
+      <div>
+
+        <h2>
+          التوزيع حسب الفئة
+        </h2>
+
+        <div class="card-hint">
+          حجم النشاط المالي لكل فئة
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="chart-container">
+
+      <canvas id="categoryChart"></canvas>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- FULL ANALYSIS -->
+
+<section class="card analysis-section">
+
+  <div class="section-title">
+
+    <span class="section-title-dot"></span>
+
+    <h2>
+      التحليل المالي الكامل
+    </h2>
+
+  </div>
+
+  <div class="card-hint">
+    ملخص مالي شامل + تحليل الفئات + التحليل الشهري + المتوسطات
+  </div>
+
+
+  <!-- FIRST METRICS -->
+
+  <div class="analysis-grid">
+
+    <div class="metric">
+
+      <div class="metric-label">
+        إجمالي الدخل
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisIncome">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        إجمالي المصروف
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisExpense">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        صافي الربح / الخسارة
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisNet">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        نسبة المصروف من الدخل
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisExpenseRatio">
+        —
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- SECOND METRICS -->
+
+  <div class="analysis-grid">
+
+    <div class="metric">
+
+      <div class="metric-label">
+        عدد المعاملات
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisCount">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        متوسط قيمة معاملة الدخل
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisAvgIncome">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        متوسط قيمة معاملة المصروف
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisAvgExpense">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metric-label">
+        هامش الربح
+      </div>
+
+      <div
+        class="metric-value mono"
+        id="analysisMargin">
+        —
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ANALYSIS TABLES -->
+
+  <div class="analysis-tables">
+
+
+    <!-- CATEGORY -->
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span class="section-title-dot"></span>
+
+        <h2>
+          التحليل حسب الفئة
+        </h2>
+
+      </div>
+
+      <div class="card-hint">
+        الدخل والمصروف والصافي لكل فئة
+      </div>
+
+      <div class="table-scroll">
+
+        <table class="analysis-table">
+
+          <thead>
+
+            <tr>
+              <th>الفئة</th>
+              <th>دخل</th>
+              <th>مصروف</th>
+              <th>الصافي</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="categoryAnalysisBody"></tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+    <!-- MONTHLY -->
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span class="section-title-dot"></span>
+
+        <h2>
+          التحليل الشهري
+        </h2>
+
+      </div>
+
+      <div class="card-hint">
+        24 شهرًا من 2025-01 إلى 2026-12
+      </div>
+
+      <div class="table-scroll">
+
+        <table class="analysis-table">
+
+          <thead>
+
+            <tr>
+              <th>الشهر</th>
+              <th>دخل</th>
+              <th>مصروف</th>
+              <th>الصافي</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="monthlyAnalysisBody"></tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- TRANSACTIONS -->
+
+<section class="card transactions">
+
+  <div class="card-header">
+
+    <div>
+
+      <h2>
+        سجل المعاملات
+      </h2>
+
+      <div class="card-hint">
+        جميع العمليات القادمة من Google Sheets
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="toolbar">
+
+    <input
+      class="search"
+      type="search"
+      id="searchInput"
+      placeholder="ابحث في الوصف أو الملاحظات...">
+
+    <select id="typeFilter">
+
+      <option value="">
+        كل الأنواع
+      </option>
+
+      <option value="دخل">
+        دخل
+      </option>
+
+      <option value="مصروف">
+        مصروف
+      </option>
+
+    </select>
+
+
+    <select id="categoryFilter">
+
+      <option value="">
+        كل الفئات
+      </option>
+
+    </select>
+
+
+    <input
+      type="month"
+      id="monthFilter">
+
+
+    <div
+      class="count"
+      id="countPill">
+      —
+    </div>
+
+  </div>
+
+
+  <div id="tableWrap">
+
+    <div class="loading">
+
+      <div class="loader"></div>
+
+      جاري تحميل البيانات من Google Sheets...
+
+    </div>
+
+  </div>
+
+</section>
 
 </main>
 
-<footer>يتم تحديث البيانات تلقائيًا عند فتح الصفحة</footer>
+
+<footer>
+
+  Google Sheets → Financial Intelligence Dashboard
+
+</footer>
+
 
 <script>
-/* ============ الإعدادات ============ */
-// ✅ تم التصحيح: دول الـ ID والـ GID الصح المأخوذين من workflow الـ n8n (Smart Accountant)
-// الشيت الأصلي اسمه "accounting_workbook" والتاب اسمه "Sheet1"
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
 const CONFIG = {
-  SHEET_ID: "1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w",
-  DATA_GID: "1216353093"
+
+  SHEET_ID:
+    "1BEJZctfm6Mg3UTgaIDwyIa7nbT6Bj5VFnoyw_Dl0v8w",
+
+  GID:
+    "1216353093",
+
+  REFRESH:
+    60000
+
 };
 
-const gvizUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
 
+/* =========================================================
+   GOOGLE SHEETS URL
+========================================================= */
+
+const SHEET_URL =
+`https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.GID}`;
+
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
 
 let ALL_ROWS = [];
-let trendChartInstance = null;
-let categoryChartInstance = null;
 
-const fmtMoney = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0})) + " ج.م";
-const fmtNum = (n) => (isNaN(n) ? "0" : n.toLocaleString("en-US", {maximumFractionDigits:0}));
+let trendChart = null;
 
+let categoryChart = null;
 
 
-function analysisMoney(n){
-  return (Number(n)||0).toLocaleString("en-US", {
-    minimumFractionDigits: Number.isInteger(Number(n)) ? 0 : 2,
-    maximumFractionDigits: 2
-  }) + " ج.م";
+/* =========================================================
+   FORMATTERS
+========================================================= */
+
+function money(value){
+
+  const n =
+    Number(value) || 0;
+
+  return n.toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits:
+        Number.isInteger(n) ? 0 : 2,
+
+      maximumFractionDigits:2
+    }
+  ) + " ج.م";
+
 }
 
-function renderFinancialAnalysisFromSheet(){
-  // ALL_ROWS is populated directly from the Google Sheet by loadData().
-  // Nothing is hard-coded here.
-  const rows = Array.isArray(ALL_ROWS) ? ALL_ROWS : [];
 
-  // Normalize the Sheet values so accidental spaces/case do not break totals.
-  const normalizedType = r => String(r.type || "").trim();
-  const isIncome = r => normalizedType(r) === "دخل";
-  const isExpense = r => normalizedType(r) === "مصروف";
+function number(value){
 
-  const incomeRows = rows.filter(isIncome);
-  const expenseRows = rows.filter(isExpense);
+  return (
+    Number(value) || 0
+  ).toLocaleString("en-US");
 
-  const income = incomeRows.reduce((s,r)=>s + Number(r.amount || 0), 0);
-  const expense = expenseRows.reduce((s,r)=>s + Number(r.amount || 0), 0);
-  const net = income - expense;
-  const count = rows.length;
+}
 
-  const avgIncome = incomeRows.length ? income / incomeRows.length : 0;
-  const avgExpense = expenseRows.length ? expense / expenseRows.length : 0;
-  const expenseRatio = income ? (expense / income) * 100 : 0;
-  const margin = income ? (net / income) * 100 : 0;
 
-  // Summary
-  document.getElementById("analysisIncome").textContent = analysisMoney(income);
-  document.getElementById("analysisExpense").textContent = analysisMoney(expense);
-  document.getElementById("analysisNet").textContent = analysisMoney(net);
-  document.getElementById("analysisExpenseRatio").textContent = expenseRatio.toFixed(1) + "%";
-  document.getElementById("analysisCount").textContent = fmtNum(count);
-  document.getElementById("analysisAvgIncome").textContent = analysisMoney(avgIncome);
-  document.getElementById("analysisAvgExpense").textContent = analysisMoney(avgExpense);
-  document.getElementById("analysisMargin").textContent = margin.toFixed(1) + "%";
+/* =========================================================
+   ROBUST NUMBER PARSER
+========================================================= */
 
-  // Category analysis
-  const categories = {};
-  rows.forEach(r => {
-    const cat = r.category || "أخرى";
-    if(!categories[cat]) categories[cat] = {income:0, expense:0};
-    if(isIncome(r)) categories[cat].income += Number(r.amount || 0);
-    if(isExpense(r)) categories[cat].expense += Number(r.amount || 0);
-  });
+function parseMoney(value){
 
-  const categoryEntries = Object.entries(categories)
-    .sort((a,b)=>(b[1].income+b[1].expense)-(a[1].income+a[1].expense));
-
-  const categoryBody = document.getElementById("categoryAnalysisBody");
-  categoryBody.innerHTML = categoryEntries.map(([cat,v]) => {
-    const netCat = v.income - v.expense;
-    return `<tr>
-      <td>${cat}</td>
-      <td class="mono positive">${analysisMoney(v.income)}</td>
-      <td class="mono ${v.expense > 0 ? "negative" : ""}">${analysisMoney(v.expense)}</td>
-      <td class="mono ${netCat < 0 ? "negative" : "positive"}">${analysisMoney(netCat)}</td>
-    </tr>`;
-  }).join("");
-
-  categoryBody.innerHTML += `<tr>
-    <td><strong>الإجمالي</strong></td>
-    <td class="mono positive"><strong>${analysisMoney(income)}</strong></td>
-    <td class="mono negative"><strong>${analysisMoney(expense)}</strong></td>
-    <td class="mono negative"><strong>${analysisMoney(net)}</strong></td>
-  </tr>`;
-
-  // Monthly analysis: always show 24 months from 2025-01 through 2026-12,
-  // while values come entirely from the Sheet transactions.
-  const monthly = {};
-  for(let year=2025; year<=2026; year++){
-    for(let month=1; month<=12; month++){
-      const key = `${year}-${String(month).padStart(2,"0")}`;
-      monthly[key] = {income:0, expense:0};
-    }
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+    return 0;
   }
 
-  rows.forEach(r => {
-    const date = String(r.date || "");
-    const key = date.slice(0,7);
-    if(!monthly[key]) monthly[key] = {income:0, expense:0};
+  if(typeof value === "number"){
+    return value;
+  }
 
-    if(isIncome(r)) monthly[key].income += Number(r.amount || 0);
-    if(isExpense(r)) monthly[key].expense += Number(r.amount || 0);
-  });
+  let text =
+    String(value)
+      .trim()
+      .replace(/٬/g,"")
+      .replace(/٫/g,".")
+      .replace(/,/g,"")
+      .replace(/[^\d.-]/g,"");
 
-  const monthBody = document.getElementById("monthlyAnalysisBody");
-  const months = Object.keys(monthly).sort();
+  const result =
+    parseFloat(text);
 
-  monthBody.innerHTML = months.map(month => {
-    const v = monthly[month];
-    const netMonth = v.income - v.expense;
+  return Number.isFinite(result)
+    ? result
+    : 0;
 
-    return `<tr>
-      <td class="mono">${month}</td>
-      <td class="mono positive">${analysisMoney(v.income)}</td>
-      <td class="mono ${v.expense > 0 ? "negative" : ""}">${analysisMoney(v.expense)}</td>
-      <td class="mono ${netMonth < 0 ? "negative" : "positive"}">${analysisMoney(netMonth)}</td>
-    </tr>`;
-  }).join("");
-
-  animateProfitStory(income, expense);
-
-  document.getElementById("analysisStatus").textContent =
-    `✓ تم الحساب من ${fmtNum(rows.length)} معاملة — آخر تحديث: ${new Date().toLocaleTimeString("ar-EG")}`;
 }
+
+
+/* =========================================================
+   NORMALIZE TYPE
+========================================================= */
+
+function normalizeType(value){
+
+  const t =
+    String(value || "")
+      .trim()
+      .toLowerCase();
+
+  if(
+    t === "دخل" ||
+    t === "income" ||
+    t === "in"
+  ){
+    return "دخل";
+  }
+
+  if(
+    t === "مصروف" ||
+    t === "expense" ||
+    t === "out"
+  ){
+    return "مصروف";
+  }
+
+  return "";
+
+}
+
+
+/* =========================================================
+   NORMALIZE DATE
+========================================================= */
+
+function normalizeDate(cell){
+
+  if(!cell){
+    return "";
+  }
+
+  let value =
+    cell.f ??
+    cell.v ??
+    "";
+
+  value =
+    String(value).trim();
+
+  /*
+    Google Visualization can return:
+
+    Date(2026,7,13)
+
+    or
+
+    2026-08-13
+
+    or formatted dates.
+  */
+
+  const gviz =
+    value.match(
+      /Date\((\d+),(\d+),(\d+)\)/
+    );
+
+  if(gviz){
+
+    const y =
+      Number(gviz[1]);
+
+    const m =
+      Number(gviz[2]) + 1;
+
+    const d =
+      Number(gviz[3]);
+
+    return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+
+  }
+
+  const iso =
+    value.match(
+      /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/
+    );
+
+  if(iso){
+
+    return `${iso[1]}-${String(iso[2]).padStart(2,"0")}-${String(iso[3]).padStart(2,"0")}`;
+
+  }
+
+  /*
+    Try Date parsing as final fallback.
+  */
+
+  const d =
+    new Date(value);
+
+  if(!isNaN(d.getTime())){
+
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+  }
+
+  return "";
+
+}
+
+
+/* =========================================================
+   CELL VALUE
+========================================================= */
+
+function cellValue(cell){
+
+  if(!cell){
+    return "";
+  }
+
+  if(
+    cell.f !== undefined &&
+    cell.f !== null
+  ){
+    return cell.f;
+  }
+
+  if(
+    cell.v !== undefined &&
+    cell.v !== null
+  ){
+    return cell.v;
+  }
+
+  return "";
+
+}
+
+
+/* =========================================================
+   LOAD GOOGLE SHEETS
+========================================================= */
 
 async function loadData(){
+
   try{
-    const res = await fetch(gvizUrl);
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    const text = await res.text();
-    const jsonStr = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
-    const parsed = JSON.parse(jsonStr);
-    const cols = parsed.table.cols.map(c => (c.label || "").trim());
-    const rows = parsed.table.rows || [];
 
-    const idx = {
-      date: cols.findIndex(c => /date/i.test(c)),
-      type: cols.findIndex(c => /type/i.test(c)),
-      category: cols.findIndex(c => /category/i.test(c)),
-      description: cols.findIndex(c => /description/i.test(c)),
-      amount: cols.findIndex(c => /amount/i.test(c)),
-      notes: cols.findIndex(c => /notes/i.test(c)),
+    setLoading(true);
+
+    const response =
+      await fetch(
+        SHEET_URL +
+        "&_=" +
+        Date.now(),
+        {
+          cache:"no-store"
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        "HTTP " +
+        response.status
+      );
+
+    }
+
+    const text =
+      await response.text();
+
+
+    const start =
+      text.indexOf("{");
+
+    const end =
+      text.lastIndexOf("}");
+
+    if(
+      start === -1 ||
+      end === -1
+    ){
+      throw new Error(
+        "Invalid Google Sheets response"
+      );
+    }
+
+
+    const data =
+      JSON.parse(
+        text.slice(
+          start,
+          end + 1
+        )
+      );
+
+
+    const columns =
+      data.table.cols.map(
+        col =>
+          String(
+            col.label || ""
+          ).trim()
+            .toLowerCase()
+      );
+
+
+    /*
+      Detect columns intelligently.
+    */
+
+    const findColumn =
+      patterns =>
+        columns.findIndex(
+          col =>
+            patterns.some(
+              pattern =>
+                col.includes(pattern)
+            )
+        );
+
+
+    const index = {
+
+      date:
+        findColumn([
+          "date",
+          "التاريخ"
+        ]),
+
+      type:
+        findColumn([
+          "type",
+          "النوع"
+        ]),
+
+      category:
+        findColumn([
+          "category",
+          "الفئة"
+        ]),
+
+      description:
+        findColumn([
+          "description",
+          "الوصف"
+        ]),
+
+      amount:
+        findColumn([
+          "amount",
+          "المبلغ",
+          "value"
+        ]),
+
+      notes:
+        findColumn([
+          "notes",
+          "ملاحظات"
+        ])
+
     };
 
-    const cellVal = (cell) => {
-      if(!cell) return "";
-      if(cell.f !== undefined && cell.f !== null) return cell.f; // formatted value
-      if(cell.v !== undefined && cell.v !== null) return cell.v;
-      return "";
-    };
 
-    ALL_ROWS = rows.map(r => {
-      const c = r.c;
-      let rawDate = c[idx.date] ? c[idx.date].v : null;
-      let dateStr = "";
-      if(rawDate){
-        // gviz encodes dates as Date(y,m,d) sometimes -> already string via .f
-        dateStr = cellVal(c[idx.date]) || "";
-      }
-      const amount = idx.amount > -1 && c[idx.amount] && typeof c[idx.amount].v === "number"
-        ? c[idx.amount].v
-        : parseFloat(String(cellVal(c[idx.amount])).replace(/[^\d.-]/g,"")) || 0;
+    console.log(
+      "Detected columns:",
+      index
+    );
 
-      return {
-        date: dateStr,
-        type: idx.type > -1 ? String(cellVal(c[idx.type])).trim() : "",
-        category: idx.category > -1 ? String(cellVal(c[idx.category])).trim() : "",
-        description: idx.description > -1 ? String(cellVal(c[idx.description])).trim() : "",
-        amount: amount,
-        notes: idx.notes > -1 ? String(cellVal(c[idx.notes])).trim() : "",
-      };
-    }).filter(row => row.date || row.description || row.amount);
 
-    populateCategoryFilter();
-    render();
+    const rows =
+      data.table.rows || [];
 
-    document.getElementById("syncTime").textContent =
-      "آخر مزامنة: " + new Date().toLocaleTimeString("ar-EG");
-  }catch(err){
-    console.error(err);
-    document.getElementById("syncTime").textContent = "تعذّرت المزامنة";
-    document.getElementById("tableWrap").innerHTML =
-      `<div class="error">تعذّر تحديث البيانات حاليًا. سيتم إعادة المحاولة تلقائيًا.</div>`;
+
+    ALL_ROWS =
+      rows
+        .map(row => {
+
+          const cells =
+            row.c || [];
+
+
+          const date =
+            index.date >= 0
+              ? normalizeDate(
+                  cells[index.date]
+                )
+              : "";
+
+
+          const type =
+            index.type >= 0
+              ? normalizeType(
+                  cellValue(
+                    cells[index.type]
+                  )
+                )
+              : "";
+
+
+          const category =
+            index.category >= 0
+              ? String(
+                  cellValue(
+                    cells[index.category]
+                  )
+                ).trim()
+              : "";
+
+
+          const description =
+            index.description >= 0
+              ? String(
+                  cellValue(
+                    cells[index.description]
+                  )
+                ).trim()
+              : "";
+
+
+          const notes =
+            index.notes >= 0
+              ? String(
+                  cellValue(
+                    cells[index.notes]
+                  )
+                ).trim()
+              : "";
+
+
+          const amount =
+            index.amount >= 0
+              ? parseMoney(
+                  cellValue(
+                    cells[index.amount]
+                  )
+                )
+              : 0;
+
+
+          return {
+
+            date,
+
+            type,
+
+            category:
+              category || "أخرى",
+
+            description,
+
+            amount,
+
+            notes
+
+          };
+
+        })
+
+
+        /*
+          Keep real financial rows only.
+        */
+
+        .filter(row =>
+
+          row.type === "دخل" ||
+          row.type === "مصروف"
+
+        );
+
+
+    console.log(
+      "Loaded transactions:",
+      ALL_ROWS
+    );
+
+
+    populateCategories();
+
+    renderDashboard();
+
+
+    document.getElementById(
+      "syncTime"
+    );
+
+    setLoading(false);
+
   }
-}
 
-function populateCategoryFilter(){
-  const sel = document.getElementById("categoryFilter");
-  const cats = [...new Set(ALL_ROWS.map(r => r.category).filter(Boolean))].sort();
-  cats.forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c; opt.textContent = c;
-    sel.appendChild(opt);
-  });
-}
+  catch(error){
 
-function getFiltered(){
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  const type = document.getElementById("typeFilter").value;
-  const cat = document.getElementById("categoryFilter").value;
-  const month = document.getElementById("monthFilter").value; // yyyy-mm
+    console.error(
+      "Google Sheets error:",
+      error
+    );
 
-  return ALL_ROWS.filter(r => {
-    if(type && r.type !== type) return false;
-    if(cat && r.category !== cat) return false;
-    if(month && !String(r.date).startsWith(month)) return false;
-    if(q && !(r.description.toLowerCase().includes(q) || r.notes.toLowerCase().includes(q))) return false;
-    return true;
-  });
-}
+    setLoading(false);
 
-function render(){
-  const rows = getFiltered();
+    document.getElementById(
+      "tableWrap"
+    ).innerHTML = `
 
-  // Core data presentation first: these must work even if a chart library
-  // fails to load.
-  renderKPIs(rows);
-  renderTable(rows);
-  renderFinancialAnalysisFromSheet();
+      <div class="error">
 
-  // Charts are visual enhancements and must never block the analytics.
-  try { renderTrendChart(rows); } catch(err) {
-    console.warn("Trend chart unavailable:", err);
+        تعذر قراءة البيانات من Google Sheets.
+
+        <br><br>
+
+        تأكد أن الملف متاح للعرض
+        وأن الـ GID صحيح.
+
+      </div>
+
+    `;
+
   }
-  try { renderCategoryChart(rows); } catch(err) {
-    console.warn("Category chart unavailable:", err);
-  }
+
 }
 
-function renderKPIs(rows){
-  const income = rows.filter(r => r.type === "دخل").reduce((s,r)=>s+r.amount,0);
-  const expense = rows.filter(r => r.type === "مصروف").reduce((s,r)=>s+r.amount,0);
-  const net = income - expense;
-  const incomeCount = rows.filter(r => r.type === "دخل").length;
-  const expenseCount = rows.filter(r => r.type === "مصروف").length;
 
-  document.getElementById("kpiIncome").textContent = fmtMoney(income);
-  document.getElementById("kpiIncomeCount").textContent = incomeCount + " عملية دخل";
-  document.getElementById("kpiExpense").textContent = fmtMoney(expense);
-  document.getElementById("kpiExpenseCount").textContent = expenseCount + " عملية مصروف";
+/* =========================================================
+   LOADING
+========================================================= */
 
-  const netEl = document.getElementById("kpiNet");
-  netEl.textContent = fmtMoney(net);
-  netEl.classList.remove("pos","neg");
-  netEl.classList.add(net >= 0 ? "pos" : "neg");
-  document.getElementById("kpiMargin").textContent = income > 0
-    ? "هامش صافي " + ((net/income)*100).toFixed(1) + "%"
-    : "لا يوجد دخل مسجّل";
+function setLoading(loading){
 
-  document.getElementById("kpiCount").textContent = fmtNum(rows.length);
-  const avg = rows.length ? (income+expense)/rows.length : 0;
-  document.getElementById("kpiAvg").textContent = "متوسط العملية " + fmtMoney(avg);
-
-  document.getElementById("countPill").textContent = fmtNum(rows.length) + " عملية";
-}
-
-function renderTable(rows){
-  const wrap = document.getElementById("tableWrap");
-  if(!rows.length){
-    wrap.innerHTML = `<div class="empty">مفيش عمليات تطابق الفلتر الحالي.</div>`;
+  if(!loading){
     return;
   }
-  const sorted = [...rows].sort((a,b) => (b.date||"").localeCompare(a.date||""));
-  const top = sorted.slice(0, 200);
 
-  let html = `<table><thead><tr>
-    <th>التاريخ</th><th>النوع</th><th>الفئة</th><th>الوصف</th><th>المبلغ</th><th>ملاحظات</th>
-  </tr></thead><tbody>`;
-
-  top.forEach(r => {
-    const isIn = r.type === "دخل";
-    html += `<tr>
-      <td class="mono">${r.date || "—"}</td>
-      <td><span class="badge ${isIn?"in":"out"}">${r.type || "—"}</span></td>
-      <td class="cat-tag">${r.category || "—"}</td>
-      <td>${r.description || "—"}</td>
-      <td class="amt mono ${isIn?"in":"out"}">${isIn?"+":"-"}${fmtMoney(r.amount)}</td>
-      <td class="cat-tag">${r.notes || ""}</td>
-    </tr>`;
-  });
-  html += "</tbody></table>";
-  if(rows.length > 200){
-    html += `<div class="hint" style="padding:12px;">عرض أحدث 200 عملية من إجمالي ${fmtNum(rows.length)} — ضيّق الفلتر لعرض عمليات أقدم.</div>`;
-  }
-  wrap.innerHTML = html;
 }
+
+
+/* =========================================================
+   CALCULATE FINANCIAL DATA
+========================================================= */
+
+function calculate(rows){
+
+  const incomeRows =
+    rows.filter(
+      r => r.type === "دخل"
+    );
+
+
+  const expenseRows =
+    rows.filter(
+      r => r.type === "مصروف"
+    );
+
+
+  const income =
+    incomeRows.reduce(
+      (sum,r) =>
+        sum + r.amount,
+      0
+    );
+
+
+  const expense =
+    expenseRows.reduce(
+      (sum,r) =>
+        sum + r.amount,
+      0
+    );
+
+
+  const net =
+    income - expense;
+
+
+  const margin =
+    income
+      ? (net / income) * 100
+      : 0;
+
+
+  const expenseRatio =
+    income
+      ? (expense / income) * 100
+      : 0;
+
+
+  return {
+
+    income,
+
+    expense,
+
+    net,
+
+    margin,
+
+    expenseRatio,
+
+    count:
+      rows.length,
+
+    incomeCount:
+      incomeRows.length,
+
+    expenseCount:
+      expenseRows.length,
+
+    avgIncome:
+      incomeRows.length
+        ? income / incomeRows.length
+        : 0,
+
+    avgExpense:
+      expenseRows.length
+        ? expense / expenseRows.length
+        : 0
+
+  };
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function renderDashboard(){
+
+  const data =
+    calculate(ALL_ROWS);
+
+
+  renderKPIs(data);
+
+  renderProfit(data);
+
+  renderAnalysis(data);
+
+  renderCategoryAnalysis();
+
+  renderMonthlyAnalysis();
+
+  renderCharts(ALL_ROWS);
+
+  renderTransactions(
+    getFilteredRows()
+  );
+
+}
+
+
+/* =========================================================
+   KPI
+========================================================= */
+
+function renderKPIs(data){
+
+  document.getElementById(
+    "kpiIncome"
+  ).textContent =
+    money(data.income);
+
+
+  document.getElementById(
+    "kpiExpense"
+  ).textContent =
+    money(data.expense);
+
+
+  const net =
+    document.getElementById(
+      "kpiNet"
+    );
+
+  net.textContent =
+    money(data.net);
+
+  net.style.color =
+    data.net >= 0
+      ? "var(--green)"
+      : "var(--red)";
+
+
+  document.getElementById(
+    "kpiCount"
+  ).textContent =
+    number(data.count);
+
+
+  document.getElementById(
+    "kpiIncomeCount"
+  ).textContent =
+    `${number(data.incomeCount)} عملية دخل`;
+
+
+  document.getElementById(
+    "kpiExpenseCount"
+  ).textContent =
+    `${number(data.expenseCount)} عملية مصروف`;
+
+
+  document.getElementById(
+    "kpiMargin"
+  ).textContent =
+    `هامش صافي ${data.margin.toFixed(1)}%`;
+
+
+  document.getElementById(
+    "kpiAverage"
+  ).textContent =
+    `متوسط العملية ${money(
+      data.count
+        ? (data.income + data.expense) /
+          data.count
+        : 0
+    )}`;
+
+}
+
+
+/* =========================================================
+   PROFIT STORY
+========================================================= */
+
+function renderProfit(data){
+
+  const story =
+    document.getElementById(
+      "profitStory"
+    );
+
+
+  const verb =
+    document.getElementById(
+      "profitVerb"
+    );
+
+
+  const percent =
+    document.getElementById(
+      "profitPercent"
+    );
+
+
+  const caption =
+    document.getElementById(
+      "profitCaption"
+    );
+
+
+  const status =
+    document.getElementById(
+      "profitStatus"
+    );
+
+
+  const meter =
+    document.getElementById(
+      "profitMeter"
+    );
+
+
+  story.classList.remove(
+    "profit",
+    "loss"
+  );
+
+
+  const percentage =
+    data.margin;
+
+
+  if(data.net >= 0){
+
+    story.classList.add(
+      "profit"
+    );
+
+    verb.textContent =
+      "أنت كسبان";
+
+    status.textContent =
+      "أداء مربح";
+
+    caption.textContent =
+      `صافي ربحك ${money(data.net)} من إجمالي الدخل`;
+
+  }
+
+  else{
+
+    story.classList.add(
+      "loss"
+    );
+
+    verb.textContent =
+      "أنت خسران";
+
+    status.textContent =
+      "أداء يحتاج انتباه";
+
+    caption.textContent =
+      `مصروفاتك أعلى من دخلك بـ ${money(
+        Math.abs(data.net)
+      )}`;
+
+  }
+
+
+  animateNumber(
+    percent,
+    Math.abs(percentage)
+  );
+
+
+  meter.style.width =
+    Math.min(
+      Math.max(
+        Math.abs(percentage),
+        3
+      ),
+      100
+    ) + "%";
+
+}
+
+
+/* =========================================================
+   NUMBER ANIMATION
+========================================================= */
+
+function animateNumber(
+  element,
+  target
+){
+
+  const duration =
+    1500;
+
+  const start =
+    performance.now();
+
+
+  function update(now){
+
+    const progress =
+      Math.min(
+        (now - start) /
+        duration,
+        1
+      );
+
+
+    const eased =
+      1 -
+      Math.pow(
+        1-progress,
+        3
+      );
+
+
+    const value =
+      target * eased;
+
+
+    element.textContent =
+      value.toFixed(1) + "%";
+
+
+    if(progress < 1){
+
+      requestAnimationFrame(
+        update
+      );
+
+    }
+
+  }
+
+
+  requestAnimationFrame(
+    update
+  );
+
+}
+
+
+/* =========================================================
+   FULL ANALYSIS
+========================================================= */
+
+function renderAnalysis(data){
+
+  const fields = {
+
+    analysisIncome:
+      money(data.income),
+
+    analysisExpense:
+      money(data.expense),
+
+    analysisNet:
+      money(data.net),
+
+    analysisExpenseRatio:
+      data.expenseRatio.toFixed(1) + "%",
+
+    analysisCount:
+      number(data.count),
+
+    analysisAvgIncome:
+      money(data.avgIncome),
+
+    analysisAvgExpense:
+      money(data.avgExpense),
+
+    analysisMargin:
+      data.margin.toFixed(1) + "%"
+
+  };
+
+
+  Object.entries(fields)
+    .forEach(
+      ([id,value]) => {
+
+        const element =
+          document.getElementById(
+            id
+          );
+
+        element.textContent =
+          value;
+
+
+        if(
+          id === "analysisNet" ||
+          id === "analysisMargin"
+        ){
+
+          element.classList.remove(
+            "positive",
+            "negative"
+          );
+
+          element.classList.add(
+            data.net >= 0
+              ? "positive"
+              : "negative"
+          );
+
+        }
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   CATEGORY ANALYSIS
+========================================================= */
+
+function renderCategoryAnalysis(){
+
+  const categories = {};
+
+
+  ALL_ROWS.forEach(row => {
+
+    const cat =
+      row.category ||
+      "أخرى";
+
+
+    if(!categories[cat]){
+
+      categories[cat] = {
+
+        income:0,
+
+        expense:0
+
+      };
+
+    }
+
+
+    if(row.type === "دخل"){
+
+      categories[cat].income +=
+        row.amount;
+
+    }
+
+    else if(
+      row.type === "مصروف"
+    ){
+
+      categories[cat].expense +=
+        row.amount;
+
+    }
+
+  });
+
+
+  const entries =
+    Object.entries(
+      categories
+    ).sort(
+      (a,b) =>
+        (
+          b[1].income +
+          b[1].expense
+        )
+        -
+        (
+          a[1].income +
+          a[1].expense
+        )
+    );
+
+
+  const body =
+    document.getElementById(
+      "categoryAnalysisBody"
+    );
+
+
+  body.innerHTML =
+    entries.map(
+      ([cat,value]) => {
+
+        const net =
+          value.income -
+          value.expense;
+
+
+        return `
+
+          <tr>
+
+            <td>
+              ${escapeHTML(cat)}
+            </td>
+
+            <td class="mono positive">
+              ${money(value.income)}
+            </td>
+
+            <td class="mono negative">
+              ${money(value.expense)}
+            </td>
+
+            <td class="mono ${
+              net >= 0
+                ? "positive"
+                : "negative"
+            }">
+              ${money(net)}
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =========================================================
+   MONTHLY ANALYSIS
+========================================================= */
+
+function renderMonthlyAnalysis(){
+
+  const months = {};
+
+
+  /*
+    2025-01 → 2026-12
+  */
+
+  for(
+    let year=2025;
+    year<=2026;
+    year++
+  ){
+
+    for(
+      let month=1;
+      month<=12;
+      month++
+    ){
+
+      const key =
+        `${year}-${String(month).padStart(2,"0")}`;
+
+      months[key] = {
+
+        income:0,
+
+        expense:0
+
+      };
+
+    }
+
+  }
+
+
+  ALL_ROWS.forEach(row => {
+
+    const month =
+      String(row.date)
+        .slice(0,7);
+
+
+    if(!months[month]){
+
+      months[month] = {
+
+        income:0,
+
+        expense:0
+
+      };
+
+    }
+
+
+    if(row.type === "دخل"){
+
+      months[month].income +=
+        row.amount;
+
+    }
+
+    else if(
+      row.type === "مصروف"
+    ){
+
+      months[month].expense +=
+        row.amount;
+
+    }
+
+  });
+
+
+  const body =
+    document.getElementById(
+      "monthlyAnalysisBody"
+    );
+
+
+  body.innerHTML =
+    Object.keys(months)
+      .sort()
+      .map(month => {
+
+        const item =
+          months[month];
+
+
+        const net =
+          item.income -
+          item.expense;
+
+
+        return `
+
+          <tr>
+
+            <td class="mono">
+              ${month}
+            </td>
+
+            <td class="mono positive">
+              ${money(item.income)}
+            </td>
+
+            <td class="mono negative">
+              ${money(item.expense)}
+            </td>
+
+            <td class="mono ${
+              net >= 0
+                ? "positive"
+                : "negative"
+            }">
+              ${money(net)}
+            </td>
+
+          </tr>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+/* =========================================================
+   CHARTS
+========================================================= */
+
+function renderCharts(rows){
+
+  renderTrendChart(rows);
+
+  renderCategoryChart(rows);
+
+}
+
+
+/* =========================================================
+   TREND CHART
+========================================================= */
 
 function renderTrendChart(rows){
-  if(typeof Chart === "undefined"){
-    console.warn("Chart.js is not available; skipping trend chart.");
-    return;
-  }
-  const byMonth = {};
-  rows.forEach(r => {
-    const m = String(r.date).slice(0,7);
-    if(!m) return;
-    if(!byMonth[m]) byMonth[m] = {income:0, expense:0};
-    if(r.type === "دخل") byMonth[m].income += r.amount;
-    else if(r.type === "مصروف") byMonth[m].expense += r.amount;
-  });
-  const months = Object.keys(byMonth).sort();
-  const incomeData = months.map(m => byMonth[m].income);
-  const expenseData = months.map(m => byMonth[m].expense);
 
-  const ctx = document.getElementById("trendChart");
-  if(trendChartInstance) trendChartInstance.destroy();
-  trendChartInstance = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: months,
-      datasets: [
-        { label:"دخل", data:incomeData, borderColor:"#2F9E6E", backgroundColor:"rgba(47,158,110,0.12)", tension:.3, fill:true, pointRadius:3 },
-        { label:"مصروف", data:expenseData, borderColor:"#D9544F", backgroundColor:"rgba(217,84,79,0.10)", tension:.3, fill:true, pointRadius:3 },
-      ]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ labels:{ color:"#93A4BC", font:{family:"Tajawal"} } } },
-      scales:{
-        x:{ ticks:{ color:"#5E7089", font:{family:"IBM Plex Mono", size:10} }, grid:{ color:"rgba(244,241,234,0.05)" } },
-        y:{ ticks:{ color:"#5E7089", font:{family:"IBM Plex Mono", size:10} }, grid:{ color:"rgba(244,241,234,0.05)" } }
-      }
+  const monthly = {};
+
+
+  rows.forEach(row => {
+
+    const month =
+      String(row.date)
+        .slice(0,7);
+
+
+    if(!month){
+      return;
     }
+
+
+    if(!monthly[month]){
+
+      monthly[month] = {
+
+        income:0,
+
+        expense:0
+
+      };
+
+    }
+
+
+    if(row.type === "دخل"){
+
+      monthly[month].income +=
+        row.amount;
+
+    }
+
+    if(row.type === "مصروف"){
+
+      monthly[month].expense +=
+        row.amount;
+
+    }
+
   });
+
+
+  const months =
+    Object.keys(monthly)
+      .sort();
+
+
+  if(trendChart){
+
+    trendChart.destroy();
+
+  }
+
+
+  const ctx =
+    document.getElementById(
+      "trendChart"
+    );
+
+
+  trendChart =
+    new Chart(
+      ctx,
+      {
+
+        type:"line",
+
+        data:{
+
+          labels:months,
+
+          datasets:[
+
+            {
+
+              label:"الدخل",
+
+              data:
+                months.map(
+                  m =>
+                    monthly[m].income
+                ),
+
+              borderColor:
+                "#21d07a",
+
+              backgroundColor:
+                "rgba(33,208,122,.12)",
+
+              fill:true,
+
+              tension:.42,
+
+              borderWidth:2.5,
+
+              pointRadius:3,
+
+              pointHoverRadius:7
+
+            },
+
+
+            {
+
+              label:"المصروف",
+
+              data:
+                months.map(
+                  m =>
+                    monthly[m].expense
+                ),
+
+              borderColor:
+                "#ff5c6c",
+
+              backgroundColor:
+                "rgba(255,92,108,.10)",
+
+              fill:true,
+
+              tension:.42,
+
+              borderWidth:2.5,
+
+              pointRadius:3,
+
+              pointHoverRadius:7
+
+            }
+
+          ]
+
+        },
+
+
+        options:{
+
+          responsive:true,
+
+          maintainAspectRatio:false,
+
+          interaction:{
+
+            intersect:false,
+
+            mode:"index"
+
+          },
+
+
+          animation:{
+
+            duration:1800,
+
+            easing:"easeOutQuart"
+
+          },
+
+
+          plugins:{
+
+            legend:{
+
+              position:"top",
+
+              align:"start",
+
+              labels:{
+
+                color:"#8d99ab",
+
+                font:{
+
+                  family:"Tajawal",
+
+                  size:11
+
+                },
+
+                usePointStyle:true,
+
+                padding:18
+
+              }
+
+            },
+
+
+            tooltip:{
+
+              backgroundColor:
+                "#0b1019",
+
+              borderColor:
+                "rgba(201,162,39,.35)",
+
+              borderWidth:1,
+
+              titleFont:{
+
+                family:"Tajawal"
+
+              },
+
+              bodyFont:{
+
+                family:"IBM Plex Mono"
+
+              },
+
+              padding:12,
+
+              callbacks:{
+
+                label:
+                  context =>
+                    `${context.dataset.label}: ${money(context.raw)}`
+
+              }
+
+            }
+
+          },
+
+
+          scales:{
+
+            x:{
+
+              grid:{
+
+                color:
+                  "rgba(255,255,255,.035)"
+
+              },
+
+              ticks:{
+
+                color:"#59677b",
+
+                font:{
+
+                  family:
+                    "IBM Plex Mono",
+
+                  size:9
+
+                }
+
+              }
+
+            },
+
+
+            y:{
+
+              beginAtZero:true,
+
+              grid:{
+
+                color:
+                  "rgba(255,255,255,.035)"
+
+              },
+
+              ticks:{
+
+                color:"#59677b",
+
+                font:{
+
+                  family:
+                    "IBM Plex Mono",
+
+                  size:9
+
+                },
+
+                callback:
+                  value =>
+                    Number(value)
+                      .toLocaleString(
+                        "en-US"
+                      )
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    );
+
 }
+
+
+/* =========================================================
+   CATEGORY CHART
+========================================================= */
 
 function renderCategoryChart(rows){
-  if(typeof Chart === "undefined"){
-    console.warn("Chart.js is not available; skipping category chart.");
-    return;
-  }
-  const byCat = {};
-  rows.forEach(r => {
-    if(!r.category) return;
-    byCat[r.category] = (byCat[r.category]||0) + r.amount;
-  });
-  const entries = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,7);
 
-  const ctx = document.getElementById("categoryChart");
-  if(categoryChartInstance) categoryChartInstance.destroy();
-  categoryChartInstance = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: entries.map(e=>e[0]),
-      datasets: [{ data: entries.map(e=>e[1]), backgroundColor:"#C9A227", borderRadius:5 }]
-    },
-    options: {
-      indexAxis:"y",
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ display:false } },
-      scales:{
-        x:{ ticks:{ color:"#5E7089", font:{family:"IBM Plex Mono", size:10} }, grid:{ color:"rgba(244,241,234,0.05)" } },
-        y:{ ticks:{ color:"#93A4BC", font:{family:"Tajawal", size:12} }, grid:{ display:false } }
-      }
-    }
+  const categories = {};
+
+
+  rows.forEach(row => {
+
+    const cat =
+      row.category ||
+      "أخرى";
+
+
+    categories[cat] =
+      (
+        categories[cat] || 0
+      ) +
+      row.amount;
+
   });
+
+
+  const entries =
+    Object.entries(
+      categories
+    )
+    .sort(
+      (a,b) =>
+        b[1] - a[1]
+    )
+    .slice(0,8);
+
+
+  if(categoryChart){
+
+    categoryChart.destroy();
+
+  }
+
+
+  const ctx =
+    document.getElementById(
+      "categoryChart"
+    );
+
+
+  categoryChart =
+    new Chart(
+      ctx,
+      {
+
+        type:"bar",
+
+        data:{
+
+          labels:
+            entries.map(
+              e => e[0]
+            ),
+
+          datasets:[
+
+            {
+
+              data:
+                entries.map(
+                  e => e[1]
+                ),
+
+              backgroundColor:
+                "#c9a227",
+
+              borderRadius:8,
+
+              borderSkipped:false
+
+            }
+
+          ]
+
+        },
+
+
+        options:{
+
+          indexAxis:"y",
+
+          responsive:true,
+
+          maintainAspectRatio:false,
+
+          animation:{
+
+            duration:1600,
+
+            easing:"easeOutQuart"
+
+          },
+
+
+          plugins:{
+
+            legend:{
+              display:false
+            },
+
+            tooltip:{
+
+              backgroundColor:
+                "#0b1019",
+
+              borderColor:
+                "rgba(201,162,39,.35)",
+
+              borderWidth:1,
+
+              padding:12,
+
+              callbacks:{
+
+                label:
+                  context =>
+                    money(context.raw)
+
+              }
+
+            }
+
+          },
+
+
+          scales:{
+
+            x:{
+
+              beginAtZero:true,
+
+              grid:{
+
+                color:
+                  "rgba(255,255,255,.035)"
+
+              },
+
+              ticks:{
+
+                color:"#59677b",
+
+                font:{
+
+                  family:
+                    "IBM Plex Mono",
+
+                  size:9
+
+                }
+
+              }
+
+            },
+
+
+            y:{
+
+              grid:{
+                display:false
+              },
+
+              ticks:{
+
+                color:"#8d99ab",
+
+                font:{
+
+                  family:"Tajawal",
+
+                  size:11
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    );
+
 }
 
-["searchInput","typeFilter","categoryFilter","monthFilter"].forEach(id=>{
-  document.getElementById(id).addEventListener("input", render);
-  document.getElementById(id).addEventListener("change", render);
+
+/* =========================================================
+   CATEGORIES FILTER
+========================================================= */
+
+function populateCategories(){
+
+  const select =
+    document.getElementById(
+      "categoryFilter"
+    );
+
+
+  select.innerHTML =
+    `<option value="">كل الفئات</option>`;
+
+
+  const categories =
+    [
+      ...new Set(
+        ALL_ROWS
+          .map(
+            row =>
+              row.category
+          )
+          .filter(Boolean)
+      )
+    ]
+    .sort();
+
+
+  categories.forEach(
+    category => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+      option.value =
+        category;
+
+      option.textContent =
+        category;
+
+      select.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function getFilteredRows(){
+
+  const search =
+    document.getElementById(
+      "searchInput"
+    )
+    .value
+    .trim()
+    .toLowerCase();
+
+
+  const type =
+    document.getElementById(
+      "typeFilter"
+    ).value;
+
+
+  const category =
+    document.getElementById(
+      "categoryFilter"
+    ).value;
+
+
+  const month =
+    document.getElementById(
+      "monthFilter"
+    ).value;
+
+
+  return ALL_ROWS.filter(row => {
+
+    if(
+      type &&
+      row.type !== type
+    ){
+      return false;
+    }
+
+
+    if(
+      category &&
+      row.category !== category
+    ){
+      return false;
+    }
+
+
+    if(
+      month &&
+      !row.date.startsWith(month)
+    ){
+      return false;
+    }
+
+
+    if(search){
+
+      const searchable =
+        (
+          row.description +
+          " " +
+          row.notes +
+          " " +
+          row.category
+        )
+        .toLowerCase();
+
+
+      if(
+        !searchable.includes(
+          search
+        )
+      ){
+        return false;
+      }
+
+    }
+
+
+    return true;
+
+  });
+
+}
+
+
+/* =========================================================
+   TRANSACTIONS TABLE
+========================================================= */
+
+function renderTransactions(rows){
+
+  const wrapper =
+    document.getElementById(
+      "tableWrap"
+    );
+
+
+  document.getElementById(
+    "countPill"
+  ).textContent =
+    `${number(rows.length)} عملية`;
+
+
+  if(!rows.length){
+
+    wrapper.innerHTML = `
+
+      <div class="loading">
+        لا توجد معاملات مطابقة للفلاتر الحالية.
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  const sorted =
+    [...rows]
+      .sort(
+        (a,b) =>
+          b.date.localeCompare(
+            a.date
+          )
+      );
+
+
+  const visible =
+    sorted.slice(
+      0,
+      300
+    );
+
+
+  let html = `
+
+    <div style="overflow:auto">
+
+      <table class="transactions-table">
+
+        <thead>
+
+          <tr>
+
+            <th>التاريخ</th>
+
+            <th>النوع</th>
+
+            <th>الفئة</th>
+
+            <th>الوصف</th>
+
+            <th>المبلغ</th>
+
+            <th>ملاحظات</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+  `;
+
+
+  visible.forEach(row => {
+
+    const income =
+      row.type === "دخل";
+
+
+    html += `
+
+      <tr>
+
+        <td class="mono">
+          ${escapeHTML(row.date || "—")}
+        </td>
+
+        <td>
+
+          <span class="badge ${
+            income
+              ? "income"
+              : "expense"
+          }">
+
+            ${income ? "دخل" : "مصروف"}
+
+          </span>
+
+        </td>
+
+        <td>
+          ${escapeHTML(
+            row.category
+          )}
+        </td>
+
+        <td>
+          ${escapeHTML(
+            row.description ||
+            "—"
+          )}
+        </td>
+
+        <td
+          class="mono ${
+            income
+              ? "positive"
+              : "negative"
+          }">
+
+          ${income ? "+" : "-"}
+          ${money(row.amount)}
+
+        </td>
+
+        <td style="color:var(--muted)">
+          ${escapeHTML(
+            row.notes || ""
+          )}
+        </td>
+
+      </tr>
+
+    `;
+
+  });
+
+
+  html += `
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+
+  if(rows.length > 300){
+
+    html += `
+
+      <div
+        class="card-hint"
+        style="padding-top:14px">
+
+        يتم عرض أحدث 300 معاملة من أصل
+        ${number(rows.length)}.
+
+      </div>
+
+    `;
+
+  }
+
+
+  wrapper.innerHTML =
+    html;
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(value || "")
+    .replace(
+      /[&<>"']/g,
+      char => ({
+
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+
+      })[char]
+    );
+
+}
+
+
+/* =========================================================
+   FILTER EVENTS
+========================================================= */
+
+[
+  "searchInput",
+  "typeFilter",
+  "categoryFilter",
+  "monthFilter"
+
+].forEach(id => {
+
+  document
+    .getElementById(id)
+    .addEventListener(
+      "input",
+      () =>
+        renderTransactions(
+          getFilteredRows()
+        )
+    );
+
+
+  document
+    .getElementById(id)
+    .addEventListener(
+      "change",
+      () =>
+        renderTransactions(
+          getFilteredRows()
+        )
+    );
+
 });
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
 
 loadData();
 
-  // تحديث تلقائي للداتا والتحليلات من Google Sheets كل 60 ثانية.
-  setInterval(() => {
-    loadData();
-  }, 60000);
-</script>
 
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
-  document.querySelectorAll("main > .card, #financialAnalysis .card")
-    .forEach((el,i)=>el.style.animationDelay=`${Math.min(i*70,700)}ms`);
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
 
-  if(window.matchMedia("(pointer:fine)").matches){
-    document.querySelectorAll(".analysis-metric").forEach(card=>{
-      card.addEventListener("mousemove",e=>{
-        const r=card.getBoundingClientRect();
-        const x=(e.clientX-r.left)/r.width-.5;
-        const y=(e.clientY-r.top)/r.height-.5;
-        card.style.transform=
-          `perspective(700px) rotateX(${(-y*3).toFixed(2)}deg) rotateY(${(x*3).toFixed(2)}deg) translateY(-7px)`;
-      });
-      card.addEventListener("mouseleave",()=>card.style.transform="");
-    });
-  }
-});
-</script>
+setInterval(
+  loadData,
+  CONFIG.REFRESH
+);
 
-
-<script>
-(() => {
-  const els = document.querySelectorAll('.card, .analysis-metric, .analysis-tables > .card');
-  if (!('IntersectionObserver' in window)) return;
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        io.unobserve(entry.target);
-      }
-    });
-  }, {threshold:.08, rootMargin:'0px 0px -30px 0px'});
-  els.forEach(el => io.observe(el));
-})();
-</script>
-
-
-<script>
-function animateProfitStory(income, expense){
-  const story = document.getElementById("profitStory");
-  const percentEl = document.getElementById("profitPercent");
-  const verbEl = document.getElementById("profitVerb");
-  const captionEl = document.getElementById("profitCaption");
-  const statusEl = document.getElementById("profitStatus");
-  const meterEl = document.getElementById("profitMeter");
-
-  if(!story || !percentEl) return;
-
-  income = Number(income) || 0;
-  expense = Number(expense) || 0;
-
-  const net = income - expense;
-  const percentage = income ? (net / income) * 100 : 0;
-  const abs = Math.abs(percentage);
-
-  story.classList.remove("is-profit","is-loss");
-
-  if(net >= 0){
-    story.classList.add("is-profit");
-    verbEl.textContent = "أنت كسبان";
-    statusEl.textContent = "أداء مربح";
-    captionEl.textContent =
-      `صافي ربحك ${net.toLocaleString("en-US",{maximumFractionDigits:2})} ج.م من إجمالي الدخل`;
-  }else{
-    story.classList.add("is-loss");
-    verbEl.textContent = "أنت خسران";
-    statusEl.textContent = "أداء يحتاج انتباه";
-    captionEl.textContent =
-      `مصروفاتك أعلى من دخلك بـ ${Math.abs(net).toLocaleString("en-US",{maximumFractionDigits:2})} ج.م`;
-  }
-
-  // Animate the percentage from 0 to the actual result.
-  const start = performance.now();
-  const duration = 1600;
-
-  function tick(now){
-    const progress = Math.min((now-start)/duration,1);
-    const eased = 1-Math.pow(1-progress,3);
-    const current = abs * eased;
-
-    percentEl.textContent =
-      `${current.toFixed(1)}%`;
-
-    if(progress < 1) requestAnimationFrame(tick);
-  }
-
-  requestAnimationFrame(tick);
-
-  // Visual intensity capped at 100% so extreme losses don't overflow.
-  const meterWidth = Math.min(Math.max(abs,4),100);
-  meterEl.style.setProperty("--meter-width", meterWidth + "%");
-
-  // Restart meter animation after every refresh.
-  meterEl.style.animation = "none";
-  void meterEl.offsetWidth;
-  meterEl.style.animation = "meterGrow 1.8s cubic-bezier(.16,1,.3,1) forwards";
-}
-
-// Hook into the existing dynamic financial calculation.
-const originalRenderFinancialAnalysisFromSheet =
-  window.renderFinancialAnalysisFromSheet;
-
-if(typeof originalRenderFinancialAnalysisFromSheet === "function"){
-  window.renderFinancialAnalysisFromSheet = function(){
-    originalRenderFinancialAnalysisFromSheet.apply(this, arguments);
-
-    const rows = window.ALL_ROWS || [];
-    const income = rows.filter(r=>r.type==="دخل")
-      .reduce((s,r)=>s+Number(r.amount||0),0);
-    const expense = rows.filter(r=>r.type==="مصروف")
-      .reduce((s,r)=>s+Number(r.amount||0),0);
-
-    animateProfitStory(income, expense);
-  };
-}
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    if (typeof Chart === "undefined") {
-      document.querySelectorAll("canvas").forEach(canvas => {
-        const box = canvas.parentElement;
-        if (box && !box.querySelector(".chart-fallback")) {
-          const msg = document.createElement("div");
-          msg.className = "chart-fallback";
-          msg.textContent = "التحليل الرقمي يعمل من Google Sheets — تعذر تحميل الرسم البياني.";
-          msg.style.cssText =
-            "padding:18px;text-align:center;color:#8d98aa;font-size:11px;";
-          box.appendChild(msg);
-        }
-      });
-    }
-  }, 1800);
-});
 </script>
 
 </body>
