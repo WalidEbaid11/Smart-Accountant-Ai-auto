@@ -2,29 +2,54 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
-/>
-
-<title>دفتر — Financial Intelligence Dashboard</title>
+<title>دفتر — لوحة التحكم المالية</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link
-  href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-  rel="stylesheet"
->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-<!-- Chart.js -->
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"
-  crossorigin="anonymous">
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 
 <style>
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root{
+  --bg:#070b12;
+  --bg2:#0b1220;
+
+  --surface:rgba(16,23,36,.82);
+  --surface2:rgba(23,32,49,.72);
+
+  --border:rgba(255,255,255,.075);
+  --border-gold:rgba(201,162,39,.32);
+
+  --text:#f5f7fb;
+  --muted:#91a0b5;
+  --faint:#64748b;
+
+  --gold:#c9a227;
+  --gold2:#f0d477;
+
+  --green:#21d07a;
+  --green-soft:rgba(33,208,122,.12);
+
+  --red:#ff5c6c;
+  --red-soft:rgba(255,92,108,.12);
+
+  --blue:#6ea8ff;
+
+  --radius:20px;
+
+  --shadow:
+    0 25px 70px rgba(0,0,0,.28);
+}
+
 
 /* =========================================================
    RESET
@@ -43,42 +68,28 @@ body{
   min-height:100vh;
   overflow-x:hidden;
 
+  font-family:'Tajawal',sans-serif;
+
+  color:var(--text);
+
   background:
     radial-gradient(
-      circle at 8% 5%,
-      rgba(201,162,39,.10),
-      transparent 28%
-    ),
-    radial-gradient(
-      circle at 92% 15%,
-      rgba(70,120,255,.09),
+      circle at 10% 0%,
+      rgba(201,162,39,.09),
       transparent 30%
     ),
-    #070a11;
-
-  color:#f5f7fb;
-
-  font-family:"Tajawal",sans-serif;
-
-  animation:pageEnter .8s cubic-bezier(.16,1,.3,1);
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(80,130,255,.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #070b12,
+      #0a111c
+    );
 }
 
-button,
-input,
-select{
-  font-family:inherit;
-}
-
-button,
-input,
-select{
-  outline:none;
-}
-
-.mono{
-  font-family:"IBM Plex Mono",monospace;
-  font-variant-numeric:tabular-nums;
-}
 
 /* =========================================================
    BACKGROUND GRID
@@ -94,6 +105,8 @@ body::before{
 
   z-index:-1;
 
+  opacity:.35;
+
   background:
     linear-gradient(
       rgba(255,255,255,.018) 1px,
@@ -105,7 +118,9 @@ body::before{
       transparent 1px
     );
 
-  background-size:48px 48px;
+  background-size:
+    clamp(28px,4vw,52px)
+    clamp(28px,4vw,52px);
 
   mask-image:
     linear-gradient(
@@ -115,151 +130,105 @@ body::before{
     );
 }
 
+
 /* =========================================================
-   VARIABLES
+   UTILITIES
 ========================================================= */
 
-:root{
-
-  --bg:#070a11;
-  --surface:#101725;
-  --surface-2:#151e2f;
-
-  --border:rgba(255,255,255,.075);
-  --border-gold:rgba(201,162,39,.28);
-
-  --text:#f5f7fb;
-  --muted:#8d98aa;
-  --faint:#5e6c80;
-
-  --gold:#c9a227;
-  --gold-light:#e4c458;
-
-  --green:#21d07a;
-  --green-soft:rgba(33,208,122,.12);
-
-  --red:#ff5c6c;
-  --red-soft:rgba(255,92,108,.12);
-
-  --blue:#6ea8ff;
-
-  --radius:18px;
-
-  --shadow:
-    0 24px 70px rgba(0,0,0,.28);
+.mono{
+  font-family:'IBM Plex Mono',monospace;
+  font-variant-numeric:tabular-nums;
 }
+
+.hidden{
+  display:none!important;
+}
+
 
 /* =========================================================
    HEADER
 ========================================================= */
 
-.top{
+.topbar{
+  position:sticky;
+  top:0;
 
-  position:relative;
+  z-index:100;
 
-  min-height:76px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  gap:20px;
-
-  padding:
-    16px
-    clamp(16px,4vw,42px);
+  width:100%;
 
   border-bottom:1px solid var(--border);
 
   background:
-    linear-gradient(
-      180deg,
-      rgba(7,10,17,.98),
-      rgba(7,10,17,.70)
-    );
+    rgba(7,11,18,.78);
 
-  overflow:hidden;
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
 }
 
-.top::after{
+.topbar-inner{
+  width:min(1500px,100%);
+  margin:auto;
 
-  content:"";
+  padding:
+    clamp(12px,2vw,20px)
+    clamp(14px,3vw,36px);
 
-  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-  inset:-100%;
-
-  pointer-events:none;
-
-  background:
-    linear-gradient(
-      110deg,
-      transparent 40%,
-      rgba(255,255,255,.025) 48%,
-      rgba(201,162,39,.08) 52%,
-      transparent 60%
-    );
-
-  animation:headerSweep 8s ease-in-out infinite;
+  gap:20px;
 }
 
 .brand{
-
   display:flex;
-
   align-items:center;
 
-  gap:12px;
+  gap:11px;
 
   min-width:0;
 }
 
 .brand-mark{
+  flex:0 0 auto;
 
   width:42px;
   height:42px;
 
-  flex:0 0 42px;
-
-  display:flex;
-
-  align-items:center;
-  justify-content:center;
-
   border-radius:12px;
 
-  color:#07101b;
+  display:grid;
+  place-items:center;
 
+  font-size:19px;
   font-weight:900;
 
-  font-size:20px;
+  color:#07101c;
 
   background:
     linear-gradient(
       135deg,
-      var(--gold-light),
+      var(--gold2),
       var(--gold)
     );
 
   box-shadow:
-    0 8px 30px rgba(201,162,39,.22);
+    0 8px 25px rgba(201,162,39,.18);
+}
 
-  animation:logoFloat 4s ease-in-out infinite;
+.brand-info{
+  min-width:0;
 }
 
 .brand-title{
-
   margin:0;
 
-  font-size:18px;
-
-  font-weight:900;
+  font-size:16px;
+  font-weight:800;
 }
 
-.brand-subtitle{
-
+.brand-sub{
   margin:2px 0 0;
 
   color:var(--faint);
@@ -268,11 +237,8 @@ body::before{
 }
 
 .sync{
-
   display:flex;
-
   align-items:center;
-
   gap:8px;
 
   color:var(--muted);
@@ -283,148 +249,6 @@ body::before{
 }
 
 .sync-dot{
-
-  width:8px;
-  height:8px;
-
-  border-radius:50%;
-
-  background:var(--green);
-
-  box-shadow:
-    0 0 0 4px rgba(33,208,122,.08),
-    0 0 18px rgba(33,208,122,.7);
-
-  animation:syncPulse 1.6s ease-in-out infinite;
-}
-
-/* =========================================================
-   LEDGER BAND
-========================================================= */
-
-.ledger-band{
-
-  height:24px;
-
-  margin:
-    0
-    clamp(14px,4vw,42px);
-
-  border-left:1px solid var(--border-gold);
-  border-right:1px solid var(--border-gold);
-
-  background-image:
-    repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 6px,
-      rgba(255,255,255,.035) 6px,
-      rgba(255,255,255,.035) 7px
-    );
-}
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero{
-
-  width:100%;
-
-  max-width:1500px;
-
-  margin:0 auto;
-
-  padding:
-    clamp(22px,4vw,42px)
-    clamp(16px,4vw,42px)
-    14px;
-
-  display:flex;
-
-  align-items:flex-end;
-
-  justify-content:space-between;
-
-  gap:25px;
-
-  animation:
-    heroEnter
-    .9s
-    cubic-bezier(.16,1,.3,1);
-}
-
-.hero-eyebrow{
-
-  color:var(--gold-light);
-
-  font-size:10px;
-
-  font-weight:900;
-
-  letter-spacing:.18em;
-
-  margin-bottom:9px;
-}
-
-.hero h1{
-
-  margin:0;
-
-  font-size:
-    clamp(28px,5vw,54px);
-
-  line-height:1;
-
-  letter-spacing:-.045em;
-
-  font-weight:900;
-}
-
-.hero p{
-
-  margin:12px 0 0;
-
-  color:var(--muted);
-
-  font-size:
-    clamp(11px,1.5vw,14px);
-
-  line-height:1.8;
-}
-
-.live{
-
-  flex:0 0 auto;
-
-  display:flex;
-
-  align-items:center;
-
-  gap:8px;
-
-  padding:9px 13px;
-
-  border-radius:999px;
-
-  color:#a8e9c8;
-
-  font-size:10px;
-
-  font-weight:900;
-
-  letter-spacing:.08em;
-
-  border:
-    1px solid
-    rgba(33,208,122,.25);
-
-  background:
-    rgba(33,208,122,.07);
-}
-
-.live span{
-
   width:7px;
   height:7px;
 
@@ -433,82 +257,152 @@ body::before{
   background:var(--green);
 
   box-shadow:
-    0 0 14px var(--green);
+    0 0 0 0 rgba(33,208,122,.5);
 
-  animation:livePulse 1.5s ease-in-out infinite;
+  animation:
+    pulse 1.7s infinite;
 }
 
+@keyframes pulse{
+
+  0%{
+    box-shadow:
+      0 0 0 0 rgba(33,208,122,.5);
+  }
+
+  70%{
+    box-shadow:
+      0 0 0 9px rgba(33,208,122,0);
+  }
+
+  100%{
+    box-shadow:
+      0 0 0 0 rgba(33,208,122,0);
+  }
+
+}
+
+
 /* =========================================================
-   MAIN
+   CONTAINER
 ========================================================= */
 
-main{
+.container{
+  width:min(1500px,100%);
 
-  width:100%;
-
-  max-width:1500px;
-
-  margin:0 auto;
+  margin:auto;
 
   padding:
-    10px
-    clamp(14px,4vw,42px)
-    70px;
+    clamp(18px,3vw,38px)
+    clamp(14px,3vw,38px)
+    60px;
 }
+
 
 /* =========================================================
-   CARDS
+   HERO
 ========================================================= */
 
-.card{
+.hero{
+  display:flex;
 
-  position:relative;
+  align-items:flex-end;
+  justify-content:space-between;
 
-  min-width:0;
+  gap:25px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(18,25,39,.94),
-      rgba(8,12,20,.88)
-    );
+  margin-bottom:25px;
 
-  border:1px solid var(--border);
-
-  border-radius:var(--radius);
-
-  box-shadow:var(--shadow);
-
-  overflow:hidden;
-
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-
-  transition:
-    transform .45s cubic-bezier(.16,1,.3,1),
-    border-color .4s,
-    box-shadow .4s;
+  animation:
+    heroIn .9s cubic-bezier(.16,1,.3,1);
 }
 
-.card:hover{
+@keyframes heroIn{
 
-  transform:translateY(-5px);
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
 
-  border-color:
-    rgba(201,162,39,.20);
+  to{
+    opacity:1;
+    transform:none;
+  }
+
+}
+
+.hero-eyebrow{
+  margin-bottom:7px;
+
+  color:var(--gold2);
+
+  font-size:10px;
+  font-weight:900;
+
+  letter-spacing:.18em;
+}
+
+.hero h1{
+  margin:0;
+
+  font-size:
+    clamp(27px,4vw,48px);
+
+  line-height:1.05;
+
+  letter-spacing:-.04em;
+}
+
+.hero p{
+  max-width:720px;
+
+  margin:11px 0 0;
+
+  color:var(--muted);
+
+  font-size:
+    clamp(11px,1.3vw,14px);
+
+  line-height:1.8;
+}
+
+.live{
+  flex:0 0 auto;
+
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+
+  padding:9px 13px;
+
+  border:1px solid rgba(33,208,122,.2);
+
+  border-radius:999px;
+
+  background:rgba(33,208,122,.07);
+
+  color:#a8e9c8;
+
+  font-size:10px;
+  font-weight:800;
+}
+
+.live span{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:var(--green);
 
   box-shadow:
-    0 30px 80px rgba(0,0,0,.38);
+    0 0 15px var(--green);
 }
 
-.card-inner{
-
-  padding:
-    clamp(16px,2vw,22px);
-}
 
 /* =========================================================
-   KPI
+   KPI GRID
 ========================================================= */
 
 .kpi-grid{
@@ -518,9 +412,9 @@ main{
   grid-template-columns:
     repeat(4,minmax(0,1fr));
 
-  gap:15px;
+  gap:14px;
 
-  margin-top:15px;
+  margin-bottom:16px;
 }
 
 .kpi{
@@ -529,56 +423,64 @@ main{
 
   min-width:0;
 
-  padding:20px;
+  padding:
+    clamp(17px,2vw,22px);
 
-  border-radius:16px;
+  overflow:hidden;
 
-  border:1px solid var(--border);
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    var(--radius);
 
   background:
     linear-gradient(
       145deg,
-      rgba(255,255,255,.045),
-      rgba(255,255,255,.012)
+      rgba(20,28,44,.9),
+      rgba(9,14,23,.82)
     );
 
-  overflow:hidden;
-
-  animation:
-    cardEnter
-    .8s
-    cubic-bezier(.16,1,.3,1)
-    both;
+  box-shadow:var(--shadow);
 
   transition:
-    transform .4s,
+    transform .45s cubic-bezier(.16,1,.3,1),
     border-color .4s,
     box-shadow .4s;
+
+  animation:
+    cardIn .8s cubic-bezier(.16,1,.3,1) both;
 }
 
-.kpi:nth-child(2){
-  animation-delay:.08s;
-}
+.kpi:nth-child(1){animation-delay:.05s}
+.kpi:nth-child(2){animation-delay:.12s}
+.kpi:nth-child(3){animation-delay:.19s}
+.kpi:nth-child(4){animation-delay:.26s}
 
-.kpi:nth-child(3){
-  animation-delay:.16s;
-}
+@keyframes cardIn{
 
-.kpi:nth-child(4){
-  animation-delay:.24s;
+  from{
+    opacity:0;
+    transform:
+      translateY(25px)
+      scale(.97);
+  }
+
+  to{
+    opacity:1;
+    transform:none;
+  }
+
 }
 
 .kpi:hover{
-
-  transform:
-    translateY(-8px)
-    scale(1.015);
+  transform:translateY(-7px);
 
   border-color:
-    rgba(201,162,39,.35);
+    rgba(201,162,39,.25);
 
   box-shadow:
-    0 20px 50px rgba(0,0,0,.3);
+    0 30px 80px rgba(0,0,0,.35);
 }
 
 .kpi::before{
@@ -588,10 +490,10 @@ main{
   position:absolute;
 
   top:0;
-  left:0;
   right:0;
+  left:0;
 
-  height:3px;
+  height:2px;
 
   background:var(--gold);
 }
@@ -612,21 +514,19 @@ main{
 
   color:var(--muted);
 
-  font-size:11px;
-
-  font-weight:700;
+  font-size:12px;
 }
 
 .kpi-value{
 
-  margin-top:9px;
+  margin-top:10px;
 
   font-size:
-    clamp(20px,2.2vw,29px);
-
-  line-height:1.15;
+    clamp(21px,2.5vw,30px);
 
   font-weight:800;
+
+  line-height:1.15;
 
   word-break:break-word;
 }
@@ -637,19 +537,76 @@ main{
 
   color:var(--faint);
 
-  font-size:10.5px;
+  font-size:11px;
 }
 
-.value-positive{
-  color:var(--green);
+.positive{
+  color:var(--green)!important;
 }
 
-.value-negative{
-  color:var(--red);
+.negative{
+  color:var(--red)!important;
 }
+
 
 /* =========================================================
-   CHART PANELS
+   CARD
+========================================================= */
+
+.card{
+
+  min-width:0;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    var(--radius);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(18,26,41,.88),
+      rgba(9,14,23,.78)
+    );
+
+  box-shadow:
+    var(--shadow);
+
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+
+  overflow:hidden;
+}
+
+.card-header{
+
+  padding:
+    clamp(17px,2vw,22px);
+
+  padding-bottom:8px;
+}
+
+.card-title{
+
+  margin:0;
+
+  font-size:15px;
+  font-weight:800;
+}
+
+.card-hint{
+
+  margin:5px 0 0;
+
+  color:var(--faint);
+
+  font-size:11px;
+}
+
+
+/* =========================================================
+   CHARTS
 ========================================================= */
 
 .charts-grid{
@@ -662,121 +619,85 @@ main{
 
   gap:16px;
 
-  margin-top:16px;
+  margin-bottom:16px;
 }
 
 .chart-card{
-
   min-width:0;
-
-  padding:
-    clamp(16px,2vw,22px);
 }
 
-.section-title{
-
-  margin:0;
-
-  font-size:15px;
-
-  font-weight:800;
-}
-
-.section-hint{
-
-  margin:5px 0 16px;
-
-  color:var(--faint);
-
-  font-size:11px;
-
-  line-height:1.7;
-}
-
-/*
-  IMPORTANT:
-  Chart.js needs a parent with a REAL height.
-*/
-
-.chart-wrap{
+.chart-box{
 
   position:relative;
 
   width:100%;
 
-  height:330px;
+  height:
+    clamp(260px,32vw,390px);
 
-  min-height:280px;
-
-  max-width:100%;
-
-  overflow:hidden;
+  padding:
+    10px
+    clamp(12px,2vw,20px)
+    20px;
 }
 
-.chart-wrap canvas{
+.chart-box canvas{
 
-  display:block !important;
-
-  position:relative !important;
-
-  width:100% !important;
-
-  height:100% !important;
-
-  max-width:100% !important;
-
-  max-height:100% !important;
+  width:100%!important;
+  height:100%!important;
 }
+
 
 /* =========================================================
    PROFIT STORY
 ========================================================= */
 
-.profit-story{
+.profit{
 
   position:relative;
 
-  margin-top:16px;
+  overflow:hidden;
+
+  margin-bottom:16px;
 
   padding:
     clamp(25px,5vw,48px)
-    clamp(15px,4vw,35px);
-
-  border-radius:22px;
-
-  border:1px solid var(--border);
-
-  background:
-    radial-gradient(
-      circle at 50% 100%,
-      rgba(201,162,39,.11),
-      transparent 43%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(18,25,39,.96),
-      rgba(7,10,17,.96)
-    );
-
-  overflow:hidden;
+    clamp(16px,4vw,35px);
 
   text-align:center;
 
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    24px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(201,162,39,.10),
+      transparent 45%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(20,27,42,.96),
+      rgba(6,10,16,.96)
+    );
+
   box-shadow:
-    0 30px 90px rgba(0,0,0,.38);
+    0 30px 90px rgba(0,0,0,.35);
 }
 
-.profit-story::before{
+.profit::before{
 
   content:"";
 
   position:absolute;
 
   width:
-    clamp(190px,35vw,330px);
+    clamp(180px,30vw,350px);
 
-  height:
-    clamp(190px,35vw,330px);
+  aspect-ratio:1;
 
   left:50%;
   top:50%;
@@ -786,60 +707,64 @@ main{
 
   border-radius:50%;
 
-  border:1px solid rgba(255,255,255,.04);
-
-  box-shadow:
-    0 0 100px
-    rgba(201,162,39,.07);
+  border:
+    1px solid rgba(255,255,255,.04);
 
   animation:
-    profitAura
-    4s
-    ease-in-out
-    infinite;
+    aura 4s ease-in-out infinite;
+}
+
+@keyframes aura{
+
+  0%,100%{
+    transform:
+      translate(-50%,-50%)
+      scale(.9);
+  }
+
+  50%{
+    transform:
+      translate(-50%,-50%)
+      scale(1.1);
+  }
+
 }
 
 .profit-content{
-
   position:relative;
-
   z-index:2;
 }
 
-.profit-kicker{
+.profit-label{
 
-  color:var(--muted);
+  color:var(--faint);
 
   font-size:10px;
-
   font-weight:900;
 
-  letter-spacing:.18em;
+  letter-spacing:.2em;
 }
 
-.profit-headline{
+.profit-title{
 
-  margin:9px 0 6px;
+  margin:9px 0;
 
   font-size:
-    clamp(28px,6vw,58px);
+    clamp(26px,6vw,58px);
 
   line-height:1;
 
   font-weight:900;
 
-  letter-spacing:-.045em;
+  letter-spacing:-.05em;
 }
 
-.profit-number{
-
+.profit-percent{
   display:inline-block;
 
   font-family:
-    "IBM Plex Mono",
+    'IBM Plex Mono',
     monospace;
-
-  font-variant-numeric:tabular-nums;
 
   text-shadow:
     0 0 35px currentColor;
@@ -853,34 +778,30 @@ main{
     clamp(11px,1.5vw,14px);
 }
 
-.profit-meter{
+.profit-bar{
 
-  width:min(560px,100%);
+  width:min(600px,100%);
 
   height:9px;
 
-  margin:
-    24px
-    auto
-    13px;
+  margin:25px auto 13px;
 
-  background:
-    rgba(255,255,255,.07);
+  overflow:hidden;
 
   border-radius:999px;
 
-  overflow:hidden;
+  background:rgba(255,255,255,.07);
 }
 
-.profit-meter-fill{
+.profit-fill{
 
   width:0;
-
   height:100%;
 
   border-radius:inherit;
 
-  transform-origin:right center;
+  transition:
+    width 1.8s cubic-bezier(.16,1,.3,1);
 }
 
 .profit-status{
@@ -893,171 +814,177 @@ main{
 
   padding:8px 13px;
 
+  border:
+    1px solid var(--border);
+
   border-radius:999px;
 
+  background:rgba(255,255,255,.035);
+
   font-size:11px;
-
   font-weight:800;
-
-  background:
-    rgba(255,255,255,.035);
-
-  border:
-    1px solid rgba(255,255,255,.08);
 }
 
-.profit-status-dot{
+.status-dot{
+
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+}
+
+.profit.profit-mode .profit-title{
+  color:var(--green);
+}
+
+.profit.profit-mode .profit-fill{
+
+  background:
+    linear-gradient(
+      90deg,
+      #21d07a,
+      #8bffc0
+    );
+
+  box-shadow:
+    0 0 20px rgba(33,208,122,.5);
+}
+
+.profit.profit-mode .status-dot{
+
+  background:var(--green);
+
+  box-shadow:
+    0 0 15px var(--green);
+}
+
+.profit.loss-mode .profit-title{
+  color:var(--red);
+}
+
+.profit.loss-mode .profit-fill{
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff5c6c,
+      #ff9c88
+    );
+
+  box-shadow:
+    0 0 20px rgba(255,92,108,.5);
+}
+
+.profit.loss-mode .status-dot{
+
+  background:var(--red);
+
+  box-shadow:
+    0 0 15px var(--red);
+}
+
+
+/* =========================================================
+   FULL ANALYSIS
+========================================================= */
+
+.analysis{
+  padding:
+    clamp(17px,2vw,24px);
+
+  margin-bottom:16px;
+}
+
+.section-title{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  margin:0;
+
+  font-size:16px;
+}
+
+.section-title-dot{
 
   width:7px;
   height:7px;
 
   border-radius:50%;
 
-  animation:
-    statusPulse
-    1.3s
-    ease-in-out
-    infinite;
-}
-
-.profit-story.is-profit .profit-headline,
-.profit-story.is-profit .profit-status{
-
-  color:var(--green);
-}
-
-.profit-story.is-profit
-.profit-meter-fill{
-
-  background:
-    linear-gradient(
-      90deg,
-      #21d07a,
-      #7dffb9
-    );
-}
-
-.profit-story.is-profit
-.profit-status-dot{
-
-  background:var(--green);
-
-  box-shadow:
-    0 0 16px var(--green);
-}
-
-.profit-story.is-loss .profit-headline,
-.profit-story.is-loss .profit-status{
-
-  color:var(--red);
-}
-
-.profit-story.is-loss
-.profit-meter-fill{
-
-  background:
-    linear-gradient(
-      90deg,
-      #ff5c6c,
-      #ff9a7a
-    );
-}
-
-.profit-story.is-loss
-.profit-status-dot{
-
-  background:var(--red);
-
-  box-shadow:
-    0 0 16px var(--red);
-}
-
-/* =========================================================
-   FULL ANALYSIS
-========================================================= */
-
-.analysis-section{
-
-  margin-top:16px;
-
-  padding:
-    clamp(16px,2vw,24px);
-}
-
-.analysis-title-row{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:9px;
-}
-
-.analysis-title-dot{
-
-  width:8px;
-  height:8px;
-
-  border-radius:50%;
-
   background:var(--gold);
 
   box-shadow:
-    0 0 15px rgba(201,162,39,.7);
-
-  animation:
-    syncPulse
-    2s
-    infinite;
+    0 0 12px rgba(201,162,39,.7);
 }
 
-.analysis-grid{
+.section-subtitle{
+
+  margin:5px 0 18px;
+
+  color:var(--faint);
+
+  font-size:11px;
+}
+
+
+/* =========================================================
+   ANALYSIS METRICS
+========================================================= */
+
+.metrics{
 
   display:grid;
 
   grid-template-columns:
     repeat(4,minmax(0,1fr));
 
-  gap:13px;
+  gap:12px;
 
-  margin-top:15px;
+  margin-bottom:16px;
 }
 
 .metric{
 
-  min-width:0;
+  position:relative;
 
-  min-height:115px;
+  min-width:0;
 
   padding:16px;
 
-  border-radius:15px;
+  border:
+    1px solid var(--border);
 
-  border:1px solid var(--border);
+  border-radius:16px;
 
   background:
     linear-gradient(
       145deg,
-      rgba(255,255,255,.045),
-      rgba(255,255,255,.012)
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.01)
     );
 
   transition:
-    transform .35s,
-    border-color .35s,
-    box-shadow .35s;
+    transform .4s,
+    border-color .4s,
+    box-shadow .4s;
+
+  overflow:hidden;
 }
 
 .metric:hover{
 
   transform:
-    translateY(-7px);
+    translateY(-6px);
 
   border-color:
-    rgba(201,162,39,.32);
+    rgba(201,162,39,.25);
 
   box-shadow:
-    0 15px 40px rgba(0,0,0,.25);
+    0 20px 45px rgba(0,0,0,.2);
 }
 
 .metric-label{
@@ -1066,7 +993,7 @@ main{
 
   font-size:10px;
 
-  font-weight:700;
+  letter-spacing:.05em;
 }
 
 .metric-value{
@@ -1074,14 +1001,15 @@ main{
   margin-top:8px;
 
   font-size:
-    clamp(20px,2.4vw,31px);
+    clamp(18px,2vw,27px);
 
   font-weight:800;
 
-  line-height:1.15;
+  line-height:1.2;
 
   word-break:break-word;
 }
+
 
 /* =========================================================
    ANALYSIS TABLES
@@ -1092,217 +1020,51 @@ main{
   display:grid;
 
   grid-template-columns:
-    minmax(0,1.25fr)
+    minmax(0,1.2fr)
     minmax(0,1fr);
 
   gap:16px;
-
-  margin-top:16px;
 }
 
-.table-card-inner{
+.table-panel{
+
+  min-width:0;
 
   padding:16px;
-}
 
-.table-scroll{
+  border:
+    1px solid var(--border);
 
-  width:100%;
-
-  overflow-x:auto;
-
-  overflow-y:hidden;
-
-  -webkit-overflow-scrolling:touch;
-
-  scrollbar-width:thin;
-
-  scrollbar-color:
-    rgba(201,162,39,.35)
-    transparent;
-}
-
-.analysis-table{
-
-  width:100%;
-
-  min-width:520px;
-
-  border-collapse:separate;
-
-  border-spacing:0 5px;
-}
-
-.analysis-table th{
-
-  padding:10px;
-
-  color:var(--faint);
-
-  font-size:10px;
-
-  text-align:right;
-
-  background:
-    rgba(255,255,255,.025);
-}
-
-.analysis-table td{
-
-  padding:10px;
-
-  font-size:11px;
+  border-radius:16px;
 
   background:
     rgba(255,255,255,.018);
-
-  border:0;
 }
 
-.analysis-table tr td:first-child{
+.table-panel-title{
 
-  border-radius:8px 0 0 8px;
+  margin:0;
+
+  font-size:13px;
+  font-weight:800;
 }
 
-.analysis-table tr td:last-child{
+.table-panel-hint{
 
-  border-radius:0 8px 8px 0;
-}
-
-.positive{
-  color:var(--green);
-}
-
-.negative{
-  color:var(--red);
-}
-
-.analysis-note{
-
-  margin-top:14px;
-
-  padding:12px 14px;
+  margin:4px 0 12px;
 
   color:var(--faint);
 
   font-size:10.5px;
-
-  line-height:1.8;
-
-  border-radius:10px;
-
-  background:
-    rgba(201,162,39,.05);
-
-  border:
-    1px solid var(--border);
 }
 
-.analysis-status{
-
-  margin-top:8px;
-
-  color:var(--faint);
-
-  font-size:10px;
-}
-
-/* =========================================================
-   TRANSACTIONS
-========================================================= */
-
-.transactions{
-
-  margin-top:16px;
-
-  padding:
-    clamp(16px,2vw,22px);
-}
-
-.toolbar{
-
-  display:flex;
-
-  gap:9px;
-
-  flex-wrap:wrap;
-
-  margin-bottom:15px;
-}
-
-.toolbar input,
-.toolbar select{
-
-  min-height:42px;
-
-  border-radius:10px;
-
-  border:1px solid var(--border);
-
-  background:
-    rgba(255,255,255,.035);
-
-  color:var(--text);
-
-  padding:
-    9px
-    12px;
-
-  font-size:12px;
-
-  transition:
-    border-color .25s,
-    box-shadow .25s;
-}
-
-.toolbar input:focus,
-.toolbar select:focus{
-
-  border-color:
-    rgba(201,162,39,.45);
-
-  box-shadow:
-    0 0 0 3px
-    rgba(201,162,39,.06);
-}
-
-.search{
-
-  flex:1;
-
-  min-width:190px;
-}
-
-.count-pill{
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  min-height:42px;
-
-  padding:0 13px;
-
-  border-radius:999px;
-
-  color:var(--muted);
-
-  font-size:11px;
-
-  border:
-    1px solid var(--border);
-
-  background:
-    rgba(255,255,255,.035);
-}
-
-.data-table-wrap{
+.scroll-table{
 
   width:100%;
 
   overflow-x:auto;
+
+  scrollbar-width:thin;
 
   -webkit-overflow-scrolling:touch;
 }
@@ -1311,20 +1073,23 @@ main{
 
   width:100%;
 
-  min-width:720px;
+  min-width:470px;
 
   border-collapse:collapse;
 }
 
 .data-table th{
 
+  padding:
+    10px 8px;
+
+  text-align:right;
+
   color:var(--faint);
 
   font-size:10px;
 
-  text-align:right;
-
-  padding:11px;
+  font-weight:700;
 
   border-bottom:
     1px solid var(--border);
@@ -1332,12 +1097,15 @@ main{
 
 .data-table td{
 
-  padding:12px 11px;
-
-  font-size:11.5px;
+  padding:
+    10px 8px;
 
   border-bottom:
     1px solid var(--border);
+
+  font-size:11px;
+
+  white-space:nowrap;
 }
 
 .data-table tbody tr{
@@ -1351,9 +1119,150 @@ main{
 
   background:
     rgba(201,162,39,.045);
+}
 
-  transform:
-    translateX(-3px);
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+.transactions{
+
+  padding:
+    clamp(16px,2vw,22px);
+
+  margin-bottom:16px;
+}
+
+.toolbar{
+
+  display:grid;
+
+  grid-template-columns:
+    minmax(180px,1fr)
+    repeat(3,minmax(130px,180px));
+
+  gap:9px;
+
+  margin-bottom:15px;
+}
+
+.control{
+
+  width:100%;
+
+  min-width:0;
+
+  height:42px;
+
+  padding:
+    0 12px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:10px;
+
+  outline:none;
+
+  background:
+    var(--surface2);
+
+  color:var(--text);
+
+  font-family:'Tajawal',sans-serif;
+
+  font-size:12px;
+}
+
+.control:focus{
+
+  border-color:
+    var(--border-gold);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(201,162,39,.06);
+}
+
+.count{
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  min-width:100px;
+
+  padding:0 12px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:999px;
+
+  color:var(--muted);
+
+  background:
+    rgba(255,255,255,.025);
+
+  font-size:11px;
+}
+
+.transactions-table-wrap{
+
+  width:100%;
+
+  overflow-x:auto;
+
+  -webkit-overflow-scrolling:touch;
+}
+
+.transactions-table{
+
+  width:100%;
+
+  min-width:700px;
+
+  border-collapse:collapse;
+}
+
+.transactions-table th{
+
+  padding:
+    10px 9px;
+
+  text-align:right;
+
+  color:var(--faint);
+
+  font-size:10px;
+
+  border-bottom:
+    1px solid var(--border);
+}
+
+.transactions-table td{
+
+  padding:
+    12px 9px;
+
+  font-size:11.5px;
+
+  border-bottom:
+    1px solid var(--border);
+}
+
+.transactions-table tr{
+
+  transition:
+    background .25s;
+}
+
+.transactions-table tbody tr:hover{
+
+  background:
+    rgba(201,162,39,.045);
 }
 
 .badge{
@@ -1362,16 +1271,11 @@ main{
 
   align-items:center;
 
-  justify-content:center;
-
-  min-width:54px;
-
   padding:4px 9px;
 
   border-radius:999px;
 
   font-size:10px;
-
   font-weight:800;
 }
 
@@ -1379,51 +1283,34 @@ main{
 
   color:var(--green);
 
-  background:var(--green-soft);
+  background:
+    var(--green-soft);
 }
 
 .badge.out{
 
   color:var(--red);
 
-  background:var(--red-soft);
+  background:
+    var(--red-soft);
 }
 
-.amount-income{
 
-  color:var(--green);
+/* =========================================================
+   LOADING
+========================================================= */
 
-  font-weight:700;
-}
-
-.amount-expense{
-
-  color:var(--red);
-
-  font-weight:700;
-}
-
-.category{
-
-  color:var(--muted);
-}
-
-.empty,
-.error,
 .loading{
 
-  text-align:center;
+  min-height:180px;
 
-  padding:55px 20px;
+  display:grid;
 
-  color:var(--faint);
+  place-items:center;
+
+  color:var(--muted);
 
   font-size:12px;
-}
-
-.error{
-
-  color:var(--red);
 }
 
 .spinner{
@@ -1431,26 +1318,49 @@ main{
   width:25px;
   height:25px;
 
-  margin:
-    0
-    auto
-    12px;
-
-  border-radius:50%;
+  margin:auto;
 
   border:
-    2px solid
-    rgba(255,255,255,.08);
+    2px solid rgba(255,255,255,.08);
 
   border-top-color:
     var(--gold);
 
+  border-radius:50%;
+
   animation:
-    spin
-    .8s
-    linear
-    infinite;
+    spin .8s linear infinite;
 }
+
+@keyframes spin{
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   EMPTY / ERROR
+========================================================= */
+
+.empty,
+.error{
+
+  padding:45px 20px;
+
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+.error{
+  color:var(--red);
+}
+
 
 /* =========================================================
    FOOTER
@@ -1458,7 +1368,8 @@ main{
 
 footer{
 
-  padding:22px;
+  padding:
+    20px;
 
   text-align:center;
 
@@ -1470,25 +1381,20 @@ footer{
     1px solid var(--border);
 }
 
-/* =========================================================
-   DESKTOP
-========================================================= */
-
-@media (min-width:1200px){
-
-  .chart-wrap{
-    height:360px;
-  }
-
-}
 
 /* =========================================================
    TABLET
 ========================================================= */
 
-@media (max-width:1050px){
+@media(max-width:1100px){
 
   .kpi-grid{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+  }
+
+  .metrics{
 
     grid-template-columns:
       repeat(2,minmax(0,1fr));
@@ -1497,13 +1403,7 @@ footer{
   .charts-grid{
 
     grid-template-columns:
-      minmax(0,1fr);
-  }
-
-  .analysis-grid{
-
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
+      1fr;
   }
 
   .analysis-tables{
@@ -1512,27 +1412,26 @@ footer{
       1fr;
   }
 
+  .toolbar{
+
+    grid-template-columns:
+      1fr
+      1fr
+      1fr;
+  }
+
 }
+
 
 /* =========================================================
    MOBILE
 ========================================================= */
 
-@media (max-width:700px){
+@media(max-width:700px){
 
-  body{
+  .topbar-inner{
 
-    width:100%;
-
-    overflow-x:hidden;
-  }
-
-  .top{
-
-    min-height:66px;
-
-    padding:
-      12px 14px;
+    align-items:flex-start;
   }
 
   .brand-mark{
@@ -1540,19 +1439,12 @@ footer{
     width:38px;
     height:38px;
 
-    flex-basis:38px;
-
-    font-size:17px;
+    border-radius:10px;
   }
 
   .brand-title{
 
-    font-size:15px;
-  }
-
-  .brand-subtitle{
-
-    font-size:9px;
+    font-size:14px;
   }
 
   .sync{
@@ -1560,68 +1452,50 @@ footer{
     font-size:9px;
   }
 
-  .ledger-band{
-
-    margin:
-      0 14px;
-
-    height:18px;
-  }
-
   .hero{
-
-    padding:
-      22px
-      14px
-      10px;
 
     flex-direction:column;
 
     align-items:flex-start;
 
-    gap:14px;
+    gap:13px;
   }
 
   .hero h1{
 
     font-size:
-      clamp(27px,9vw,40px);
-
-    line-height:1.05;
+      clamp(27px,9vw,38px);
   }
 
-  .hero p{
+  .live{
 
-    font-size:11px;
-  }
-
-  main{
-
-    padding:
-      8px
-      12px
-      40px;
+    align-self:flex-start;
   }
 
   .kpi-grid{
 
     grid-template-columns:
-      repeat(2,minmax(0,1fr));
+      1fr 1fr;
 
-    gap:10px;
+    gap:9px;
   }
 
   .kpi{
 
-    padding:15px;
+    border-radius:15px;
 
-    border-radius:14px;
+    padding:14px;
   }
 
   .kpi-value{
 
     font-size:
-      clamp(17px,5vw,24px);
+      clamp(17px,5vw,23px);
+  }
+
+  .kpi-label{
+
+    font-size:10px;
   }
 
   .kpi-sub{
@@ -1629,157 +1503,83 @@ footer{
     font-size:9px;
   }
 
-  .charts-grid{
+  .chart-box{
 
-    display:grid;
-
-    grid-template-columns:
-      minmax(0,1fr);
-
-    gap:12px;
-
-    width:100%;
-  }
-
-  .chart-card{
-
-    width:100%;
-
-    min-width:0;
-
-    padding:14px;
-
-    border-radius:15px;
-  }
-
-  .chart-wrap{
-
-    width:100%;
-
-    height:300px;
-
-    min-height:300px;
-
-    max-height:none;
-  }
-
-  .chart-wrap canvas{
-
-    width:100% !important;
-
-    height:100% !important;
-
-    display:block !important;
-  }
-
-  .profit-story{
-
-    margin-top:12px;
-
-    border-radius:18px;
+    height:280px;
 
     padding:
-      27px
-      12px;
+      5px 8px 15px;
   }
 
-  .profit-headline{
-
-    font-size:
-      clamp(27px,9vw,42px);
-  }
-
-  .analysis-section{
-
-    padding:14px;
-
-    border-radius:16px;
-  }
-
-  .analysis-grid{
+  .metrics{
 
     grid-template-columns:
-      repeat(2,minmax(0,1fr));
+      1fr 1fr;
 
     gap:9px;
   }
 
   .metric{
 
-    min-height:105px;
-
     padding:13px;
 
-    border-radius:13px;
+    border-radius:14px;
   }
 
   .metric-value{
 
     font-size:
-      clamp(17px,5vw,24px);
+      clamp(16px,4.5vw,22px);
   }
 
-  .analysis-tables{
-
-    grid-template-columns:
-      minmax(0,1fr);
-
-    gap:12px;
-  }
-
-  .table-card-inner{
-
-    padding:13px;
-  }
-
-  .transactions{
+  .analysis{
 
     padding:14px;
-
-    border-radius:16px;
   }
 
   .toolbar{
 
-    display:grid;
-
     grid-template-columns:
       1fr 1fr;
-
-    gap:8px;
   }
 
-  .toolbar .search{
-
-    grid-column:
-      1 / -1;
-
-    width:100%;
-  }
-
-  .toolbar input,
-  .toolbar select{
-
-    width:100%;
-
-    min-width:0;
+  .count{
 
     min-height:42px;
   }
 
-  .count-pill{
-
-    grid-column:
-      1 / -1;
-  }
-
 }
 
+
 /* =========================================================
-   SMALL PHONES
+   SMALL MOBILE
 ========================================================= */
 
-@media (max-width:420px){
+@media(max-width:430px){
+
+  .container{
+
+    padding:
+      14px
+      10px
+      35px;
+  }
+
+  .topbar-inner{
+
+    padding:
+      11px 12px;
+  }
+
+  .brand-sub{
+
+    display:none;
+  }
+
+  .sync span:last-child{
+
+    display:none;
+  }
 
   .kpi-grid{
 
@@ -1789,30 +1589,32 @@ footer{
 
   .kpi{
 
-    padding:12px;
+    min-height:110px;
   }
 
-  .kpi-value{
+  .profit{
 
-    font-size:16px;
+    border-radius:18px;
+
+    padding:
+      28px 12px;
   }
 
-  .chart-wrap{
+  .profit-title{
 
-    height:270px;
-
-    min-height:270px;
+    font-size:
+      clamp(25px,9vw,38px);
   }
 
-  .analysis-grid{
+  .profit-caption{
+
+    line-height:1.8;
+  }
+
+  .metrics{
 
     grid-template-columns:
       1fr;
-  }
-
-  .metric{
-
-    min-height:95px;
   }
 
   .toolbar{
@@ -1821,25 +1623,19 @@ footer{
       1fr;
   }
 
-  .toolbar .search,
-  .count-pill{
+  .chart-box{
 
-    grid-column:
-      auto;
+    height:250px;
   }
 
 }
 
+
 /* =========================================================
-   VERY SMALL PHONES
+   VERY SMALL
 ========================================================= */
 
-@media (max-width:340px){
-
-  .hero h1{
-
-    font-size:27px;
-  }
+@media(max-width:340px){
 
   .kpi-grid{
 
@@ -1847,196 +1643,33 @@ footer{
       1fr;
   }
 
-  .chart-wrap{
+  .hero h1{
 
-    height:250px;
-
-    min-height:250px;
+    font-size:25px;
   }
 
 }
+
 
 /* =========================================================
    REDUCED MOTION
 ========================================================= */
 
-@media (prefers-reduced-motion:reduce){
+@media(prefers-reduced-motion:reduce){
 
   *,
   *::before,
   *::after{
 
-    animation-duration:.01ms !important;
+    animation-duration:.01ms!important;
 
-    animation-iteration-count:1 !important;
+    animation-iteration-count:1!important;
 
-    transition-duration:.01ms !important;
+    transition-duration:.01ms!important;
 
-    scroll-behavior:auto !important;
-  }
-}
-
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
-@keyframes pageEnter{
-
-  from{
-
-    opacity:0;
-
-    transform:
-      translateY(15px);
+    scroll-behavior:auto!important;
   }
 
-  to{
-
-    opacity:1;
-
-    transform:none;
-  }
-}
-
-@keyframes heroEnter{
-
-  from{
-
-    opacity:0;
-
-    transform:
-      translateY(25px);
-  }
-
-  to{
-
-    opacity:1;
-
-    transform:none;
-  }
-}
-
-@keyframes cardEnter{
-
-  from{
-
-    opacity:0;
-
-    transform:
-      translateY(20px)
-      scale(.98);
-  }
-
-  to{
-
-    opacity:1;
-
-    transform:none;
-  }
-}
-
-@keyframes headerSweep{
-
-  0%,
-  55%{
-
-    transform:
-      translateX(-50%)
-      rotate(8deg);
-  }
-
-  75%,
-  100%{
-
-    transform:
-      translateX(50%)
-      rotate(8deg);
-  }
-}
-
-@keyframes logoFloat{
-
-  0%,
-  100%{
-
-    transform:
-      translateY(0);
-  }
-
-  50%{
-
-    transform:
-      translateY(-3px);
-  }
-}
-
-@keyframes syncPulse{
-
-  0%,
-  100%{
-
-    transform:scale(.9);
-
-    opacity:.55;
-  }
-
-  50%{
-
-    transform:scale(1.15);
-
-    opacity:1;
-  }
-}
-
-@keyframes livePulse{
-
-  50%{
-
-    transform:scale(1.5);
-
-    opacity:.5;
-  }
-}
-
-@keyframes profitAura{
-
-  0%,
-  100%{
-
-    transform:
-      translate(-50%,-50%)
-      scale(.92);
-
-    opacity:.5;
-  }
-
-  50%{
-
-    transform:
-      translate(-50%,-50%)
-      scale(1.08);
-
-    opacity:1;
-  }
-}
-
-@keyframes statusPulse{
-
-  50%{
-
-    transform:scale(1.5);
-
-    opacity:.5;
-  }
-}
-
-@keyframes spin{
-
-  to{
-
-    transform:
-      rotate(360deg);
-  }
 }
 
 </style>
@@ -2045,52 +1678,60 @@ footer{
 
 <body>
 
-<!-- =======================================================
+
+<!-- ========================================================
      HEADER
-======================================================= -->
+======================================================== -->
 
-<header class="top">
+<header class="topbar">
 
-  <div class="brand">
+  <div class="topbar-inner">
 
-    <div class="brand-mark">
-      د
+    <div class="brand">
+
+      <div class="brand-mark">
+        د
+      </div>
+
+      <div class="brand-info">
+
+        <h1 class="brand-title">
+          دفتر
+        </h1>
+
+        <p class="brand-sub">
+          لوحة التحكم المالية
+        </p>
+
+      </div>
+
     </div>
 
-    <div>
 
-      <h1 class="brand-title">
-        دفتر
-      </h1>
+    <div class="sync">
 
-      <p class="brand-subtitle">
-        لوحة التحكم المالية
-      </p>
+      <span class="sync-dot"></span>
+
+      <span id="syncTime">
+        جارِ المزامنة…
+      </span>
 
     </div>
-
-  </div>
-
-
-  <div class="sync">
-
-    <span class="sync-dot"></span>
-
-    <span id="syncTime">
-      جارِ المزامنة…
-    </span>
 
   </div>
 
 </header>
 
 
-<div class="ledger-band"></div>
+
+<!-- ========================================================
+     MAIN
+======================================================== -->
+
+<main class="container">
 
 
-<!-- =======================================================
-     HERO
-======================================================= -->
+<!-- HERO -->
 
 <section class="hero">
 
@@ -2105,32 +1746,28 @@ footer{
     </h1>
 
     <p>
-      قراءة لحظية للدخل والمصروفات والربحية والفئات
-      مبنية مباشرة على بيانات المعاملات.
+      لوحة مالية احترافية تعرض الأداء الحقيقي للدخل والمصروفات
+      والربحية والفئات والمعاملات مباشرة من بيانات Google Sheets.
     </p>
 
   </div>
 
 
   <div class="live">
-
     <span></span>
-
     LIVE DATA
-
   </div>
 
 </section>
 
 
-<main>
 
-
-<!-- =======================================================
+<!-- ========================================================
      KPI
-======================================================= -->
+======================================================== -->
 
 <section class="kpi-grid">
+
 
   <div class="kpi income">
 
@@ -2151,6 +1788,7 @@ footer{
     </div>
 
   </div>
+
 
 
   <div class="kpi expense">
@@ -2174,6 +1812,7 @@ footer{
   </div>
 
 
+
   <div class="kpi net">
 
     <div class="kpi-label">
@@ -2193,6 +1832,7 @@ footer{
     </div>
 
   </div>
+
 
 
   <div class="kpi">
@@ -2215,29 +1855,33 @@ footer{
 
   </div>
 
+
 </section>
 
 
-<!-- =======================================================
+
+<!-- ========================================================
      CHARTS
-======================================================= -->
+======================================================== -->
 
 <section class="charts-grid">
 
 
-  <!-- MONTHLY -->
-
   <div class="card chart-card">
 
-    <h2 class="section-title">
-      الاتجاه الشهري
-    </h2>
+    <div class="card-header">
 
-    <p class="section-hint">
-      الدخل مقابل المصروف على مدار الأشهر المسجلة
-    </p>
+      <h2 class="card-title">
+        الاتجاه الشهري
+      </h2>
 
-    <div class="chart-wrap">
+      <p class="card-hint">
+        الدخل مقابل المصروف على مدار الأشهر المسجلة
+      </p>
+
+    </div>
+
+    <div class="chart-box">
 
       <canvas id="trendChart"></canvas>
 
@@ -2246,19 +1890,22 @@ footer{
   </div>
 
 
-  <!-- CATEGORY -->
 
   <div class="card chart-card">
 
-    <h2 class="section-title">
-      التوزيع حسب الفئة
-    </h2>
+    <div class="card-header">
 
-    <p class="section-hint">
-      أكبر الفئات من حيث إجمالي الحركة المالية
-    </p>
+      <h2 class="card-title">
+        التوزيع حسب الفئة
+      </h2>
 
-    <div class="chart-wrap">
+      <p class="card-hint">
+        أكبر الفئات من حيث حجم المعاملات
+      </p>
+
+    </div>
+
+    <div class="chart-box">
 
       <canvas id="categoryChart"></canvas>
 
@@ -2270,31 +1917,31 @@ footer{
 </section>
 
 
-<!-- =======================================================
-     PROFIT PERFORMANCE
-======================================================= -->
+
+<!-- ========================================================
+     PROFIT STORY
+======================================================== -->
 
 <section
-  class="profit-story is-loss"
-  id="profitStory"
->
+  class="profit loss-mode"
+  id="profitStory">
 
   <div class="profit-content">
 
-    <div class="profit-kicker">
+    <div class="profit-label">
       FINANCIAL PERFORMANCE
     </div>
 
-    <div class="profit-headline">
+    <div class="profit-title">
 
       <span id="profitVerb">
         جاري التحليل
       </span>
 
       <span
-        class="profit-number"
+        class="profit-percent"
         id="profitPercent">
-        0%
+        0.0%
       </span>
 
     </div>
@@ -2303,16 +1950,16 @@ footer{
       class="profit-caption"
       id="profitCaption">
 
-      جاري تحليل الدخل والمصروف...
+      جاري قراءة البيانات…
 
     </div>
 
 
-    <div class="profit-meter">
+    <div class="profit-bar">
 
       <div
-        class="profit-meter-fill"
-        id="profitMeter">
+        class="profit-fill"
+        id="profitFill">
       </div>
 
     </div>
@@ -2320,7 +1967,7 @@ footer{
 
     <div class="profit-status">
 
-      <span class="profit-status-dot"></span>
+      <span class="status-dot"></span>
 
       <span id="profitStatus">
         تحليل الأداء المالي
@@ -2333,33 +1980,32 @@ footer{
 </section>
 
 
-<!-- =======================================================
+
+<!-- ========================================================
      FULL FINANCIAL ANALYSIS
-======================================================= -->
+======================================================== -->
 
-<section
-  class="card analysis-section"
-  id="financialAnalysis"
->
+<section class="card analysis">
 
-  <div class="analysis-title-row">
+  <h2 class="section-title">
 
-    <span class="analysis-title-dot"></span>
+    <span class="section-title-dot"></span>
 
-    <h2 class="section-title">
-      التحليل المالي الكامل
-    </h2>
+    التحليل المالي الكامل
 
-  </div>
+  </h2>
 
-  <p class="section-hint">
+  <p class="section-subtitle">
+
     ملخص مالي شامل + تحليل الفئات + التحليل الشهري + المتوسطات
+
   </p>
 
 
-  <!-- SUMMARY -->
 
-  <div class="analysis-grid">
+  <!-- METRICS -->
+
+  <div class="metrics">
 
 
     <div class="metric">
@@ -2420,14 +2066,6 @@ footer{
       </div>
 
     </div>
-
-
-  </div>
-
-
-  <!-- AVERAGES -->
-
-  <div class="analysis-grid">
 
 
     <div class="metric">
@@ -2493,163 +2131,156 @@ footer{
   </div>
 
 
+
   <!-- TABLES -->
 
   <div class="analysis-tables">
 
 
-    <!-- CATEGORY TABLE -->
+    <!-- CATEGORY -->
 
-    <div class="card">
+    <div class="table-panel">
 
-      <div class="table-card-inner">
+      <h3 class="table-panel-title">
+        التحليل حسب الفئة
+      </h3>
 
-        <h2 class="section-title">
-          التحليل حسب الفئة
-        </h2>
+      <p class="table-panel-hint">
+        الدخل والمصروف والصافي لكل فئة
+      </p>
 
-        <p class="section-hint">
-          الدخل والمصروف والصافي لكل فئة
-        </p>
+      <div class="scroll-table">
 
+        <table class="data-table">
 
-        <div class="table-scroll">
+          <thead>
 
-          <table class="analysis-table">
+            <tr>
 
-            <thead>
+              <th>
+                الفئة
+              </th>
 
-              <tr>
+              <th>
+                دخل
+              </th>
 
-                <th>
-                  الفئة
-                </th>
+              <th>
+                مصروف
+              </th>
 
-                <th>
-                  دخل
-                </th>
+              <th>
+                الصافي
+              </th>
 
-                <th>
-                  مصروف
-                </th>
+            </tr>
 
-                <th>
-                  الصافي
-                </th>
+          </thead>
 
-              </tr>
+          <tbody id="categoryAnalysisBody">
 
-            </thead>
+          </tbody>
 
-            <tbody id="categoryAnalysisBody"></tbody>
-
-          </table>
-
-        </div>
+        </table>
 
       </div>
 
     </div>
 
 
-    <!-- MONTHLY TABLE -->
 
-    <div class="card">
+    <!-- MONTHLY -->
 
-      <div class="table-card-inner">
+    <div class="table-panel">
 
-        <h2 class="section-title">
-          التحليل الشهري
-        </h2>
+      <h3 class="table-panel-title">
+        التحليل الشهري
+      </h3>
 
-        <p class="section-hint">
-          الأشهر التي تحتوي على بيانات فعلية
-        </p>
+      <p class="table-panel-hint">
+        الدخل والمصروف والصافي لكل شهر
+      </p>
 
+      <div class="scroll-table">
 
-        <div class="table-scroll">
+        <table class="data-table">
 
-          <table class="analysis-table">
+          <thead>
 
-            <thead>
+            <tr>
 
-              <tr>
+              <th>
+                الشهر
+              </th>
 
-                <th>
-                  الشهر
-                </th>
+              <th>
+                دخل
+              </th>
 
-                <th>
-                  دخل
-                </th>
+              <th>
+                مصروف
+              </th>
 
-                <th>
-                  مصروف
-                </th>
+              <th>
+                الصافي
+              </th>
 
-                <th>
-                  الصافي
-                </th>
+            </tr>
 
-              </tr>
+          </thead>
 
-            </thead>
+          <tbody id="monthlyAnalysisBody">
 
-            <tbody id="monthlyAnalysisBody"></tbody>
+          </tbody>
 
-          </table>
-
-        </div>
+        </table>
 
       </div>
 
     </div>
 
-
-  </div>
-
-
-  <div class="analysis-note">
-
-    <strong>
-      ملاحظة:
-    </strong>
-
-    جميع الأرقام والتحليلات في هذه الصفحة يتم حسابها
-    مباشرة من معاملات Google Sheets.
-
-  </div>
-
-
-  <div
-    class="analysis-status"
-    id="analysisStatus">
-
-    جاري التحليل...
 
   </div>
 
 </section>
 
 
-<!-- =======================================================
+
+<!-- ========================================================
      TRANSACTIONS
-======================================================= -->
+======================================================== -->
 
 <section class="card transactions">
 
 
+  <div class="card-header">
+
+    <h2 class="card-title">
+      المعاملات المالية
+    </h2>
+
+    <p class="card-hint">
+      جميع المعاملات القادمة من Google Sheets
+    </p>
+
+  </div>
+
+
+
   <div class="toolbar">
 
+
     <input
-      class="search"
+      class="control"
       type="search"
       id="searchInput"
-      placeholder="ابحث بالوصف أو الملاحظات..."
+      placeholder="ابحث بالوصف أو الملاحظات…"
     >
 
 
-    <select id="typeFilter">
+    <select
+      class="control"
+      id="typeFilter">
 
       <option value="">
         كل الأنواع
@@ -2666,7 +2297,9 @@ footer{
     </select>
 
 
-    <select id="categoryFilter">
+    <select
+      class="control"
+      id="categoryFilter">
 
       <option value="">
         كل الفئات
@@ -2676,29 +2309,39 @@ footer{
 
 
     <input
+      class="control"
       type="month"
       id="monthFilter"
     >
 
 
-    <span
-      class="count-pill"
-      id="countPill">
+  </div>
 
-      —
 
-    </span>
+  <div
+    class="count"
+    id="countPill">
+
+    — عملية
 
   </div>
 
 
-  <div id="tableWrap">
+  <div
+    id="tableWrap"
+    class="transactions-table-wrap">
 
     <div class="loading">
 
-      <div class="spinner"></div>
+      <div>
 
-      جارِ تحميل البيانات من Google Sheets...
+        <div class="spinner"></div>
+
+        <div>
+          جارِ تحميل البيانات من Google Sheets…
+        </div>
+
+      </div>
 
     </div>
 
@@ -2711,6 +2354,7 @@ footer{
 </main>
 
 
+
 <footer>
 
   يتم تحديث البيانات تلقائيًا من Google Sheets
@@ -2718,10 +2362,11 @@ footer{
 </footer>
 
 
+
 <script>
 
 /* =========================================================
-   CONFIG
+   GOOGLE SHEETS CONFIG
 ========================================================= */
 
 const CONFIG = {
@@ -2735,62 +2380,58 @@ const CONFIG = {
 };
 
 
-/*
-  Google Visualization endpoint
-
-  لا نحتاج Google Sheet API key
-  طالما الـSheet متاح للقراءة.
-*/
-
 const GVIZ_URL =
   `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG.DATA_GID}`;
 
 
+
 /* =========================================================
-   GLOBAL STATE
+   STATE
 ========================================================= */
 
 let ALL_ROWS = [];
 
-let trendChartInstance = null;
+let trendChart = null;
 
-let categoryChartInstance = null;
+let categoryChart = null;
+
 
 
 /* =========================================================
    FORMATTERS
 ========================================================= */
 
-function formatMoney(value){
+function number(value){
 
-  const number = Number(value) || 0;
+  const n = Number(value);
 
-  return (
-    number.toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:
-          Number.isInteger(number) ? 0 : 2,
+  return Number.isFinite(n) ? n : 0;
 
-        maximumFractionDigits:2
-      }
-    )
-    + " ج.م"
-  );
 }
 
 
-function formatNumber(value){
+function money(value){
 
-  return (
-    Number(value || 0)
-    .toLocaleString(
-      "en-US",
-      {
-        maximumFractionDigits:2
-      }
-    )
+  return number(value).toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  ) + " ج.م";
+
+}
+
+
+function integer(value){
+
+  return number(value).toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:0
+    }
   );
+
 }
 
 
@@ -2800,338 +2441,177 @@ function formatNumber(value){
 
 function normalizeType(value){
 
-  const text =
+  const v =
     String(value || "")
-    .trim()
-    .toLowerCase();
+      .trim()
+      .toLowerCase();
 
   if(
-    text === "دخل" ||
-    text === "income" ||
-    text === "in"
+    v === "دخل" ||
+    v === "income" ||
+    v === "in"
   ){
+
     return "دخل";
+
   }
 
   if(
-    text === "مصروف" ||
-    text === "expense" ||
-    text === "out" ||
-    text === "مصاريف"
+    v === "مصروف" ||
+    v === "expense" ||
+    v === "out"
   ){
+
     return "مصروف";
+
   }
 
-  return String(value || "").trim();
+  return "";
+
 }
 
 
 /* =========================================================
-   PARSE NUMBER
+   PARSE AMOUNT
 ========================================================= */
 
 function parseAmount(value){
 
-  if(
-    value === null ||
-    value === undefined ||
-    value === ""
-  ){
-    return 0;
-  }
-
-
   if(typeof value === "number"){
 
-    return Number.isFinite(value)
-      ? value
-      : 0;
+    return value;
+
+  }
+
+  let s =
+    String(value || "")
+      .trim();
+
+  if(!s){
+
+    return 0;
+
   }
 
 
-  let text =
-    String(value)
-    .trim();
+  /* Arabic numerals */
+
+  const arabicDigits =
+    "٠١٢٣٤٥٦٧٨٩";
+
+  s = s.replace(
+    /[٠-٩]/g,
+    d => arabicDigits.indexOf(d)
+  );
 
 
-  /*
-    Arabic separators:
+  /* Remove currency */
 
-    ٬ = Arabic thousands separator
-    ٫ = Arabic decimal separator
-  */
-
-  text =
-    text
-    .replace(/٬/g,",")
-    .replace(/٫/g,".");
+  s =
+    s.replace(
+      /EGP|ج\.?م|جنيه|£/gi,
+      ""
+    );
 
 
-  /*
-    Remove currencies / letters.
-  */
+  /* Remove commas/spaces */
 
-  text =
-    text
-    .replace(/[^\d,.\-]/g,"");
-
-
-  /*
-    Handle:
-
-    554,500.00
-    554500.00
-    554٬500٫00
-  */
-
-  if(
-    text.includes(",") &&
-    text.includes(".")
-  ){
-
-    text =
-      text.replace(/,/g,"");
-
-  }else if(
-    text.includes(",") &&
-    !text.includes(".")
-  ){
-
-    /*
-      Assume comma is thousands separator
-      when there are 3 digits after it.
-    */
-
-    const parts =
-      text.split(",");
-
-    if(
-      parts.length === 2 &&
-      parts[1].length !== 3
-    ){
-
-      text =
-        parts[0] +
-        "." +
-        parts[1];
-
-    }else{
-
-      text =
-        text.replace(/,/g,"");
-    }
-  }
+  s =
+    s.replace(
+      /[,\s٬]/g,
+      ""
+    );
 
 
-  const result =
-    parseFloat(text);
+  const n =
+    parseFloat(s);
 
-
-  return Number.isFinite(result)
-    ? result
+  return Number.isFinite(n)
+    ? n
     : 0;
+
 }
 
 
 /* =========================================================
-   DATE NORMALIZER
+   DATE PARSER
 ========================================================= */
 
-function normalizeDate(value){
-
-  if(!value){
-    return "";
-  }
-
-
-  let text =
-    String(value).trim();
-
-
-  /*
-    Google Visualization sometimes gives:
-
-    Date(2026,7,13)
-
-    Month is ZERO BASED.
-  */
-
-  const gvizMatch =
-    text.match(
-      /^Date\((\d+),\s*(\d+),\s*(\d+).*\)$/
-    );
-
-
-  if(gvizMatch){
-
-    const year =
-      Number(gvizMatch[1]);
-
-    const month =
-      Number(gvizMatch[2]) + 1;
-
-    const day =
-      Number(gvizMatch[3]);
-
-
-    return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-  }
-
-
-  /*
-    Already YYYY-MM-DD
-  */
-
-  const iso =
-    text.match(
-      /^(\d{4})-(\d{1,2})-(\d{1,2})/
-    );
-
-
-  if(iso){
-
-    return `${iso[1]}-${String(iso[2]).padStart(2,"0")}-${String(iso[3]).padStart(2,"0")}`;
-  }
-
-
-  /*
-    DD/MM/YYYY
-  */
-
-  const dmy =
-    text.match(
-      /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/
-    );
-
-
-  if(dmy){
-
-    return `${dmy[3]}-${String(dmy[2]).padStart(2,"0")}-${String(dmy[1]).padStart(2,"0")}`;
-  }
-
-
-  /*
-    Try native Date.
-  */
-
-  const date =
-    new Date(text);
-
-
-  if(!Number.isNaN(date.getTime())){
-
-    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
-  }
-
-
-  return text;
-}
-
-
-/* =========================================================
-   CELL VALUE
-========================================================= */
-
-function getCellValue(cell){
+function normalizeDate(cell){
 
   if(!cell){
 
     return "";
+
   }
 
 
-  /*
-    Prefer formatted value.
-  */
+  if(cell.f){
 
-  if(
-    cell.f !== undefined &&
-    cell.f !== null &&
-    cell.f !== ""
-  ){
+    const formatted =
+      String(cell.f).trim();
 
-    return cell.f;
-  }
+    /*
+      Google Sheets often returns:
+      8/14/2026
+      2026-08-14
+    */
 
-
-  if(
-    cell.v !== undefined &&
-    cell.v !== null
-  ){
-
-    return cell.v;
-  }
-
-
-  return "";
-}
-
-
-/* =========================================================
-   PARSE GVIZ RESPONSE
-========================================================= */
-
-function parseGviz(text){
-
-  const start =
-    text.indexOf("{");
-
-  const end =
-    text.lastIndexOf("}");
-
-
-  if(start === -1 || end === -1){
-
-    throw new Error(
-      "Invalid Google Sheets response"
-    );
-  }
-
-
-  return JSON.parse(
-    text.substring(
-      start,
-      end + 1
-    )
-  );
-}
-
-
-/* =========================================================
-   FIND COLUMN
-========================================================= */
-
-function findColumn(headers, patterns){
-
-  return headers.findIndex(
-    header => {
-
-      const value =
-        String(header || "")
-        .trim()
-        .toLowerCase();
-
-      return patterns.some(
-        pattern =>
-          value.includes(pattern)
+    const match =
+      formatted.match(
+        /(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/
       );
+
+    if(match){
+
+      return `${match[1]}-${String(match[2]).padStart(2,"0")}-${String(match[3]).padStart(2,"0")}`;
+
     }
-  );
+
+  }
+
+
+  if(cell.v){
+
+    const raw =
+      String(cell.v);
+
+    /*
+      Date(2026,7,14)
+    */
+
+    const match =
+      raw.match(
+        /Date\((\d+),(\d+),(\d+)\)/
+      );
+
+    if(match){
+
+      return `${match[1]}-${String(Number(match[2])+1).padStart(2,"0")}-${String(match[3]).padStart(2,"0")}`;
+
+    }
+
+    if(/^\d{4}-\d{2}-\d{2}/.test(raw)){
+
+      return raw.slice(0,10);
+
+    }
+
+  }
+
+
+  return String(cell.f || cell.v || "");
+
 }
 
 
 /* =========================================================
-   LOAD DATA
+   LOAD GOOGLE SHEETS
 ========================================================= */
 
 async function loadData(){
 
   try{
-
-    setSyncStatus(
-      "جاري المزامنة..."
-    );
-
 
     const response =
       await fetch(
@@ -3147,6 +2627,7 @@ async function loadData(){
       throw new Error(
         `HTTP ${response.status}`
       );
+
     }
 
 
@@ -3154,187 +2635,189 @@ async function loadData(){
       await response.text();
 
 
-    const data =
-      parseGviz(text);
+    const start =
+      text.indexOf("{");
+
+    const end =
+      text.lastIndexOf("}");
 
 
-    if(
-      !data.table ||
-      !Array.isArray(data.table.cols)
-    ){
+    if(start === -1 || end === -1){
 
       throw new Error(
-        "Google Sheets data is unavailable"
+        "Invalid Google Sheets response"
       );
+
     }
 
 
-    const headers =
-      data.table.cols.map(
-        column =>
-          String(
-            column.label || ""
-          ).trim()
+    const json =
+      JSON.parse(
+        text.slice(start,end+1)
       );
+
+
+    const cols =
+      json.table.cols || [];
+
+    const rows =
+      json.table.rows || [];
+
+
+    const labels =
+      cols.map(
+        c =>
+          String(c.label || "")
+            .trim()
+            .toLowerCase()
+      );
+
+
+    /*
+      Find columns using header names.
+    */
+
+    const findColumn =
+      patterns =>
+        labels.findIndex(
+          label =>
+            patterns.some(
+              pattern =>
+                label.includes(pattern)
+            )
+        );
 
 
     const dateIndex =
-      findColumn(
-        headers,
-        ["date","التاريخ"]
-      );
+      findColumn([
+        "date",
+        "التاريخ"
+      ]);
 
 
     const typeIndex =
-      findColumn(
-        headers,
-        ["type","النوع"]
-      );
+      findColumn([
+        "type",
+        "النوع"
+      ]);
 
 
     const categoryIndex =
-      findColumn(
-        headers,
-        ["category","الفئة"]
-      );
+      findColumn([
+        "category",
+        "الفئة"
+      ]);
 
 
     const descriptionIndex =
-      findColumn(
-        headers,
-        ["description","الوصف"]
-      );
+      findColumn([
+        "description",
+        "الوصف"
+      ]);
 
 
     const amountIndex =
-      findColumn(
-        headers,
-        ["amount","المبلغ"]
-      );
+      findColumn([
+        "amount",
+        "المبلغ",
+        "value",
+        "القيمة"
+      ]);
 
 
     const notesIndex =
-      findColumn(
-        headers,
-        ["notes","note","الملاحظات","ملاحظات"]
-      );
+      findColumn([
+        "notes",
+        "note",
+        "ملاحظات"
+      ]);
 
 
-    if(
-      typeIndex === -1 ||
-      amountIndex === -1
-    ){
-
-      console.warn(
-        "Detected headers:",
-        headers
-      );
-
-      throw new Error(
-        "لم يتم العثور على أعمدة Type أو Amount في Google Sheets."
-      );
-    }
+    console.log(
+      "Google Sheets columns:",
+      labels
+    );
 
 
-    const sheetRows =
-      data.table.rows || [];
+    console.log(
+      "Detected indexes:",
+      {
+        dateIndex,
+        typeIndex,
+        categoryIndex,
+        descriptionIndex,
+        amountIndex,
+        notesIndex
+      }
+    );
 
 
     ALL_ROWS =
-      sheetRows
-      .map(row => {
+      rows
+        .map(row => {
 
-        const cells =
-          row.c || [];
-
-
-        const rawDate =
-          dateIndex >= 0
-            ? getCellValue(
-                cells[dateIndex]
-              )
-            : "";
+          const cells =
+            row.c || [];
 
 
-        const rawType =
-          getCellValue(
-            cells[typeIndex]
-          );
+          const cell =
+            index =>
+              index >= 0
+                ? cells[index]
+                : null;
 
 
-        const rawCategory =
-          categoryIndex >= 0
-            ? getCellValue(
-                cells[categoryIndex]
-              )
-            : "";
+          return {
 
+            date:
+              normalizeDate(
+                cell(dateIndex)
+              ),
 
-        const rawDescription =
-          descriptionIndex >= 0
-            ? getCellValue(
-                cells[descriptionIndex]
-              )
-            : "";
+            type:
+              normalizeType(
+                cell(typeIndex)?.f ??
+                cell(typeIndex)?.v
+              ),
 
+            category:
+              String(
+                cell(categoryIndex)?.f ??
+                cell(categoryIndex)?.v ??
+                ""
+              ).trim(),
 
-        const rawAmount =
-          getCellValue(
-            cells[amountIndex]
-          );
+            description:
+              String(
+                cell(descriptionIndex)?.f ??
+                cell(descriptionIndex)?.v ??
+                ""
+              ).trim(),
 
+            amount:
+              parseAmount(
+                cell(amountIndex)?.v ??
+                cell(amountIndex)?.f
+              ),
 
-        const rawNotes =
-          notesIndex >= 0
-            ? getCellValue(
-                cells[notesIndex]
-              )
-            : "";
+            notes:
+              String(
+                cell(notesIndex)?.f ??
+                cell(notesIndex)?.v ??
+                ""
+              ).trim()
 
+          };
 
-        return {
+        })
 
-          date:
-            normalizeDate(
-              rawDate
-            ),
-
-          type:
-            normalizeType(
-              rawType
-            ),
-
-          category:
-            String(
-              rawCategory || "أخرى"
-            ).trim(),
-
-          description:
-            String(
-              rawDescription || ""
-            ).trim(),
-
-          amount:
-            parseAmount(
-              rawAmount
-            ),
-
-          notes:
-            String(
-              rawNotes || ""
-            ).trim()
-        };
-
-      })
-      .filter(row => {
-
-        return (
-          row.date ||
-          row.description ||
-          row.amount !== 0
+        .filter(
+          row =>
+            row.type ||
+            row.amount ||
+            row.description ||
+            row.date
         );
-
-      });
 
 
     console.log(
@@ -3348,26 +2831,27 @@ async function loadData(){
     render();
 
 
-    setSyncStatus(
+    document.getElementById(
+      "syncTime"
+    ).textContent =
       "آخر مزامنة: " +
-      new Date()
-      .toLocaleTimeString(
+      new Date().toLocaleTimeString(
         "ar-EG"
-      )
-    );
+      );
 
 
   }catch(error){
 
     console.error(
-      "Google Sheets error:",
+      "Google Sheets Error:",
       error
     );
 
 
-    setSyncStatus(
-      "تعذّرت المزامنة"
-    );
+    document.getElementById(
+      "syncTime"
+    ).textContent =
+      "تعذرت المزامنة";
 
 
     document.getElementById(
@@ -3376,12 +2860,12 @@ async function loadData(){
 
       <div class="error">
 
-        تعذّر تحميل البيانات من Google Sheets.
+        تعذر تحميل البيانات من Google Sheets.
 
         <br><br>
 
-        تأكد أن الملف متاح للقراءة وأن
-        Sheet ID و GID صحيحان.
+        تأكد أن الشيت متاح للعرض
+        وأن الـ GID صحيح.
 
       </div>
 
@@ -3393,28 +2877,7 @@ async function loadData(){
 
 
 /* =========================================================
-   SYNC STATUS
-========================================================= */
-
-function setSyncStatus(text){
-
-  const element =
-    document.getElementById(
-      "syncTime"
-    );
-
-
-  if(element){
-
-    element.textContent =
-      text;
-  }
-
-}
-
-
-/* =========================================================
-   CATEGORY FILTER
+   FILTER
 ========================================================= */
 
 function populateCategoryFilter(){
@@ -3429,23 +2892,6 @@ function populateCategoryFilter(){
     select.value;
 
 
-  const categories =
-    [
-      ...new Set(
-        ALL_ROWS
-        .map(row => row.category)
-        .filter(Boolean)
-      )
-    ]
-    .sort(
-      (a,b) =>
-        a.localeCompare(
-          b,
-          "ar"
-        )
-    );
-
-
   select.innerHTML = `
 
     <option value="">
@@ -3455,6 +2901,21 @@ function populateCategoryFilter(){
   `;
 
 
+  const categories =
+    [...new Set(
+      ALL_ROWS
+        .map(row => row.category)
+        .filter(Boolean)
+    )]
+    .sort(
+      (a,b) =>
+        a.localeCompare(
+          b,
+          "ar"
+        )
+    );
+
+
   categories.forEach(category => {
 
     const option =
@@ -3462,13 +2923,11 @@ function populateCategoryFilter(){
         "option"
       );
 
-
     option.value =
       category;
 
     option.textContent =
       category;
-
 
     select.appendChild(
       option
@@ -3483,49 +2942,38 @@ function populateCategoryFilter(){
 
     select.value =
       current;
+
   }
 
 }
 
 
-/* =========================================================
-   FILTER
-========================================================= */
-
 function getFilteredRows(){
 
   const search =
-    document
-      .getElementById(
-        "searchInput"
-      )
-      .value
-      .trim()
-      .toLowerCase();
+    document.getElementById(
+      "searchInput"
+    ).value
+    .trim()
+    .toLowerCase();
 
 
   const type =
-    document
-      .getElementById(
-        "typeFilter"
-      )
-      .value;
+    document.getElementById(
+      "typeFilter"
+    ).value;
 
 
   const category =
-    document
-      .getElementById(
-        "categoryFilter"
-      )
-      .value;
+    document.getElementById(
+      "categoryFilter"
+    ).value;
 
 
   const month =
-    document
-      .getElementById(
-        "monthFilter"
-      )
-      .value;
+    document.getElementById(
+      "monthFilter"
+    ).value;
 
 
   return ALL_ROWS.filter(row => {
@@ -3536,6 +2984,7 @@ function getFilteredRows(){
     ){
 
       return false;
+
     }
 
 
@@ -3545,6 +2994,7 @@ function getFilteredRows(){
     ){
 
       return false;
+
     }
 
 
@@ -3554,30 +3004,31 @@ function getFilteredRows(){
     ){
 
       return false;
+
     }
 
 
     if(search){
 
-      const searchable =
-        (
-          row.description +
-          " " +
-          row.notes +
-          " " +
-          row.category
-        )
+      const haystack =
+        [
+          row.description,
+          row.notes,
+          row.category,
+          row.type
+        ]
+        .join(" ")
         .toLowerCase();
 
 
       if(
-        !searchable.includes(
-          search
-        )
+        !haystack.includes(search)
       ){
 
         return false;
+
       }
+
     }
 
 
@@ -3589,115 +3040,29 @@ function getFilteredRows(){
 
 
 /* =========================================================
-   CALCULATE TOTALS
-========================================================= */
-
-function calculateTotals(rows){
-
-  const incomeRows =
-    rows.filter(
-      row =>
-        row.type === "دخل"
-    );
-
-
-  const expenseRows =
-    rows.filter(
-      row =>
-        row.type === "مصروف"
-    );
-
-
-  const income =
-    incomeRows.reduce(
-      (sum,row) =>
-        sum + row.amount,
-      0
-    );
-
-
-  const expense =
-    expenseRows.reduce(
-      (sum,row) =>
-        sum + row.amount,
-      0
-    );
-
-
-  const net =
-    income - expense;
-
-
-  const margin =
-    income !== 0
-      ? (net / income) * 100
-      : 0;
-
-
-  const expenseRatio =
-    income !== 0
-      ? (expense / income) * 100
-      : 0;
-
-
-  return {
-
-    income,
-    expense,
-    net,
-
-    count:rows.length,
-
-    incomeCount:
-      incomeRows.length,
-
-    expenseCount:
-      expenseRows.length,
-
-    avgIncome:
-      incomeRows.length
-        ? income / incomeRows.length
-        : 0,
-
-    avgExpense:
-      expenseRows.length
-        ? expense / expenseRows.length
-        : 0,
-
-    margin,
-    expenseRatio
-  };
-
-}
-
-
-/* =========================================================
-   RENDER EVERYTHING
+   MAIN RENDER
 ========================================================= */
 
 function render(){
 
-  const filteredRows =
+  const filtered =
     getFilteredRows();
 
 
-  /*
-    KPI and transaction table
-    respond to filters.
-  */
-
   renderKPIs(
-    filteredRows
+    filtered
   );
+
 
   renderTransactions(
-    filteredRows
+    filtered
   );
 
 
   /*
-    Financial analysis always represents
-    the full dataset, not the filtered table.
+    IMPORTANT:
+    Full financial analysis uses ALL data,
+    not filtered data.
   */
 
   renderFinancialAnalysis(
@@ -3705,16 +3070,13 @@ function render(){
   );
 
 
-  /*
-    Charts also represent full financial data.
-  */
-
   renderTrendChart(
-    ALL_ROWS
+    filtered
   );
 
+
   renderCategoryChart(
-    ALL_ROWS
+    filtered
   );
 
 }
@@ -3724,40 +3086,89 @@ function render(){
    KPI
 ========================================================= */
 
+function calculateTotals(rows){
+
+  let income = 0;
+  let expense = 0;
+
+  let incomeCount = 0;
+  let expenseCount = 0;
+
+
+  rows.forEach(row => {
+
+    if(row.type === "دخل"){
+
+      income += row.amount;
+
+      incomeCount++;
+
+    }
+
+
+    if(row.type === "مصروف"){
+
+      expense += row.amount;
+
+      expenseCount++;
+
+    }
+
+  });
+
+
+  return {
+
+    income,
+    expense,
+
+    net:
+      income - expense,
+
+    incomeCount,
+    expenseCount,
+
+    count:
+      rows.length,
+
+    margin:
+      income
+        ? ((income-expense)/income)*100
+        : 0
+
+  };
+
+}
+
+
 function renderKPIs(rows){
 
-  const totals =
-    calculateTotals(
-      rows
-    );
+  const data =
+    calculateTotals(rows);
 
 
   document.getElementById(
     "kpiIncome"
   ).textContent =
-    formatMoney(
-      totals.income
-    );
+    money(data.income);
 
 
   document.getElementById(
     "kpiIncomeCount"
   ).textContent =
-    `${formatNumber(totals.incomeCount)} عملية دخل`;
+    `${integer(data.incomeCount)} عملية دخل`;
 
 
   document.getElementById(
     "kpiExpense"
   ).textContent =
-    formatMoney(
-      totals.expense
-    );
+    money(data.expense);
 
 
   document.getElementById(
     "kpiExpenseCount"
   ).textContent =
-    `${formatNumber(totals.expenseCount)} عملية مصروف`;
+    `${integer(data.expenseCount)} عملية مصروف`;
 
 
   const netElement =
@@ -3767,396 +3178,168 @@ function renderKPIs(rows){
 
 
   netElement.textContent =
-    formatMoney(
-      totals.net
-    );
+    money(data.net);
 
 
   netElement.classList.remove(
-    "value-positive",
-    "value-negative"
+    "positive",
+    "negative"
   );
 
 
   netElement.classList.add(
-    totals.net >= 0
-      ? "value-positive"
-      : "value-negative"
+    data.net >= 0
+      ? "positive"
+      : "negative"
   );
 
 
   document.getElementById(
     "kpiMargin"
   ).textContent =
-    totals.income
-      ? `هامش صافي ${totals.margin.toFixed(1)}%`
+    data.income
+      ? `هامش صافي ${data.margin.toFixed(1)}%`
       : "لا يوجد دخل مسجل";
 
 
   document.getElementById(
     "kpiCount"
   ).textContent =
-    formatNumber(
-      rows.length
-    );
+    integer(data.count);
 
 
-  const avg =
-    rows.length
-      ? (totals.income + totals.expense) / rows.length
+  const average =
+    data.count
+      ? (data.income+data.expense)/data.count
       : 0;
 
 
   document.getElementById(
     "kpiAvg"
   ).textContent =
-    `متوسط العملية ${formatMoney(avg)}`;
+    `متوسط العملية ${money(average)}`;
 
 
   document.getElementById(
     "countPill"
   ).textContent =
-    `${formatNumber(rows.length)} عملية`;
+    `${integer(rows.length)} عملية`;
 
 }
 
 
 /* =========================================================
-   PROFIT PERFORMANCE
+   FINANCIAL ANALYSIS
 ========================================================= */
 
-function animateProfitStory(
-  income,
-  expense
-){
+function renderFinancialAnalysis(rows){
 
-  const story =
-    document.getElementById(
-      "profitStory"
+  const data =
+    calculateTotals(rows);
+
+
+  const incomeRows =
+    rows.filter(
+      r => r.type === "دخل"
     );
 
 
-  const percentElement =
-    document.getElementById(
-      "profitPercent"
+  const expenseRows =
+    rows.filter(
+      r => r.type === "مصروف"
     );
 
 
-  const verbElement =
-    document.getElementById(
-      "profitVerb"
-    );
-
-
-  const captionElement =
-    document.getElementById(
-      "profitCaption"
-    );
-
-
-  const statusElement =
-    document.getElementById(
-      "profitStatus"
-    );
-
-
-  const meterElement =
-    document.getElementById(
-      "profitMeter"
-    );
-
-
-  const net =
-    income - expense;
-
-
-  /*
-    Important:
-
-    Profit percentage is calculated
-    relative to total income.
-
-    Example:
-
-    Income = 554,500
-    Expense = 2,172,920
-
-    Net = -1,618,420
-
-    Margin =
-    -1,618,420 / 554,500 * 100
-
-    ≈ -291.9%
-  */
-
-  const percentage =
-    income !== 0
-      ? (net / income) * 100
+  const avgIncome =
+    incomeRows.length
+      ? data.income/incomeRows.length
       : 0;
 
 
-  const absolutePercentage =
-    Math.abs(
-      percentage
-    );
+  const avgExpense =
+    expenseRows.length
+      ? data.expense/expenseRows.length
+      : 0;
 
 
-  story.classList.remove(
-    "is-profit",
-    "is-loss"
-  );
-
-
-  if(net >= 0){
-
-    story.classList.add(
-      "is-profit"
-    );
-
-
-    verbElement.textContent =
-      "أنت كسبان";
-
-
-    statusElement.textContent =
-      "أداء مربح";
-
-
-    captionElement.textContent =
-      `صافي ربحك ${formatMoney(net)} من إجمالي الدخل`;
-
-  }else{
-
-    story.classList.add(
-      "is-loss"
-    );
-
-
-    verbElement.textContent =
-      "أنت خسران";
-
-
-    statusElement.textContent =
-      "أداء يحتاج انتباه";
-
-
-    captionElement.textContent =
-      `مصروفاتك أعلى من دخلك بـ ${formatMoney(Math.abs(net))}`;
-
-  }
-
-
-  /*
-    Reset animation.
-  */
-
-  percentElement.textContent =
-    "0.0%";
-
-
-  const start =
-    performance.now();
-
-
-  const duration =
-    1600;
-
-
-  function animationFrame(now){
-
-    const progress =
-      Math.min(
-        (now - start) / duration,
-        1
-      );
-
-
-    const eased =
-      1 -
-      Math.pow(
-        1 - progress,
-        3
-      );
-
-
-    const current =
-      absolutePercentage *
-      eased;
-
-
-    percentElement.textContent =
-      `${current.toFixed(1)}%`;
-
-
-    if(progress < 1){
-
-      requestAnimationFrame(
-        animationFrame
-      );
-
-    }
-
-  }
-
-
-  requestAnimationFrame(
-    animationFrame
-  );
-
-
-  /*
-    Cap visual meter at 100%.
-  */
-
-  const meterWidth =
-    Math.min(
-      Math.max(
-        absolutePercentage,
-        4
-      ),
-      100
-    );
-
-
-  meterElement.style.width =
-    "0%";
-
-
-  requestAnimationFrame(
-    () => {
-
-      meterElement.style.transition =
-        "width 1.8s cubic-bezier(.16,1,.3,1)";
-
-      meterElement.style.width =
-        meterWidth + "%";
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   FULL FINANCIAL ANALYSIS
-========================================================= */
-
-function renderFinancialAnalysis(
-  rows
-){
-
-  const totals =
-    calculateTotals(
-      rows
-    );
+  const expenseRatio =
+    data.income
+      ? (data.expense/data.income)*100
+      : 0;
 
 
   document.getElementById(
     "analysisIncome"
   ).textContent =
-    formatMoney(
-      totals.income
-    );
+    money(data.income);
 
 
   document.getElementById(
     "analysisExpense"
   ).textContent =
-    formatMoney(
-      totals.expense
+    money(data.expense);
+
+
+  const netEl =
+    document.getElementById(
+      "analysisNet"
     );
 
 
-  document.getElementById(
-    "analysisNet"
-  ).textContent =
-    formatMoney(
-      totals.net
+  netEl.textContent =
+    money(data.net);
+
+
+  netEl.className =
+    "metric-value mono " +
+    (
+      data.net >= 0
+        ? "positive"
+        : "negative"
     );
 
 
   document.getElementById(
     "analysisExpenseRatio"
   ).textContent =
-    `${totals.expenseRatio.toFixed(1)}%`;
+    expenseRatio.toFixed(1) + "%";
 
 
   document.getElementById(
     "analysisCount"
   ).textContent =
-    formatNumber(
-      totals.count
-    );
+    integer(data.count);
 
 
   document.getElementById(
     "analysisAvgIncome"
   ).textContent =
-    formatMoney(
-      totals.avgIncome
-    );
+    money(avgIncome);
 
 
   document.getElementById(
     "analysisAvgExpense"
   ).textContent =
-    formatMoney(
-      totals.avgExpense
-    );
+    money(avgExpense);
 
 
-  document.getElementById(
-    "analysisMargin"
-  ).textContent =
-    `${totals.margin.toFixed(1)}%`;
-
-
-  /*
-    Dynamic colors
-  */
-
-  const netElement =
-    document.getElementById(
-      "analysisNet"
-    );
-
-
-  netElement.classList.remove(
-    "positive",
-    "negative"
-  );
-
-
-  netElement.classList.add(
-    totals.net >= 0
-      ? "positive"
-      : "negative"
-  );
-
-
-  const marginElement =
+  const marginEl =
     document.getElementById(
       "analysisMargin"
     );
 
 
-  marginElement.classList.remove(
-    "positive",
-    "negative"
-  );
+  marginEl.textContent =
+    data.margin.toFixed(1) + "%";
 
 
-  marginElement.classList.add(
-    totals.margin >= 0
-      ? "positive"
-      : "negative"
-  );
-
-
-  animateProfitStory(
-    totals.income,
-    totals.expense
-  );
+  marginEl.className =
+    "metric-value mono " +
+    (
+      data.margin >= 0
+        ? "positive"
+        : "negative"
+    );
 
 
   renderCategoryAnalysis(
@@ -4169,10 +3352,10 @@ function renderFinancialAnalysis(
   );
 
 
-  document.getElementById(
-    "analysisStatus"
-  ).textContent =
-    `✓ تم الحساب من ${formatNumber(rows.length)} معاملة — آخر تحديث: ${new Date().toLocaleTimeString("ar-EG")}`;
+  animateProfit(
+    data.income,
+    data.expense
+  );
 
 }
 
@@ -4181,9 +3364,7 @@ function renderFinancialAnalysis(
    CATEGORY ANALYSIS
 ========================================================= */
 
-function renderCategoryAnalysis(
-  rows
-){
+function renderCategoryAnalysis(rows){
 
   const categories = {};
 
@@ -4195,19 +3376,24 @@ function renderCategoryAnalysis(
       "أخرى";
 
 
-    if(!categories[category]){
+    if(
+      !categories[category]
+    ){
 
       categories[category] = {
 
         income:0,
 
         expense:0
+
       };
 
     }
 
 
-    if(row.type === "دخل"){
+    if(
+      row.type === "دخل"
+    ){
 
       categories[category].income +=
         row.amount;
@@ -4215,7 +3401,9 @@ function renderCategoryAnalysis(
     }
 
 
-    if(row.type === "مصروف"){
+    if(
+      row.type === "مصروف"
+    ){
 
       categories[category].expense +=
         row.amount;
@@ -4230,16 +3418,19 @@ function renderCategoryAnalysis(
       categories
     )
     .sort(
-      (a,b) =>
-        (
-          b[1].income +
-          b[1].expense
-        )
-        -
-        (
+      (a,b) => {
+
+        const aTotal =
           a[1].income +
-          a[1].expense
-        )
+          a[1].expense;
+
+        const bTotal =
+          b[1].income +
+          b[1].expense;
+
+        return bTotal-aTotal;
+
+      }
     );
 
 
@@ -4249,31 +3440,13 @@ function renderCategoryAnalysis(
     );
 
 
-  if(!entries.length){
-
-    body.innerHTML = `
-
-      <tr>
-
-        <td colspan="4">
-          لا توجد بيانات.
-        </td>
-
-      </tr>
-
-    `;
-
-    return;
-  }
-
-
   body.innerHTML =
     entries.map(
-      ([category,value]) => {
+      ([category,data]) => {
 
         const net =
-          value.income -
-          value.expense;
+          data.income -
+          data.expense;
 
 
         return `
@@ -4281,19 +3454,19 @@ function renderCategoryAnalysis(
           <tr>
 
             <td>
-              ${escapeHtml(category)}
+              ${escapeHTML(category)}
             </td>
 
             <td class="mono positive">
-              ${formatMoney(value.income)}
+              ${money(data.income)}
             </td>
 
-            <td class="mono negative">
-              ${formatMoney(value.expense)}
+            <td class="mono ${data.expense > 0 ? "negative":""}">
+              ${money(data.expense)}
             </td>
 
-            <td class="mono ${net >= 0 ? "positive" : "negative"}">
-              ${formatMoney(net)}
+            <td class="mono ${net < 0 ? "negative":"positive"}">
+              ${money(net)}
             </td>
 
           </tr>
@@ -4301,13 +3474,12 @@ function renderCategoryAnalysis(
         `;
 
       }
-    ).join("");
+    )
+    .join("");
 
 
   const totals =
-    calculateTotals(
-      rows
-    );
+    calculateTotals(rows);
 
 
   body.innerHTML += `
@@ -4315,24 +3487,26 @@ function renderCategoryAnalysis(
     <tr>
 
       <td>
-        <strong>الإجمالي</strong>
+        <strong>
+          الإجمالي
+        </strong>
       </td>
 
       <td class="mono positive">
         <strong>
-          ${formatMoney(totals.income)}
+          ${money(totals.income)}
         </strong>
       </td>
 
       <td class="mono negative">
         <strong>
-          ${formatMoney(totals.expense)}
+          ${money(totals.expense)}
         </strong>
       </td>
 
-      <td class="mono ${totals.net >= 0 ? "positive" : "negative"}">
+      <td class="mono ${totals.net < 0 ? "negative":"positive"}">
         <strong>
-          ${formatMoney(totals.net)}
+          ${money(totals.net)}
         </strong>
       </td>
 
@@ -4347,9 +3521,7 @@ function renderCategoryAnalysis(
    MONTHLY ANALYSIS
 ========================================================= */
 
-function renderMonthlyAnalysis(
-  rows
-){
+function renderMonthlyAnalysis(rows){
 
   const monthly = {};
 
@@ -4357,9 +3529,7 @@ function renderMonthlyAnalysis(
   rows.forEach(row => {
 
     const month =
-      String(
-        row.date || ""
-      ).slice(0,7);
+      row.date.slice(0,7);
 
 
     if(
@@ -4367,22 +3537,28 @@ function renderMonthlyAnalysis(
     ){
 
       return;
+
     }
 
 
-    if(!monthly[month]){
+    if(
+      !monthly[month]
+    ){
 
       monthly[month] = {
 
         income:0,
 
         expense:0
+
       };
 
     }
 
 
-    if(row.type === "دخل"){
+    if(
+      row.type === "دخل"
+    ){
 
       monthly[month].income +=
         row.amount;
@@ -4390,7 +3566,9 @@ function renderMonthlyAnalysis(
     }
 
 
-    if(row.type === "مصروف"){
+    if(
+      row.type === "مصروف"
+    ){
 
       monthly[month].expense +=
         row.amount;
@@ -4401,10 +3579,8 @@ function renderMonthlyAnalysis(
 
 
   const months =
-    Object.keys(
-      monthly
-    )
-    .sort();
+    Object.keys(monthly)
+      .sort();
 
 
   const body =
@@ -4420,7 +3596,7 @@ function renderMonthlyAnalysis(
       <tr>
 
         <td colspan="4">
-          لا توجد بيانات شهرية.
+          لا توجد بيانات شهرية
         </td>
 
       </tr>
@@ -4428,48 +3604,230 @@ function renderMonthlyAnalysis(
     `;
 
     return;
+
   }
 
 
   body.innerHTML =
-    months.map(
-      month => {
+    months.map(month => {
 
-        const value =
-          monthly[month];
-
-
-        const net =
-          value.income -
-          value.expense;
+      const data =
+        monthly[month];
 
 
-        return `
+      const net =
+        data.income -
+        data.expense;
 
-          <tr>
 
-            <td class="mono">
-              ${month}
-            </td>
+      return `
 
-            <td class="mono positive">
-              ${formatMoney(value.income)}
-            </td>
+        <tr>
 
-            <td class="mono negative">
-              ${formatMoney(value.expense)}
-            </td>
+          <td class="mono">
+            ${month}
+          </td>
 
-            <td class="mono ${net >= 0 ? "positive" : "negative"}">
-              ${formatMoney(net)}
-            </td>
+          <td class="mono positive">
+            ${money(data.income)}
+          </td>
 
-          </tr>
+          <td class="mono ${data.expense > 0 ? "negative":""}">
+            ${money(data.expense)}
+          </td>
 
-        `;
+          <td class="mono ${net < 0 ? "negative":"positive"}">
+            ${money(net)}
+          </td>
 
-      }
-    ).join("");
+        </tr>
+
+      `;
+
+    })
+    .join("");
+
+}
+
+
+/* =========================================================
+   PROFIT ANIMATION
+========================================================= */
+
+function animateProfit(
+  income,
+  expense
+){
+
+  const story =
+    document.getElementById(
+      "profitStory"
+    );
+
+
+  const verb =
+    document.getElementById(
+      "profitVerb"
+    );
+
+
+  const percent =
+    document.getElementById(
+      "profitPercent"
+    );
+
+
+  const caption =
+    document.getElementById(
+      "profitCaption"
+    );
+
+
+  const status =
+    document.getElementById(
+      "profitStatus"
+    );
+
+
+  const fill =
+    document.getElementById(
+      "profitFill"
+    );
+
+
+  const net =
+    income -
+    expense;
+
+
+  const percentage =
+    income
+      ? (net/income)*100
+      : 0;
+
+
+  const absolute =
+    Math.abs(
+      percentage
+    );
+
+
+  story.classList.remove(
+    "profit-mode",
+    "loss-mode"
+  );
+
+
+  if(net >= 0){
+
+    story.classList.add(
+      "profit-mode"
+    );
+
+
+    verb.textContent =
+      "أنت كسبان";
+
+
+    status.textContent =
+      "أداء مربح";
+
+
+    caption.textContent =
+      `صافي ربحك ${money(net)} من إجمالي الدخل`;
+
+  }else{
+
+    story.classList.add(
+      "loss-mode"
+    );
+
+
+    verb.textContent =
+      "أنت خسران";
+
+
+    status.textContent =
+      "أداء يحتاج انتباه";
+
+
+    caption.textContent =
+      `مصروفاتك أعلى من دخلك بـ ${money(Math.abs(net))}`;
+
+  }
+
+
+  percent.textContent =
+    "0.0%";
+
+
+  const start =
+    performance.now();
+
+
+  const duration =
+    1600;
+
+
+  function animate(now){
+
+    const progress =
+      Math.min(
+        (now-start)/duration,
+        1
+      );
+
+
+    const eased =
+      1 -
+      Math.pow(
+        1-progress,
+        3
+      );
+
+
+    percent.textContent =
+      `${(absolute*eased).toFixed(1)}%`;
+
+
+    if(progress < 1){
+
+      requestAnimationFrame(
+        animate
+      );
+
+    }
+
+  }
+
+
+  requestAnimationFrame(
+    animate
+  );
+
+
+  const width =
+    Math.min(
+      Math.max(
+        absolute,
+        4
+      ),
+      100
+    );
+
+
+  fill.style.width =
+    "0%";
+
+
+  requestAnimationFrame(
+    () => {
+
+      fill.style.width =
+        width + "%";
+
+    }
+  );
 
 }
 
@@ -4478,19 +3836,14 @@ function renderMonthlyAnalysis(
    TREND CHART
 ========================================================= */
 
-function renderTrendChart(
-  rows
-){
+function renderTrendChart(rows){
 
   if(
     typeof Chart === "undefined"
   ){
 
-    console.error(
-      "Chart.js is not loaded."
-    );
-
     return;
+
   }
 
 
@@ -4500,9 +3853,7 @@ function renderTrendChart(
   rows.forEach(row => {
 
     const month =
-      String(
-        row.date || ""
-      ).slice(0,7);
+      row.date.slice(0,7);
 
 
     if(
@@ -4510,22 +3861,28 @@ function renderTrendChart(
     ){
 
       return;
+
     }
 
 
-    if(!monthly[month]){
+    if(
+      !monthly[month]
+    ){
 
       monthly[month] = {
 
         income:0,
 
         expense:0
+
       };
 
     }
 
 
-    if(row.type === "دخل"){
+    if(
+      row.type === "دخل"
+    ){
 
       monthly[month].income +=
         row.amount;
@@ -4533,7 +3890,9 @@ function renderTrendChart(
     }
 
 
-    if(row.type === "مصروف"){
+    if(
+      row.type === "مصروف"
+    ){
 
       monthly[month].expense +=
         row.amount;
@@ -4544,10 +3903,22 @@ function renderTrendChart(
 
 
   const months =
-    Object.keys(
-      monthly
-    )
-    .sort();
+    Object.keys(monthly)
+      .sort();
+
+
+  const income =
+    months.map(
+      month =>
+        monthly[month].income
+    );
+
+
+  const expense =
+    months.map(
+      month =>
+        monthly[month].expense
+    );
 
 
   const canvas =
@@ -4556,23 +3927,16 @@ function renderTrendChart(
     );
 
 
-  if(!canvas){
+  if(trendChart){
 
-    return;
+    trendChart.destroy();
+
   }
 
 
-  if(trendChartInstance){
-
-    trendChartInstance.destroy();
-
-    trendChartInstance = null;
-  }
-
-
-  trendChartInstance =
+  trendChart =
     new Chart(
-      canvas.getContext("2d"),
+      canvas,
       {
 
         type:"line",
@@ -4587,73 +3951,53 @@ function renderTrendChart(
 
               label:"الدخل",
 
-              data:
-                months.map(
-                  month =>
-                    monthly[month].income
-                ),
+              data:income,
 
               borderColor:
                 "#21d07a",
 
               backgroundColor:
-                "rgba(33,208,122,.10)",
+                "rgba(33,208,122,.12)",
 
-              borderWidth:3,
+              borderWidth:2.5,
 
-              pointRadius:
-                window.innerWidth < 600
-                  ? 2
-                  : 4,
-
-              pointHoverRadius:7,
-
-              pointBackgroundColor:
-                "#21d07a",
+              fill:true,
 
               tension:.42,
 
-              fill:true
-            },
+              pointRadius:3,
 
+              pointHoverRadius:7
+
+            },
 
             {
 
               label:"المصروف",
 
-              data:
-                months.map(
-                  month =>
-                    monthly[month].expense
-                ),
+              data:expense,
 
               borderColor:
                 "#ff5c6c",
 
               backgroundColor:
-                "rgba(255,92,108,.09)",
+                "rgba(255,92,108,.10)",
 
-              borderWidth:3,
+              borderWidth:2.5,
 
-              pointRadius:
-                window.innerWidth < 600
-                  ? 2
-                  : 4,
-
-              pointHoverRadius:7,
-
-              pointBackgroundColor:
-                "#ff5c6c",
+              fill:true,
 
               tension:.42,
 
-              fill:true
+              pointRadius:3,
+
+              pointHoverRadius:7
+
             }
 
           ]
 
         },
-
 
         options:{
 
@@ -4661,66 +4005,59 @@ function renderTrendChart(
 
           maintainAspectRatio:false,
 
-          resizeDelay:100,
-
-          animation:{
-
-            duration:1400,
-
-            easing:
-              "easeOutQuart"
-          },
-
-
           interaction:{
 
             intersect:false,
 
             mode:"index"
+
           },
 
+          animation:{
+
+            duration:1400,
+
+            easing:"easeOutQuart"
+
+          },
 
           plugins:{
 
             legend:{
 
-              display:true,
-
               position:"top",
+
+              align:"start",
 
               labels:{
 
-                color:"#f5f7fb",
+                color:"#91a0b5",
 
                 font:{
 
                   family:"Tajawal",
 
-                  size:
-                    window.innerWidth < 600
-                      ? 10
-                      : 12
+                  size:11
+
                 },
 
                 usePointStyle:true,
 
-                boxWidth:8,
-
                 padding:15
+
               }
 
             },
-
 
             tooltip:{
 
               rtl:true,
 
               backgroundColor:
-                "rgba(7,10,17,.96)",
+                "rgba(8,12,20,.96)",
 
               borderColor:
-                "rgba(201,162,39,.35)",
+                "rgba(255,255,255,.08)",
 
               borderWidth:1,
 
@@ -4730,22 +4067,11 @@ function renderTrendChart(
 
               padding:12,
 
-              displayColors:true,
-
               callbacks:{
 
                 label:
-                  context => {
-
-                    return (
-                      context.dataset.label +
-                      ": " +
-                      formatMoney(
-                        context.raw
-                      )
-                    );
-
-                  }
+                  context =>
+                    `${context.dataset.label}: ${money(context.raw)}`
 
               }
 
@@ -4753,43 +4079,38 @@ function renderTrendChart(
 
           },
 
-
           scales:{
 
             x:{
 
               ticks:{
 
-                color:"#8d98aa",
+                color:"#64748b",
 
                 font:{
 
-                  family:
-                    "IBM Plex Mono",
+                  family:"IBM Plex Mono",
 
                   size:9
+
                 },
 
                 maxRotation:0,
 
-                minRotation:0,
-
                 autoSkip:true,
 
-                maxTicksLimit:
-                  window.innerWidth < 600
-                    ? 5
-                    : 9
+                maxTicksLimit:8
+
               },
 
               grid:{
 
                 color:
-                  "rgba(255,255,255,.045)"
+                  "rgba(255,255,255,.035)"
+
               }
 
             },
-
 
             y:{
 
@@ -4797,27 +4118,27 @@ function renderTrendChart(
 
               ticks:{
 
-                color:"#8d98aa",
+                color:"#64748b",
 
                 font:{
 
-                  family:
-                    "IBM Plex Mono",
+                  family:"IBM Plex Mono",
 
                   size:9
+
                 },
 
                 callback:
                   value =>
-                    formatNumber(
-                      value
-                    )
+                    Number(value).toLocaleString("en-US")
+
               },
 
               grid:{
 
                 color:
-                  "rgba(255,255,255,.045)"
+                  "rgba(255,255,255,.035)"
+
               }
 
             }
@@ -4827,6 +4148,7 @@ function renderTrendChart(
         }
 
       }
+
     );
 
 }
@@ -4836,15 +4158,14 @@ function renderTrendChart(
    CATEGORY CHART
 ========================================================= */
 
-function renderCategoryChart(
-  rows
-){
+function renderCategoryChart(rows){
 
   if(
     typeof Chart === "undefined"
   ){
 
     return;
+
   }
 
 
@@ -4858,10 +4179,13 @@ function renderCategoryChart(
       "أخرى";
 
 
-    if(!categories[category]){
+    if(
+      !categories[category]
+    ){
 
       categories[category] =
         0;
+
     }
 
 
@@ -4877,7 +4201,7 @@ function renderCategoryChart(
     )
     .sort(
       (a,b) =>
-        b[1] - a[1]
+        b[1]-a[1]
     )
     .slice(0,8);
 
@@ -4888,44 +4212,16 @@ function renderCategoryChart(
     );
 
 
-  if(!canvas){
+  if(categoryChart){
 
-    return;
+    categoryChart.destroy();
+
   }
 
 
-  if(categoryChartInstance){
-
-    categoryChartInstance.destroy();
-
-    categoryChartInstance = null;
-  }
-
-
-  const colors = [
-
-    "#c9a227",
-
-    "#21d07a",
-
-    "#6ea8ff",
-
-    "#ff5c6c",
-
-    "#b78cff",
-
-    "#4fd1c5",
-
-    "#f59e0b",
-
-    "#94a3b8"
-
-  ];
-
-
-  categoryChartInstance =
+  categoryChart =
     new Chart(
-      canvas.getContext("2d"),
+      canvas,
       {
 
         type:"bar",
@@ -4934,42 +4230,35 @@ function renderCategoryChart(
 
           labels:
             entries.map(
-              entry =>
-                entry[0]
+              item => item[0]
             ),
 
           datasets:[
 
             {
 
-              label:
-                "إجمالي الحركة",
-
               data:
                 entries.map(
-                  entry =>
-                    entry[1]
+                  item => item[1]
                 ),
 
               backgroundColor:
-                entries.map(
-                  (_,index) =>
-                    colors[index % colors.length]
-                ),
+                "rgba(201,162,39,.82)",
+
+              borderColor:
+                "#e4c458",
+
+              borderWidth:1,
 
               borderRadius:8,
 
-              borderSkipped:false,
-
-              maxBarThickness:
-                30
+              borderSkipped:false
 
             }
 
           ]
 
         },
-
 
         options:{
 
@@ -4979,34 +4268,29 @@ function renderCategoryChart(
 
           maintainAspectRatio:false,
 
-          resizeDelay:100,
-
           animation:{
 
-            duration:1500,
+            duration:1300,
 
-            easing:
-              "easeOutQuart"
+            easing:"easeOutQuart"
+
           },
-
 
           plugins:{
 
             legend:{
-
               display:false
             },
-
 
             tooltip:{
 
               rtl:true,
 
               backgroundColor:
-                "rgba(7,10,17,.96)",
+                "rgba(8,12,20,.96)",
 
               borderColor:
-                "rgba(201,162,39,.35)",
+                "rgba(201,162,39,.3)",
 
               borderWidth:1,
 
@@ -5015,22 +4299,14 @@ function renderCategoryChart(
               callbacks:{
 
                 label:
-                  context => {
-
-                    return (
-                      formatMoney(
-                        context.raw
-                      )
-                    );
-
-                  }
+                  context =>
+                    ` ${money(context.raw)}`
 
               }
 
             }
 
           },
-
 
           scales:{
 
@@ -5040,53 +4316,44 @@ function renderCategoryChart(
 
               ticks:{
 
-                color:"#8d98aa",
+                color:"#64748b",
 
                 font:{
 
-                  family:
-                    "IBM Plex Mono",
+                  family:"IBM Plex Mono",
 
                   size:9
-                },
 
-                callback:
-                  value =>
-                    formatNumber(
-                      value
-                    )
-              },
-
-              grid:{
-
-                color:
-                  "rgba(255,255,255,.045)"
-              }
-
-            },
-
-
-            y:{
-
-              ticks:{
-
-                color:"#f5f7fb",
-
-                font:{
-
-                  family:
-                    "Tajawal",
-
-                  size:
-                    window.innerWidth < 600
-                      ? 9
-                      : 11
                 }
 
               },
 
               grid:{
 
+                color:
+                  "rgba(255,255,255,.035)"
+
+              }
+
+            },
+
+            y:{
+
+              ticks:{
+
+                color:"#cbd5e1",
+
+                font:{
+
+                  family:"Tajawal",
+
+                  size:10
+
+                }
+
+              },
+
+              grid:{
                 display:false
               }
 
@@ -5097,18 +4364,17 @@ function renderCategoryChart(
         }
 
       }
+
     );
 
 }
 
 
 /* =========================================================
-   TRANSACTIONS
+   TRANSACTIONS TABLE
 ========================================================= */
 
-function renderTransactions(
-  rows
-){
+function renderTransactions(rows){
 
   const wrapper =
     document.getElementById(
@@ -5122,87 +4388,66 @@ function renderTransactions(
 
       <div class="empty">
 
-        مفيش عمليات تطابق الفلتر الحالي.
+        لا توجد معاملات مطابقة للفلاتر الحالية.
 
       </div>
 
     `;
 
     return;
+
   }
 
 
-  /*
-    Latest transactions first.
-  */
-
   const sorted =
-    [...rows].sort(
-      (a,b) =>
-        String(b.date || "")
-        .localeCompare(
-          String(a.date || "")
-        )
-    );
+    [...rows]
+      .sort(
+        (a,b) =>
+          b.date.localeCompare(
+            a.date
+          )
+      );
 
 
-  /*
-    Limit rendering for performance.
-  */
-
-  const displayed =
+  const visible =
     sorted.slice(
       0,
-      300
+      250
     );
 
 
   let html = `
 
-    <div class="data-table-wrap">
+    <table class="transactions-table">
 
-      <table class="data-table">
+      <thead>
 
-        <thead>
+        <tr>
 
-          <tr>
+          <th>التاريخ</th>
 
-            <th>
-              التاريخ
-            </th>
+          <th>النوع</th>
 
-            <th>
-              النوع
-            </th>
+          <th>الفئة</th>
 
-            <th>
-              الفئة
-            </th>
+          <th>الوصف</th>
 
-            <th>
-              الوصف
-            </th>
+          <th>المبلغ</th>
 
-            <th>
-              المبلغ
-            </th>
+          <th>ملاحظات</th>
 
-            <th>
-              ملاحظات
-            </th>
+        </tr>
 
-          </tr>
+      </thead>
 
-        </thead>
-
-        <tbody>
+      <tbody>
 
   `;
 
 
-  displayed.forEach(row => {
+  visible.forEach(row => {
 
-    const isIncome =
+    const income =
       row.type === "دخل";
 
 
@@ -5211,66 +4456,38 @@ function renderTransactions(
       <tr>
 
         <td class="mono">
-          ${escapeHtml(
-            row.date || "—"
-          )}
+          ${escapeHTML(row.date || "—")}
         </td>
-
 
         <td>
 
           <span
-            class="badge ${isIncome ? "in" : "out"}">
+            class="badge ${income ? "in":"out"}">
 
-            ${escapeHtml(
-              row.type || "—"
-            )}
+            ${escapeHTML(row.type || "—")}
 
           </span>
 
         </td>
 
-
-        <td class="category">
-
-          ${escapeHtml(
-            row.category || "—"
-          )}
-
+        <td>
+          ${escapeHTML(row.category || "—")}
         </td>
-
 
         <td>
-
-          ${escapeHtml(
-            row.description || "—"
-          )}
-
+          ${escapeHTML(row.description || "—")}
         </td>
-
 
         <td
-          class="mono ${
-            isIncome
-              ? "amount-income"
-              : "amount-expense"
-          }">
+          class="mono ${income ? "positive":"negative"}">
 
-          ${isIncome ? "+" : "-"}
-
-          ${formatMoney(
-            row.amount
-          )}
+          ${income ? "+" : "-"}
+          ${money(row.amount)}
 
         </td>
 
-
-        <td class="category">
-
-          ${escapeHtml(
-            row.notes || ""
-          )}
-
+        <td>
+          ${escapeHTML(row.notes || "")}
         </td>
 
       </tr>
@@ -5282,27 +4499,26 @@ function renderTransactions(
 
   html += `
 
-        </tbody>
+      </tbody>
 
-      </table>
-
-    </div>
+    </table>
 
   `;
 
 
   if(
-    rows.length > 300
+    rows.length > 250
   ){
 
     html += `
 
-      <div class="section-hint"
-           style="margin:14px 0 0;">
+      <div class="card-hint"
+           style="padding:14px">
 
-        عرض أحدث 300 عملية من إجمالي
-        ${formatNumber(rows.length)}
-        عملية.
+        عرض أحدث 250 معاملة من
+        ${integer(rows.length)}
+
+        معاملة.
 
       </div>
 
@@ -5321,11 +4537,9 @@ function renderTransactions(
    ESCAPE HTML
 ========================================================= */
 
-function escapeHtml(
-  value
-){
+function escapeHTML(value){
 
-  return String(value || "")
+  return String(value ?? "")
     .replace(
       /&/g,
       "&amp;"
@@ -5383,51 +4597,6 @@ function escapeHtml(
 
 
 /* =========================================================
-   RESPONSIVE CHART RESIZE
-========================================================= */
-
-let resizeTimer;
-
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    clearTimeout(
-      resizeTimer
-    );
-
-
-    resizeTimer =
-      setTimeout(
-        () => {
-
-          if(
-            trendChartInstance
-          ){
-
-            trendChartInstance.resize();
-
-          }
-
-
-          if(
-            categoryChartInstance
-          ){
-
-            categoryChartInstance.resize();
-
-          }
-
-        },
-        150
-      );
-
-  }
-);
-
-
-/* =========================================================
    INITIAL LOAD
 ========================================================= */
 
@@ -5439,12 +4608,32 @@ loadData();
 ========================================================= */
 
 setInterval(
+  loadData,
+  60000
+);
+
+
+/* =========================================================
+   RESIZE CHARTS
+========================================================= */
+
+window.addEventListener(
+  "resize",
   () => {
 
-    loadData();
+    if(trendChart){
 
-  },
-  60000
+      trendChart.resize();
+
+    }
+
+    if(categoryChart){
+
+      categoryChart.resize();
+
+    }
+
+  }
 );
 
 </script>
