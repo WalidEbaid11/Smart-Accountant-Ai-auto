@@ -900,10 +900,15 @@ function analysisMoney(n){
 function renderFinancialAnalysisFromSheet(){
   // ALL_ROWS is populated directly from the Google Sheet by loadData().
   // Nothing is hard-coded here.
-  const rows = ALL_ROWS || [];
+  const rows = Array.isArray(ALL_ROWS) ? ALL_ROWS : [];
 
-  const incomeRows = rows.filter(r => r.type === "دخل");
-  const expenseRows = rows.filter(r => r.type === "مصروف");
+  // Normalize the Sheet values so accidental spaces/case do not break totals.
+  const normalizedType = r => String(r.type || "").trim();
+  const isIncome = r => normalizedType(r) === "دخل";
+  const isExpense = r => normalizedType(r) === "مصروف";
+
+  const incomeRows = rows.filter(isIncome);
+  const expenseRows = rows.filter(isExpense);
 
   const income = incomeRows.reduce((s,r)=>s + Number(r.amount || 0), 0);
   const expense = expenseRows.reduce((s,r)=>s + Number(r.amount || 0), 0);
@@ -930,8 +935,8 @@ function renderFinancialAnalysisFromSheet(){
   rows.forEach(r => {
     const cat = r.category || "أخرى";
     if(!categories[cat]) categories[cat] = {income:0, expense:0};
-    if(r.type === "دخل") categories[cat].income += Number(r.amount || 0);
-    if(r.type === "مصروف") categories[cat].expense += Number(r.amount || 0);
+    if(isIncome(r)) categories[cat].income += Number(r.amount || 0);
+    if(isExpense(r)) categories[cat].expense += Number(r.amount || 0);
   });
 
   const categoryEntries = Object.entries(categories)
@@ -970,8 +975,8 @@ function renderFinancialAnalysisFromSheet(){
     const key = date.slice(0,7);
     if(!monthly[key]) monthly[key] = {income:0, expense:0};
 
-    if(r.type === "دخل") monthly[key].income += Number(r.amount || 0);
-    if(r.type === "مصروف") monthly[key].expense += Number(r.amount || 0);
+    if(isIncome(r)) monthly[key].income += Number(r.amount || 0);
+    if(isExpense(r)) monthly[key].expense += Number(r.amount || 0);
   });
 
   const monthBody = document.getElementById("monthlyAnalysisBody");
@@ -992,7 +997,7 @@ function renderFinancialAnalysisFromSheet(){
   animateProfitStory(income, expense);
 
   document.getElementById("analysisStatus").textContent =
-    `✓ تم تحديث التحليل المالي — آخر تحديث: ${new Date().toLocaleTimeString("ar-EG")}`;
+    `✓ تم الحساب من ${fmtNum(rows.length)} معاملة — آخر تحديث: ${new Date().toLocaleTimeString("ar-EG")}`;
 }
 
 async function loadData(){
@@ -1046,11 +1051,6 @@ async function loadData(){
     populateCategoryFilter();
     render();
 
-    // IMPORTANT:
-    // The monthly trend, category distribution, and full financial analysis
-    // are all derived from the same ALL_ROWS data fetched from Google Sheets.
-    renderFinancialAnalysisFromSheet();
-
     document.getElementById("syncTime").textContent =
       "آخر مزامنة: " + new Date().toLocaleTimeString("ar-EG");
   }catch(err){
@@ -1088,10 +1088,20 @@ function getFiltered(){
 
 function render(){
   const rows = getFiltered();
+
+  // Core data presentation first: these must work even if a chart library
+  // fails to load.
   renderKPIs(rows);
   renderTable(rows);
-  renderTrendChart(rows);
-  renderCategoryChart(rows);
+  renderFinancialAnalysisFromSheet();
+
+  // Charts are visual enhancements and must never block the analytics.
+  try { renderTrendChart(rows); } catch(err) {
+    console.warn("Trend chart unavailable:", err);
+  }
+  try { renderCategoryChart(rows); } catch(err) {
+    console.warn("Category chart unavailable:", err);
+  }
 }
 
 function renderKPIs(rows){
@@ -1153,6 +1163,10 @@ function renderTable(rows){
 }
 
 function renderTrendChart(rows){
+  if(typeof Chart === "undefined"){
+    console.warn("Chart.js is not available; skipping trend chart.");
+    return;
+  }
   const byMonth = {};
   rows.forEach(r => {
     const m = String(r.date).slice(0,7);
@@ -1188,6 +1202,10 @@ function renderTrendChart(rows){
 }
 
 function renderCategoryChart(rows){
+  if(typeof Chart === "undefined"){
+    console.warn("Chart.js is not available; skipping category chart.");
+    return;
+  }
   const byCat = {};
   rows.forEach(r => {
     if(!r.category) return;
@@ -1344,6 +1362,27 @@ if(typeof originalRenderFinancialAnalysisFromSheet === "function"){
     animateProfitStory(income, expense);
   };
 }
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    if (typeof Chart === "undefined") {
+      document.querySelectorAll("canvas").forEach(canvas => {
+        const box = canvas.parentElement;
+        if (box && !box.querySelector(".chart-fallback")) {
+          const msg = document.createElement("div");
+          msg.className = "chart-fallback";
+          msg.textContent = "التحليل الرقمي يعمل من Google Sheets — تعذر تحميل الرسم البياني.";
+          msg.style.cssText =
+            "padding:18px;text-align:center;color:#8d98aa;font-size:11px;";
+          box.appendChild(msg);
+        }
+      });
+    }
+  }, 1800);
+});
 </script>
 
 </body>
